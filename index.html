@@ -457,6 +457,178 @@ body {
   color: var(--strong);
 }
 
+/* ===== FEEDBACK DIALOG ===== */
+.feedback-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 26, 23, 0.55);
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 60px 20px 20px;
+  overflow-y: auto;
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.feedback-dialog-panel {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  max-width: 540px;
+  width: 100%;
+  padding: 28px 32px 26px;
+  position: relative;
+  box-shadow: 0 12px 40px rgba(26, 26, 23, 0.18);
+}
+.feedback-dialog-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--ink-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+}
+.feedback-dialog-close:hover { background: var(--paper-warm); color: var(--ink); }
+.feedback-dialog-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.feedback-dialog-intro {
+  font-size: 13.5px;
+  color: var(--ink-muted);
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+.feedback-dialog-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+.feedback-dialog-btn {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  text-decoration: none;
+  padding: 11px 16px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  transition: all 0.15s;
+}
+.feedback-dialog-btn:hover {
+  background: var(--paper-warm);
+  border-color: var(--ink-muted);
+}
+.feedback-dialog-btn.primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.feedback-dialog-btn.primary:hover {
+  background: var(--accent-deep);
+  border-color: var(--accent-deep);
+}
+.feedback-dialog-btn-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-weight: 400;
+}
+.feedback-dialog-btn.primary .feedback-dialog-btn-sub {
+  color: var(--accent-soft);
+}
+.feedback-dialog-section {
+  border-top: 1px solid var(--rule-soft);
+  padding-top: 18px;
+}
+.feedback-dialog-or {
+  font-size: 12.5px;
+  color: var(--ink-muted);
+  font-style: italic;
+  margin-bottom: 12px;
+}
+.feedback-dialog-field {
+  margin-bottom: 14px;
+}
+.feedback-dialog-field label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 5px;
+}
+.feedback-dialog-copy-row {
+  display: flex;
+  gap: 6px;
+}
+.feedback-dialog-copy-row input {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  background: var(--paper-warm);
+  color: var(--ink);
+}
+.feedback-dialog-field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  background: var(--paper-warm);
+  color: var(--ink-soft);
+  resize: vertical;
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+.feedback-dialog-copy-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 7px 14px;
+  background: var(--paper);
+  color: var(--ink-soft);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.feedback-dialog-copy-btn.full { width: 100%; }
+.feedback-dialog-copy-btn:hover {
+  background: var(--paper-warm);
+  border-color: var(--ink-muted);
+  color: var(--ink);
+}
+.feedback-dialog-copy-btn.confirmed {
+  background: var(--strong-wash);
+  border-color: var(--strong);
+  color: var(--strong);
+}
+
 /* Print view — triggered when the body has class 'printing' */
 @media print {
   body { background: white; color: black; }
@@ -2263,7 +2435,122 @@ function wireFeedbackButton() {
       alert("Feedback email is not yet configured.\n\nThe person who shared this tool needs to set the FEEDBACK_EMAIL constant at the top of the <script> block in the HTML file before sharing.");
       return;
     }
-    window.location.href = buildFeedbackMailto();
+    openFeedbackDialog();
+  });
+}
+
+function openFeedbackDialog() {
+  // Remove any existing dialog (defensive)
+  const existing = document.getElementById("feedback-dialog");
+  if (existing) existing.remove();
+
+  const a = state.answers;
+  const lines = [];
+  lines.push("Thanks for sending feedback on the Climate M&E Navigator.");
+  lines.push("");
+  lines.push("--- Your current context (auto-filled; edit or delete if not relevant) ---");
+  lines.push(`Stage you are on: ${state.stage} of 4`);
+  lines.push(`Primary purpose: ${labelFor(OPT_PURPOSE, a.purpose_primary) || "not answered"}`);
+  if (a.purpose_secondary.length) lines.push(`Secondary purposes: ${labelsFor(OPT_PURPOSE, a.purpose_secondary).join(", ")}`);
+  lines.push(`Scope: ${a.scope.length ? labelsFor(OPT_SCOPE, a.scope).join(", ") : "not answered"}`);
+  lines.push(`Scale: ${labelFor(OPT_SCALE, a.scale) || "not answered"}`);
+  lines.push(`Capacity: ${labelFor(OPT_CAPACITY, a.capacity) || "not answered"}`);
+  if (a.approach) lines.push(`Approach: ${labelFor(OPT_APPROACH, a.approach)}`);
+  if (a.data) lines.push(`Data readiness: ${labelFor(OPT_DATA, a.data)}`);
+  if (a.time) lines.push(`Time horizon: ${labelFor(OPT_TIME, a.time)}`);
+  if (a.toc) lines.push(`Theory of change: ${labelFor(OPT_TOC, a.toc)}`);
+  lines.push("");
+  lines.push("--- Your feedback (please write below) ---");
+  lines.push("");
+  lines.push("What worked well:");
+  lines.push("");
+  lines.push("What did not work / felt wrong:");
+  lines.push("");
+  lines.push("Tools or methods that should be added or removed:");
+  lines.push("");
+  lines.push("Anything else:");
+  lines.push("");
+
+  const subject = "Feedback on Climate M&E Navigator (v0.2)";
+  const body = lines.join("\n");
+  const mailtoUrl = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(FEEDBACK_EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const outlookUrl = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(FEEDBACK_EMAIL)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  const dialog = document.createElement("div");
+  dialog.id = "feedback-dialog";
+  dialog.className = "feedback-dialog-backdrop";
+  dialog.innerHTML = `
+    <div class="feedback-dialog-panel">
+      <button class="feedback-dialog-close" id="fb-close" aria-label="Close">×</button>
+      <h3 class="feedback-dialog-title serif">Send feedback</h3>
+      <p class="feedback-dialog-intro">Pick whichever way works for you. Your current answers will be included as context.</p>
+
+      <div class="feedback-dialog-actions">
+        <a class="feedback-dialog-btn primary" href="${gmailUrl}" target="_blank" rel="noopener" id="fb-gmail">
+          <span>Open in Gmail</span>
+          <span class="feedback-dialog-btn-sub">opens in new tab</span>
+        </a>
+        <a class="feedback-dialog-btn" href="${outlookUrl}" target="_blank" rel="noopener" id="fb-outlook">
+          <span>Open in Outlook web</span>
+          <span class="feedback-dialog-btn-sub">opens in new tab</span>
+        </a>
+        <a class="feedback-dialog-btn" href="${mailtoUrl}" id="fb-mail">
+          <span>Open default mail app</span>
+          <span class="feedback-dialog-btn-sub">Outlook, Mail, Thunderbird etc</span>
+        </a>
+      </div>
+
+      <div class="feedback-dialog-section">
+        <p class="feedback-dialog-or">Or copy the message manually:</p>
+        <div class="feedback-dialog-field">
+          <label>Send to</label>
+          <div class="feedback-dialog-copy-row">
+            <input type="text" readonly value="${FEEDBACK_EMAIL}" id="fb-to-field" />
+            <button class="feedback-dialog-copy-btn" data-copy="fb-to-field">Copy</button>
+          </div>
+        </div>
+        <div class="feedback-dialog-field">
+          <label>Subject</label>
+          <div class="feedback-dialog-copy-row">
+            <input type="text" readonly value="${subject}" id="fb-subj-field" />
+            <button class="feedback-dialog-copy-btn" data-copy="fb-subj-field">Copy</button>
+          </div>
+        </div>
+        <div class="feedback-dialog-field">
+          <label>Message</label>
+          <textarea readonly rows="8" id="fb-body-field">${body}</textarea>
+          <button class="feedback-dialog-copy-btn full" data-copy="fb-body-field">Copy message</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(dialog);
+
+  const close = () => dialog.remove();
+  document.getElementById("fb-close").addEventListener("click", close);
+  dialog.addEventListener("click", (e) => { if (e.target === dialog) close(); });
+  document.addEventListener("keydown", function escHandler(e) {
+    if (e.key === "Escape") { close(); document.removeEventListener("keydown", escHandler); }
+  });
+
+  // Wire copy buttons
+  dialog.querySelectorAll(".feedback-dialog-copy-btn").forEach(b => {
+    b.addEventListener("click", async () => {
+      const targetId = b.dataset.copy;
+      const field = document.getElementById(targetId);
+      const text = field.value;
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        field.select();
+        try { document.execCommand("copy"); } catch (e) {}
+      }
+      const original = b.textContent;
+      b.textContent = "Copied ✓";
+      b.classList.add("confirmed");
+      setTimeout(() => { b.textContent = original; b.classList.remove("confirmed"); }, 1800);
+    });
   });
 }
 
