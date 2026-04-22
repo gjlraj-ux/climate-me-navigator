@@ -542,6 +542,66 @@ body {
 .tool-card.strong .tool-card-fit { background: var(--strong-wash); color: var(--strong); }
 .tool-card.weak .tool-card-fit { background: var(--weak-wash); color: var(--weak); }
 
+.tool-card-toc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--strong);
+  background: var(--strong-wash);
+  padding: 2px 7px;
+  border-radius: 2px;
+  margin-top: 2px;
+  align-self: flex-start;
+}
+.tool-card-toc-badge::before {
+  content: "◆";
+  font-size: 8px;
+}
+
+.toc-resources {
+  background: var(--strong-wash);
+  border-left: 3px solid var(--strong);
+  padding: 16px 20px;
+  margin-bottom: 28px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+.toc-resources h4 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--ink);
+  margin-bottom: 6px;
+  letter-spacing: -0.005em;
+}
+.toc-resources ul {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.toc-resources li {
+  font-size: 13px;
+}
+.toc-resources a {
+  color: var(--strong);
+  text-decoration: underline;
+  text-decoration-color: rgba(61, 107, 63, 0.3);
+  text-underline-offset: 2px;
+}
+.toc-resources a:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent-soft);
+}
+
 .tool-card-name {
   font-family: 'Fraunces', serif;
   font-weight: 500;
@@ -848,7 +908,8 @@ const TOOLS = [
     capacity: ["medium"],
     approach: ["blended"],
     data: ["moderate"],
-    time: ["months", "years"]
+    time: ["months", "years"],
+    toc: true
   },
   {
     id: "adaptme", name: "AdaptME Toolkit", provider: "UKCIP", type: "Framework",
@@ -860,7 +921,8 @@ const TOOLS = [
     capacity: ["low", "medium"],
     approach: ["blended"],
     data: ["thin", "moderate"],
-    time: ["weeks", "months"]
+    time: ["weeks", "months"],
+    toc: true
   },
   {
     id: "nap-gn", name: "NAP Global Network M&E guidance", provider: "IISD / NAP Global Network", type: "Guidance",
@@ -932,7 +994,8 @@ const TOOLS = [
     capacity: ["low", "medium"],
     approach: ["bottomup"],
     data: ["thin"],
-    time: ["months"]
+    time: ["months"],
+    toc: true
   },
 
   {
@@ -981,7 +1044,8 @@ const TOOLS = [
     capacity: ["medium"],
     approach: ["bottomup"],
     data: ["thin"],
-    time: ["months"]
+    time: ["months"],
+    toc: true
   },
 
   {
@@ -1189,7 +1253,8 @@ const TOOLS = [
     capacity: ["low", "medium"],
     approach: ["bottomup"],
     data: ["thin"],
-    time: ["months"]
+    time: ["months"],
+    toc: true
   },
   {
     id: "contrib", name: "Contribution Analysis", provider: "Mayne", type: "Evaluation method",
@@ -1201,7 +1266,8 @@ const TOOLS = [
     capacity: ["medium"],
     approach: ["blended"],
     data: ["moderate"],
-    time: ["months"]
+    time: ["months"],
+    toc: true
   },
   {
     id: "dev-eval", name: "Developmental Evaluation", provider: "Patton", type: "Evaluation approach",
@@ -1213,7 +1279,8 @@ const TOOLS = [
     capacity: ["medium", "high"],
     approach: ["blended"],
     data: ["moderate"],
-    time: ["months", "years"]
+    time: ["months", "years"],
+    toc: true
   }
 ];
 
@@ -1269,6 +1336,12 @@ const OPT_TIME = [
   { id: "years", label: "A year or more", help: "Building a permanent M&E system that runs cycle after cycle" }
 ];
 
+const OPT_TOC = [
+  { id: "have", label: "Yes, I have one", help: "You have a theory of change and want M&E methods that let you test it" },
+  { id: "building", label: "No, but I want help building one", help: "You haven't articulated a theory of change yet and would like pointers to resources" },
+  { id: "none", label: "Not using a theory of change", help: "Your M&E work doesn't rely on a theory of change approach" }
+];
+
 // ============================================================
 // STATE
 // ============================================================
@@ -1282,7 +1355,8 @@ const state = {
     capacity: null,
     approach: null,
     data: null,
-    time: null
+    time: null,
+    toc: null
   },
   showWeak: false
 };
@@ -1406,6 +1480,14 @@ function fitScore(tool) {
     breakdown.push({ kind: "pos", text: `time horizon matches (+1)` });
   }
 
+  // Theory of change — boost ToC-compatible tools if user has or wants one
+  if (a.toc === "have" || a.toc === "building") {
+    if (tool.toc) {
+      score += 2;
+      breakdown.push({ kind: "pos", text: `works with theory of change (+2)` });
+    }
+  }
+
   return { score, breakdown };
 }
 
@@ -1440,6 +1522,7 @@ function maxPossibleScore() {
   if (a.approach) max += 1;
   if (a.data) max += 1;
   if (a.time) max += 1;
+  if (a.toc === "have" || a.toc === "building") max += 2;
   return max;
 }
 
@@ -1639,12 +1722,12 @@ function renderStage3(c) {
         <div class="stage-kicker mono">Stage 03</div>
         <h1 class="stage-heading serif">Scale &amp; <em>constraints</em></h1>
         <div class="stage-intro-body">
-          <p>Five short questions about where you work, what you have to work with, and how quickly you need results.</p>
-          <p>The first two (scale and capacity) are required. The other three are optional — answer them if you can, skip them if not.</p>
+          <p>Six short questions about where you work, what you have to work with, how quickly you need results, and whether you're working from a theory of change.</p>
+          <p>The first two (scale and capacity) are required. The others are optional — answer them if you can, skip them if not.</p>
         </div>
         ${stageBox({
           stageN: 3, stageTitle: "Scale & constraints",
-          steps: ["Scale (required)", "Capacity (required)", "Approach preference (optional)", "Data readiness (optional)", "Time horizon (optional)"],
+          steps: ["Scale (required)", "Capacity (required)", "Approach preference (optional)", "Data readiness (optional)", "Time horizon (optional)", "Theory of change (optional)"],
           currentStep: 1
         })}
       </div>
@@ -1674,6 +1757,11 @@ function renderStage3(c) {
           <div class="step-prompt">How soon do you need something useful — not perfect, just useful?</div>
           <div class="options grid-2" id="time-opts"></div>
         </div>
+        <div class="step-block">
+          <div class="step-heading serif">Step 6 · Theory of change <span style="color:var(--ink-muted);font-size:13px;font-weight:400;font-style:italic;">(optional)</span></div>
+          <div class="step-prompt">A theory of change is a clear statement of how and why your work is expected to lead to the changes you want. Some M&amp;E methods work best when you have one to test against.</div>
+          <div class="options grid-2" id="toc-opts"></div>
+        </div>
       </div>
     </div>
     ${navFooter({ canBack: true, canNext: !!state.answers.scale && !!state.answers.capacity, stage: 3 })}
@@ -1697,6 +1785,7 @@ function renderStage3(c) {
   wireSingle("approach-opts", OPT_APPROACH, "approach");
   wireSingle("data-opts", OPT_DATA, "data");
   wireSingle("time-opts", OPT_TIME, "time");
+  wireSingle("toc-opts", OPT_TOC, "toc");
 
   attachNav();
 }
@@ -1787,7 +1876,22 @@ function renderStage4(c) {
             <span class="answers-summary-label">Time</span>
             <span class="answers-summary-value">${labelFor(OPT_TIME, state.answers.time)}</span>
           </div>` : ''}
+          ${state.answers.toc ? `<div class="answers-summary-item">
+            <span class="answers-summary-label">Theory of change</span>
+            <span class="answers-summary-value">${labelFor(OPT_TOC, state.answers.toc)}</span>
+          </div>` : ''}
         </div>
+
+        ${state.answers.toc === "building" ? `<div class="toc-resources">
+          <h4>Resources for building a theory of change</h4>
+          <p>You said you'd like help articulating a theory of change. These are starting points many practitioners use:</p>
+          <ul>
+            <li><a href="https://napglobalnetwork.org/resource/toolkit-for-a-gender-responsive-process-to-formulate-and-implement-national-adaptation-plans-naps/" target="_blank" rel="noopener">NAP Global Network — theory of change guidance (in the NAP M&amp;E toolkit)</a></li>
+            <li><a href="https://www.betterevaluation.org/methods-approaches/approaches/theory-change" target="_blank" rel="noopener">BetterEvaluation — theory of change methods and examples</a></li>
+            <li><a href="https://www.hivos.org/assets/2020/03/Theory-of-Change-Thinking-in-Practice.pdf" target="_blank" rel="noopener">Hivos — Theory of Change Thinking in Practice (PDF)</a></li>
+          </ul>
+          <p style="margin-top: 10px;">Once you have a draft, the methods below marked <strong>◆ Works with theory of change</strong> will help you test and refine it.</p>
+        </div>` : ''}
 
         ${renderBand("Strong fit", "strong", bands.strong, strongDesc)}
         ${renderBand("Possible fit", "possible", bands.possible, possibleDesc)}
@@ -1857,6 +1961,7 @@ function toolCardHTML(t, cls) {
     </div>
     <div class="tool-card-name serif">${t.name}</div>
     <div class="tool-card-meta mono">${t.type}<span class="sep">·</span>${t.provider}</div>
+    ${t.toc ? `<div class="tool-card-toc-badge">Works with theory of change</div>` : ''}
     <div class="tool-card-what">${t.what}</div>
     ${why}
     <div class="tool-card-footer">
@@ -1886,6 +1991,7 @@ function buildFeedbackMailto() {
   if (a.approach) lines.push(`Approach: ${labelFor(OPT_APPROACH, a.approach)}`);
   if (a.data) lines.push(`Data readiness: ${labelFor(OPT_DATA, a.data)}`);
   if (a.time) lines.push(`Time horizon: ${labelFor(OPT_TIME, a.time)}`);
+  if (a.toc) lines.push(`Theory of change: ${labelFor(OPT_TOC, a.toc)}`);
   lines.push("");
   lines.push("--- Your feedback (please write below) ---");
   lines.push("");
