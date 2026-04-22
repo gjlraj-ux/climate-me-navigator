@@ -717,16 +717,16 @@ button:focus-visible, a:focus-visible {
 
 <footer class="pagefoot">
   <div>
-    <h4>How to use</h4>
-    <p>Answer the four stages in order. Each answer tightens the constellation at Stage 4. You can jump ahead at any time — incomplete stages will show as "not yet answered" and the ranking will use fewer signals.</p>
+    <h4>How to use this</h4>
+    <p>Answer the four stages in order. Each answer helps narrow down the tools at the end. You can jump ahead at any point — if you do, the final list will be rougher until you come back and fill in the gaps.</p>
   </div>
   <div>
-    <h4>How fit is scored</h4>
-    <p>Each tool is tagged across six dimensions. Your answers are matched against those tags to produce a fit score. Hover any fit badge at Stage 4 to see the breakdown — this is deliberately transparent so the logic can be debated and improved.</p>
+    <h4>Why tools appear where they do</h4>
+    <p>Each tool is matched against your answers — purpose, scope, scale, capacity, and so on. Hover the small grey box on any tool card to see why it ranked where it did. This is deliberately open so you can challenge choices that look wrong.</p>
   </div>
   <div>
-    <h4>What it isn't</h4>
-    <p>Not a recommendation engine. The goal is to narrow a wide field to a smaller, defensible shortlist — the final call is yours and depends on country context the tool doesn't see.</p>
+    <h4>What this tool is not</h4>
+    <p>It doesn't tell you what to do. It narrows a wide field of tools to a shorter list that fits your situation. The final choice is yours — you know things about your context that this tool can't see.</p>
   </div>
 </footer>
 
@@ -1246,27 +1246,27 @@ const OPT_SCALE = [
 ];
 
 const OPT_CAPACITY = [
-  { id: "low", label: "Lower-resource", help: "LDC or SIDS profile, thin statistical capacity, minimal in-house analytics" },
-  { id: "medium", label: "Moderate", help: "Functional NSO, some in-house climate expertise, donor support available" },
-  { id: "high", label: "Higher / mature", help: "Multiple established M&E streams, in-house analytical teams" }
+  { id: "low", label: "Limited", help: "Small team, tight budget, little in-house technical expertise — typical for LDCs and SIDS" },
+  { id: "medium", label: "Moderate", help: "Working statistics office, some climate expertise on staff, donor support you can draw on" },
+  { id: "high", label: "Strong", help: "Established M&E systems, in-house analysts, multiple ongoing data streams" }
 ];
 
 const OPT_APPROACH = [
-  { id: "topdown", label: "Top-down", help: "Indicator-based, statistical, expert-led" },
-  { id: "bottomup", label: "Bottom-up", help: "Participatory, story-based, community-led" },
-  { id: "blended", label: "Blended / undecided", help: "Combines both or not yet decided" }
+  { id: "topdown", label: "Data and expert analysis", help: "Indicators, statistics, and assessments by technical staff" },
+  { id: "bottomup", label: "Community voices and stories", help: "Participatory methods where affected people describe what's changing" },
+  { id: "blended", label: "A mix of both, or not sure yet", help: "Pick this if you want to combine methods, or if you haven't decided" }
 ];
 
 const OPT_DATA = [
-  { id: "thin", label: "Thin", help: "Rely on pre-processed global datasets; minimal national data available" },
-  { id: "moderate", label: "Moderate", help: "Some national administrative data and statistical capacity" },
-  { id: "rich", label: "Rich", help: "Strong statistical system, dedicated sensors, regular surveys" }
+  { id: "thin", label: "Very little national data", help: "You will mostly rely on global datasets and satellite data" },
+  { id: "moderate", label: "Some national data available", help: "Government statistics cover the basics but have gaps" },
+  { id: "rich", label: "Strong national data systems", help: "Regular surveys, monitoring, and reliable administrative records" }
 ];
 
 const OPT_TIME = [
-  { id: "weeks", label: "Weeks", help: "Rapid diagnostic, quick screening, immediate decision support" },
-  { id: "months", label: "Months", help: "One cycle of planning-data-reporting; typical project baseline" },
-  { id: "years", label: "Years", help: "System-building, multi-cycle institutional embedding" }
+  { id: "weeks", label: "A few weeks", help: "Quick screening or briefing — first results within a month" },
+  { id: "months", label: "Several months", help: "A full planning and data cycle — typical for a project baseline" },
+  { id: "years", label: "A year or more", help: "Building a permanent M&E system that runs cycle after cycle" }
 ];
 
 // ============================================================
@@ -1454,10 +1454,10 @@ function render() {
 function renderNav() {
   const nav = document.getElementById("stage-nav");
   const stages = [
-    { n: 1, title: "Purpose", sub: "Why are you doing M&E?" },
-    { n: 2, title: "Scope", sub: "What are you measuring?" },
-    { n: 3, title: "Scale & constraints", sub: "Where, what size, with what?" },
-    { n: 4, title: "Your constellation", sub: "Tools ranked by fit" }
+    { n: 1, title: "Purpose", sub: "Why you need M&E" },
+    { n: 2, title: "Scope", sub: "What you're measuring" },
+    { n: 3, title: "Scale & constraints", sub: "Where, with what" },
+    { n: 4, title: "Tools for you", sub: "Your shortlist" }
   ];
   nav.innerHTML = `<div class="stage-nav-inner">${stages.map(s => {
     const isActive = state.stage === s.n;
@@ -1527,8 +1527,8 @@ function renderStage1(c) {
         <div class="stage-kicker mono">Stage 01</div>
         <h1 class="stage-heading serif">Defining the <em>purpose</em></h1>
         <div class="stage-intro-body">
-          <p>The point of this stage is simple: <em>why</em> do you need M&E right now?</p>
-          <p>Pick one <strong>primary</strong> purpose. You can also tick secondary purposes that matter but aren't the main driver — these will still influence the ranking at Stage 4, just less heavily.</p>
+          <p>Why do you need M&amp;E? Different purposes need different tools.</p>
+          <p>Pick one <strong>primary</strong> purpose. You can also tick other purposes that apply — these will shape the list of tools you see at the end.</p>
         </div>
         ${stageBox({
           stageN: 1, stageTitle: "Defining the purpose",
@@ -1539,12 +1539,12 @@ function renderStage1(c) {
       <div class="stage-body">
         <div class="step-block">
           <div class="step-heading serif">Step 1 · What is the primary purpose?</div>
-          <div class="step-prompt">This is the single reason you're turning to M&E — the driver you would name first if asked.</div>
+          <div class="step-prompt">Pick the main reason you need M&amp;E. If more than one applies, pick the most important one for now.</div>
           <div class="options" id="purpose-primary-opts"></div>
         </div>
         <div class="step-block" style="${state.answers.purpose_primary ? '' : 'opacity:0.5;pointer-events:none;'}">
           <div class="step-heading serif">Step 2 · Any secondary purposes?</div>
-          <div class="step-prompt">Tick any that also matter — they'll nudge the ranking without overriding your primary.</div>
+          <div class="step-prompt">If other purposes also apply, tick them here. Skip this step if only one purpose matters.</div>
           <div class="options grid-2" id="purpose-secondary-opts"></div>
         </div>
       </div>
@@ -1593,8 +1593,8 @@ function renderStage2(c) {
         <div class="stage-kicker mono">Stage 02</div>
         <h1 class="stage-heading serif">Defining the <em>scope</em></h1>
         <div class="stage-intro-body">
-          <p>What substantive area are you measuring? Tick all that apply.</p>
-          <p>Most national work cuts across multiple scopes. That's fine — scope overlap directly boosts fit scores at Stage 4.</p>
+          <p>What subject areas does your M&amp;E work cover?</p>
+          <p>Most national work covers more than one. Tick every one that applies — tools that work across several areas will rise to the top.</p>
         </div>
         ${stageBox({
           stageN: 2, stageTitle: "Defining the scope",
@@ -1605,7 +1605,7 @@ function renderStage2(c) {
       <div class="stage-body">
         <div class="step-block">
           <div class="step-heading serif">Step 1 · Which scopes apply?</div>
-          <div class="step-prompt">A single-scope answer (e.g. just mitigation) is valid. Multi-scope answers produce richer ranking because tools that bridge scopes float up.</div>
+          <div class="step-prompt">Tick every area your M&amp;E work covers. Pick one if your work is narrow, or several if it spans multiple areas.</div>
           <div class="options grid-2" id="scope-opts"></div>
         </div>
       </div>
@@ -1639,8 +1639,8 @@ function renderStage3(c) {
         <div class="stage-kicker mono">Stage 03</div>
         <h1 class="stage-heading serif">Scale &amp; <em>constraints</em></h1>
         <div class="stage-intro-body">
-          <p>Five short questions about where you work, what you can mobilize, and how long you have. Each one narrows the constellation.</p>
-          <p>Scale and capacity are required. Approach, data readiness, and time horizon are optional — answering them sharpens ranking but isn't needed.</p>
+          <p>Five short questions about where you work, what you have to work with, and how quickly you need results.</p>
+          <p>The first two (scale and capacity) are required. The other three are optional — answer them if you can, skip them if not.</p>
         </div>
         ${stageBox({
           stageN: 3, stageTitle: "Scale & constraints",
@@ -1651,22 +1651,22 @@ function renderStage3(c) {
       <div class="stage-body">
         <div class="step-block">
           <div class="step-heading serif">Step 1 · At what scale?</div>
-          <div class="step-prompt">The geographic or administrative level of your primary unit of analysis.</div>
+          <div class="step-prompt">Where is the work happening? Pick the level that matches most of your M&amp;E activity.</div>
           <div class="options grid-2" id="scale-opts"></div>
         </div>
         <div class="step-block">
           <div class="step-heading serif">Step 2 · What's the realistic capacity?</div>
-          <div class="step-prompt">Tools that need capacity above your tier will show a lower fit score — they stay visible but are honestly flagged.</div>
+          <div class="step-prompt">How much staff time, money, and technical skill do you have for M&amp;E? Answer honestly — overstating this leads to recommendations you can't use.</div>
           <div class="options grid-2" id="capacity-opts"></div>
         </div>
         <div class="step-block">
           <div class="step-heading serif">Step 3 · Approach preference <span style="color:var(--ink-muted);font-size:13px;font-weight:400;font-style:italic;">(optional)</span></div>
-          <div class="step-prompt">If you already know whether you want a top-down, bottom-up, or blended approach, say so. Pick <em>blended</em> if undecided.</div>
+          <div class="step-prompt">Different methods lean on different kinds of evidence. If you already know your preference, say so. Otherwise pick the last option.</div>
           <div class="options grid-2" id="approach-opts"></div>
         </div>
         <div class="step-block">
           <div class="step-heading serif">Step 4 · Data readiness <span style="color:var(--ink-muted);font-size:13px;font-weight:400;font-style:italic;">(optional)</span></div>
-          <div class="step-prompt">The data you can realistically draw on. Tools that require richer data than you have will drop in fit.</div>
+          <div class="step-prompt">What national data can you actually use? Think about what's available and reliable, not what should exist on paper.</div>
           <div class="options grid-2" id="data-opts"></div>
         </div>
         <div class="step-block">
@@ -1737,22 +1737,22 @@ function renderStage4(c) {
 
   // Adapt band descriptions to the completeness state
   const strongDesc = incomplete
-    ? "Tools that fit the signals you've given so far. Answer more stages to sharpen."
-    : "Tools whose tagging matches most of your answers. Start here.";
+    ? "Tools that match what you've told us so far. Answer more questions to get a sharper list."
+    : "Tools that match your answers well. Start here.";
   const possibleDesc = incomplete
-    ? "Partial matches on what you've answered."
-    : "Partial matches — useful as complements or when the strong-fit tools don't cover your whole scope.";
+    ? "Tools that partially match what you've told us."
+    : "Tools that partly fit — useful as complements, or if the strong-fit tools don't cover everything you need.";
   const weakDesc = incomplete
-    ? "Too little signal to rank these yet. Complete the earlier stages."
-    : "Included so you can see the full inventory. These usually serve a different purpose or scale than yours.";
+    ? "Not enough information yet to rank these. Answer the earlier questions."
+    : "Tools included so you can see everything available. These are usually for a different purpose or scale than yours.";
 
   c.innerHTML = `
     <div class="stage-page" data-stage="4">
       <div class="constellation-header">
         <div class="stage-kicker mono">Stage 04</div>
-        <h1 class="stage-heading serif">Your <em>constellation</em></h1>
+        <h1 class="stage-heading serif">Tools <em>for your work</em></h1>
 
-        ${incomplete ? `<div class="incomplete-notice"><strong>Ranking is partial.</strong> You haven't yet answered: ${missingStages.join(", ")}. The list below shows every tool, but the sort is only using the signals you've given so far. <button class="answers-summary-edit" data-goto="${!stageComplete(1) ? 1 : (!stageComplete(2) ? 2 : 3)}">Complete the questions →</button></div>` : ''}
+        ${incomplete ? `<div class="incomplete-notice"><strong>The list is still rough.</strong> You haven't answered: ${missingStages.join(", ")}. Every tool appears below, but the order will get better as you answer more questions. <button class="answers-summary-edit" data-goto="${!stageComplete(1) ? 1 : (!stageComplete(2) ? 2 : 3)}">Answer the missing questions →</button></div>` : ''}
 
         <div class="answers-summary">
           <div class="answers-summary-item">
