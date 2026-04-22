@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climate M&E Navigator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1a17;
+  --ink-soft: #3d3d38;
+  --ink-muted: #6b6b63;
+  --ink-ghost: #9d9d93;
+  --paper: #fbf9f4;
+  --paper-warm: #f4f0e6;
+  --paper-shade: #efeadb;
+  --rule: #d9d4c5;
+  --rule-soft: #e8e3d4;
+  --accent: #c7570f;        /* GIZ-like orange for headings */
+  --accent-deep: #8a3b09;
+  --accent-wash: #f7e6d4;
+  --strong: #3d6b3f;
+  --strong-wash: #dfe8df;
+  --weak: #8f7a4a;
+  --weak-wash: #ede5cf;
+  --radius: 4px;
+  --max-w: 1220px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.serif { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
+.mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+/* ========== MASTHEAD ========== */
+.masthead {
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+}
+.masthead-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 24px 40px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+}
+.masthead-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.feedback-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  padding: 7px 14px;
+  background: var(--paper);
+  color: var(--ink-soft);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.15s;
+}
+.feedback-btn:hover {
+  background: var(--accent);
+  color: var(--paper);
+  border-color: var(--accent);
+}
+.feedback-btn-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+.wordmark-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.wordmark-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+.wordmark-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-top: 4px;
+}
+
+/* ========== STAGE NAV ========== */
+.stage-nav {
+  background: var(--paper-warm);
+  border-bottom: 1px solid var(--rule);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.stage-nav-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 14px 40px;
+  display: flex;
+  gap: 0;
+  align-items: stretch;
+}
+.stage-chip {
+  flex: 1;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  padding: 10px 14px;
+  font-family: inherit;
+  color: var(--ink-muted);
+  border-left: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: all 0.15s;
+}
+.stage-chip:first-child { border-left: none; }
+.stage-chip:hover { background: var(--paper); color: var(--ink); }
+.stage-chip.active {
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+.stage-chip .mono {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.stage-chip .serif {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+.stage-chip .state {
+  font-size: 11px;
+  color: var(--ink-ghost);
+  font-style: italic;
+}
+.stage-chip.active .state { color: var(--accent); font-style: normal; }
+.stage-chip.complete .state { color: var(--strong); font-style: normal; }
+.stage-chip.complete .state::before { content: "● "; }
+
+/* ========== STAGE PAGE ========== */
+.stage-page {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 40px 40px 32px;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 56px;
+}
+.stage-page[data-stage="4"] { grid-template-columns: 1fr; }
+
+/* left column: stage card + explanatory */
+.stage-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.stage-kicker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.stage-heading {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--accent);
+}
+.stage-heading em { color: var(--ink); font-style: italic; font-weight: 400; }
+.stage-intro-body {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 38ch;
+}
+.stage-intro-body p { margin-bottom: 12px; }
+
+.stage-box {
+  border: 1px dashed var(--ink-ghost);
+  padding: 0;
+  max-width: 330px;
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  font-size: 12.5px;
+  background: var(--paper);
+}
+.stage-box-header {
+  grid-column: 1 / -1;
+  background: var(--rule-soft);
+  padding: 6px 10px;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  border-bottom: 1px dashed var(--ink-ghost);
+}
+.stage-box-header span { padding: 2px 0; }
+.stage-box-stage, .stage-box-steps {
+  padding: 10px 10px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+.stage-box-stage { border-right: 1px dashed var(--ink-ghost); }
+.stage-box-steps ol { padding-left: 14px; }
+.stage-box-steps li { margin-bottom: 3px; }
+.stage-box-steps li.current {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* right column: the questions */
+.stage-body {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.step-block {
+  border-top: 2px solid var(--accent);
+  padding-top: 22px;
+}
+.step-heading {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+.step-prompt {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin-bottom: 18px;
+  max-width: 58ch;
+}
+.step-prompt em { color: var(--ink); font-style: italic; }
+
+/* ========== OPTIONS (chip lists + radio groups) ========== */
+.options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  max-width: 640px;
+}
+.options.grid-2 { grid-template-columns: 1fr 1fr; gap: 10px; }
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  width: 100%;
+}
+.option:hover { border-color: var(--ink-muted); background: var(--paper-warm); }
+.option.selected {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+.option-marker {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid var(--rule);
+  background: var(--paper);
+  margin-top: 2px;
+  position: relative;
+}
+.option.selected .option-marker {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.option.selected .option-marker::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  background: var(--paper);
+  border-radius: 50%;
+}
+.option[data-kind="check"] .option-marker { border-radius: 3px; }
+.option[data-kind="check"].selected .option-marker::after { border-radius: 0; inset: 2px; }
+
+.option-body { flex: 1; }
+.option-label {
+  font-weight: 500;
+  color: var(--ink);
+  font-size: 14px;
+  letter-spacing: -0.005em;
+}
+.option-help {
+  font-size: 12.5px;
+  color: var(--ink-muted);
+  line-height: 1.5;
+  margin-top: 3px;
+}
+
+/* primary/secondary toggle for purpose */
+.option-tier {
+  display: inline-flex;
+  margin-top: 6px;
+  gap: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.option-tier-btn {
+  background: var(--paper);
+  border: none;
+  padding: 4px 10px;
+  color: var(--ink-muted);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  border-right: 1px solid var(--rule);
+  transition: all 0.15s;
+}
+.option-tier-btn:last-child { border-right: none; }
+.option-tier-btn.on { background: var(--accent); color: var(--paper); }
+.option-tier-btn:hover:not(.on) { background: var(--paper-warm); color: var(--ink); }
+
+/* ========== NAVIGATION FOOTER ========== */
+.stage-footer {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 20px 40px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border-top: 1px solid var(--rule-soft);
+  margin-top: 32px;
+}
+.stage-footer-nav {
+  display: flex;
+  gap: 8px;
+}
+.btn {
+  font-family: inherit;
+  font-size: 13.5px;
+  letter-spacing: -0.005em;
+  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn:hover { border-color: var(--ink-muted); color: var(--ink); background: var(--paper-warm); }
+.btn.primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.btn.primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.stage-footer-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* ========== STAGE 4 — CONSTELLATION ========== */
+.constellation-header {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 4px 0 24px;
+}
+.constellation-header .stage-heading { max-width: none; }
+
+.answers-summary {
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  margin: 20px 0 28px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px 32px;
+  font-size: 13px;
+}
+.answers-summary-item { display: flex; flex-direction: column; gap: 4px; }
+.answers-summary-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.answers-summary-value {
+  color: var(--ink);
+  font-weight: 500;
+  line-height: 1.4;
+}
+.answers-summary-value.empty { color: var(--ink-ghost); font-weight: 400; font-style: italic; }
+.answers-summary-edit {
+  margin-left: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0;
+}
+.answers-summary-edit:hover { color: var(--accent-deep); text-decoration: underline; }
+
+.incomplete-notice {
+  background: var(--paper-shade);
+  border-left: 3px solid var(--accent);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 24px;
+  max-width: 80ch;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+.incomplete-notice strong { color: var(--ink); font-weight: 500; }
+
+.results-band {
+  margin-bottom: 36px;
+}
+.results-band-header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 10px;
+}
+.results-band-heading {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.results-band-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+}
+.results-band-desc {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-left: auto;
+  font-style: italic;
+  max-width: 40ch;
+  line-height: 1.55;
+}
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
+}
+.tool-card {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+.tool-card.strong { border-color: var(--strong); }
+.tool-card.strong::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--strong);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.tool-card-fit {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 2px;
+  background: var(--paper-warm);
+  color: var(--ink-muted);
+  cursor: help;
+}
+.tool-card.strong .tool-card-fit { background: var(--strong-wash); color: var(--strong); }
+.tool-card.weak .tool-card-fit { background: var(--weak-wash); color: var(--weak); }
+
+.tool-card-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 17px;
+  letter-spacing: -0.005em;
+  line-height: 1.25;
+  padding-right: 60px;
+}
+.tool-card-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.tool-card-meta .sep { color: var(--ink-ghost); margin: 0 6px; }
+.tool-card-what {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+.tool-card-why {
+  font-size: 12px;
+  color: var(--ink-muted);
+  line-height: 1.55;
+  padding-top: 10px;
+  border-top: 1px dashed var(--rule);
+  font-style: italic;
+}
+.tool-card-why strong { color: var(--ink); font-style: normal; font-weight: 500; }
+.tool-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 6px;
+  gap: 10px;
+}
+.tool-card-cost {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+}
+.tool-card-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-wash);
+  padding-bottom: 1px;
+}
+.tool-card-link:hover { color: var(--accent-deep); border-color: var(--accent-deep); }
+
+.collapse-toggle {
+  background: none;
+  border: 1px solid var(--rule);
+  padding: 8px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  cursor: pointer;
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+}
+.collapse-toggle:hover { color: var(--ink); border-color: var(--ink-muted); }
+
+/* tooltip for fit score breakdown */
+.fit-tooltip {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  width: 240px;
+  z-index: 20;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: none;
+}
+.tool-card-fit:hover .fit-tooltip,
+.tool-card-fit:focus .fit-tooltip { display: block; }
+.fit-tooltip ul { padding-left: 0; list-style: none; margin: 0; }
+.fit-tooltip li { padding: 2px 0; color: #e0d8c7; }
+.fit-tooltip li.pos::before { content: "+ "; color: #9fd9a3; }
+.fit-tooltip li.neg::before { content: "− "; color: #e7a785; }
+.fit-tooltip li.zero::before { content: "  "; }
+
+/* ========== FOOTER ========== */
+.pagefoot {
+  max-width: var(--max-w);
+  margin: 32px auto 0;
+  padding: 24px 40px 40px;
+  border-top: 1px solid var(--rule);
+  font-size: 12.5px;
+  color: var(--ink-muted);
+  line-height: 1.65;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 36px;
+}
+.pagefoot h4 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 13.5px;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 960px) {
+  .stage-page { grid-template-columns: 1fr; gap: 32px; padding: 28px; }
+  .stage-heading { font-size: 28px; }
+  .masthead-inner, .stage-nav-inner, .stage-page, .stage-footer, .pagefoot {
+    padding-left: 24px; padding-right: 24px;
+  }
+  .stage-nav-inner { flex-wrap: wrap; gap: 4px; }
+  .stage-chip { flex: 1 1 45%; padding: 8px 10px; border-left: 1px solid var(--rule); }
+  .pagefoot { grid-template-columns: 1fr; gap: 20px; }
+  .options.grid-2 { grid-template-columns: 1fr; }
+  .results-band-desc { margin-left: 0; }
+  .results-band-header { flex-wrap: wrap; }
+}
+@media (max-width: 560px) {
+  .wordmark-title { font-size: 22px; }
+  .stage-heading { font-size: 24px; }
+  .stage-page, .stage-footer, .pagefoot, .masthead-inner, .stage-nav-inner {
+    padding-left: 18px; padding-right: 18px;
+  }
+  .masthead-inner { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .masthead-right { align-items: flex-start; width: 100%; flex-direction: row; justify-content: space-between; align-items: center; }
+  .masthead-right .wordmark-sub { margin-top: 0; }
+  .stage-chip .serif { font-size: 13px; }
+}
+button:focus-visible, a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div>
+      <div class="wordmark-title serif">Climate M&E <em>Navigator</em></div>
+      <div class="wordmark-sub">Tools and methods for climate change M&amp;E</div>
+    </div>
+    <div class="masthead-right">
+      <button class="feedback-btn" id="feedback-btn" title="Send feedback on the tool, rankings, or tool list">
+        <span class="feedback-btn-icon">✎</span>
+        Send feedback
+      </button>
+      <div class="wordmark-sub" style="text-align:right; margin-top:6px;">Working draft · v0.2</div>
+    </div>
+  </div>
+</header>
+
+<nav class="stage-nav" id="stage-nav"></nav>
+
+<main id="stage-container"></main>
+
+<footer class="pagefoot">
+  <div>
+    <h4>How to use</h4>
+    <p>Answer the four stages in order. Each answer tightens the constellation at Stage 4. You can jump ahead at any time — incomplete stages will show as "not yet answered" and the ranking will use fewer signals.</p>
+  </div>
+  <div>
+    <h4>How fit is scored</h4>
+    <p>Each tool is tagged across six dimensions. Your answers are matched against those tags to produce a fit score. Hover any fit badge at Stage 4 to see the breakdown — this is deliberately transparent so the logic can be debated and improved.</p>
+  </div>
+  <div>
+    <h4>What it isn't</h4>
+    <p>Not a recommendation engine. The goal is to narrow a wide field to a smaller, defensible shortlist — the final call is yours and depends on country context the tool doesn't see.</p>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+// Change this to your feedback email before sharing with colleagues.
+// Using a placeholder so it's impossible to ship accidentally.
+const FEEDBACK_EMAIL = "gjlraj@gmail.com";
+
+// ============================================================
+// DATA — tools tagged across six dimensions
+// ============================================================
+// Tag families:
+//   purpose:   international_reporting, national_policy, project_accountability,
+//              learning_transformation, finance_tracking, community_monitoring
+//   scope:     mitigation, adaptation, loss_damage, biodiversity, crosscutting
+//   scale:     international, national, subnational, community
+//   capacity:  low, medium, high  (list of tiers the tool fits — tool can fit multiple)
+//   approach:  topdown, bottomup, blended
+//   data:      thin, moderate, rich  (data availability the tool REQUIRES)
+//   time:      weeks, months, years  (realistic time-to-first-useful-result)
+// ============================================================
+
+const TOOLS = [
+  {
+    id: "ipcc-inv", name: "IPCC Inventory Software", provider: "IPCC TFI", type: "Software",
+    cost: "Free", link: "https://www.ipcc-nggip.iges.or.jp/software/",
+    what: "Desktop application implementing the IPCC Guidelines for national GHG inventories across all sectors.",
+    purpose: ["international_reporting", "national_policy"],
+    scope: ["mitigation"],
+    scale: ["national"],
+    capacity: ["low", "medium", "high"],
+    approach: ["topdown"],
+    data: ["moderate"],
+    time: ["months"]
+  },
+  {
+    id: "ghg-proto", name: "GHG Protocol — Policy & Action Standard", provider: "WRI / WBCSD", type: "Framework",
+    cost: "Free", link: "https://ghgprotocol.org/policy-and-action-standard",
+    what: "Methodology for estimating the GHG effects of specific policies and actions.",
+    purpose: ["project_accountability", "national_policy"],
+    scope: ["mitigation"],
+    scale: ["national", "subnational"],
+    capacity: ["medium", "high"],
+    approach: ["topdown"],
+    data: ["moderate", "rich"],
+    time: ["months"]
+  },
+  {
+    id: "icat", name: "ICAT Policy Assessment Guides", provider: "ICAT", type: "Framework",
+    cost: "Free", link: "https://climateactiontransparency.org/our-work/icat-toolbox/",
+    what: "Sector-specific guides (energy, transport, forest, agriculture) plus sustainable development and transformational change methods.",
+    purpose: ["national_policy", "project_accountability", "learning_transformation"],
+    scope: ["mitigation", "crosscutting"],
+    scale: ["national", "subnational"],
+    capacity: ["low", "medium"],
+    approach: ["topdown", "blended"],
+    data: ["moderate"],
+    time: ["months"]
+  },
+  {
+    id: "gpc", name: "GPC — Global Protocol for Community-Scale GHG Inventories", provider: "WRI / C40 / ICLEI", type: "Framework",
+    cost: "Free", link: "https://ghgprotocol.org/ghg-protocol-cities",
+    what: "Standard for city-level GHG inventories, harmonized with CDP-ICLEI Unified Reporting.",
+    purpose: ["international_reporting", "national_policy"],
+    scope: ["mitigation"],
+    scale: ["subnational"],
+    capacity: ["medium", "high"],
+    approach: ["topdown"],
+    data: ["moderate"],
+    time: ["months"]
+  },
+  {
+    id: "open-foris", name: "Open Foris + SEPAL", provider: "FAO", type: "Software",
+    cost: "Free", link: "https://openforis.org/",
+    what: "Cloud platform for forest monitoring using satellite imagery.",
+    purpose: ["international_reporting", "national_policy", "project_accountability"],
+    scope: ["mitigation", "biodiversity"],
+    scale: ["national", "subnational"],
+    capacity: ["medium", "high"],
+    approach: ["topdown"],
+    data: ["thin", "moderate"],
+    time: ["months"]
+  },
+  {
+    id: "gfw", name: "Global Forest Watch", provider: "WRI", type: "Database",
+    cost: "Free", link: "https://www.globalforestwatch.org/",
+    what: "Near-real-time forest cover, loss, and fire alerts globally.",
+    purpose: ["project_accountability", "national_policy"],
+    scope: ["mitigation", "biodiversity"],
+    scale: ["national", "subnational", "community"],
+    capacity: ["low", "medium", "high"],
+    approach: ["topdown"],
+    data: ["thin"],
+    time: ["weeks"]
+  },
+  {
+    id: "article6", name: "CDM / Article 6 methodologies", provider: "UNFCCC", type: "Framework",
+    cost: "Free", link: "https://cdm.unfccc.int/methodologies/",
+    what: "Pre-approved baseline and monitoring methodologies for project-level emission reductions.",
+    purpose: ["project_accountability"],
+    scope: ["mitigation"],
+    scale: ["subnational", "community"],
+    capacity: ["high"],
+    approach: ["topdown"],
+    data: ["rich"],
+    time: ["months", "years"]
+  },
+
+  {
+    id: "tamd", name: "TAMD — Tracking Adaptation & Measuring Development", provider: "IIED", type: "Framework",
+    cost: "Free", link: "https://www.iied.org/tracking-adaptation-measuring-development-tamd",
+    what: "Two-track framework linking climate risk management with development performance under a changing climate.",
+    purpose: ["national_policy", "project_accountability", "learning_transformation"],
+    scope: ["adaptation", "crosscutting"],
+    scale: ["national", "subnational"],
+    capacity: ["medium"],
+    approach: ["blended"],
+    data: ["moderate"],
+    time: ["months", "years"]
+  },
+  {
+    id: "adaptme", name: "AdaptME Toolkit", provider: "UKCIP", type: "Framework",
+    cost: "Free", link: "https://www.ukcip.org.uk/wp-content/PDFs/UKCIP-AdaptME.pdf",
+    what: "Question-based approach for designing fit-for-purpose adaptation M&E.",
+    purpose: ["project_accountability", "learning_transformation"],
+    scope: ["adaptation"],
+    scale: ["national", "subnational", "community"],
+    capacity: ["low", "medium"],
+    approach: ["blended"],
+    data: ["thin", "moderate"],
+    time: ["weeks", "months"]
+  },
+  {
+    id: "nap-gn", name: "NAP Global Network M&E guidance", provider: "IISD / NAP Global Network", type: "Guidance",
+    cost: "Free", link: "https://napglobalnetwork.org/themes/monitoring-evaluation-learning/",
+    what: "Practical guidance and peer cases for designing adaptation M&E systems, with FAQs on BTR adaptation reporting.",
+    purpose: ["international_reporting", "national_policy"],
+    scope: ["adaptation"],
+    scale: ["national"],
+    capacity: ["low", "medium"],
+    approach: ["blended"],
+    data: ["thin", "moderate"],
+    time: ["months"]
+  },
+  {
+    id: "gcf-irmf", name: "GCF Integrated Results Management Framework", provider: "Green Climate Fund", type: "Framework (required)",
+    cost: "Free", link: "https://www.greenclimate.fund/document/integrated-results-management-framework",
+    what: "Mandatory results framework for GCF-funded projects, with core indicators for paradigm shift, mitigation and adaptation.",
+    purpose: ["project_accountability"],
+    scope: ["mitigation", "adaptation", "crosscutting"],
+    scale: ["national", "subnational", "community"],
+    capacity: ["medium", "high"],
+    approach: ["topdown"],
+    data: ["moderate", "rich"],
+    time: ["months", "years"]
+  },
+  {
+    id: "gef-amat", name: "GEF Adaptation Monitoring & Assessment Tool (AMAT)", provider: "Global Environment Facility", type: "Framework (required)",
+    cost: "Free", link: "https://www.thegef.org/documents/results-framework-tracking-tools",
+    what: "Standardized reporting tool for LDCF/SCCF-funded adaptation projects.",
+    purpose: ["project_accountability"],
+    scope: ["adaptation"],
+    scale: ["national", "subnational", "community"],
+    capacity: ["medium"],
+    approach: ["topdown"],
+    data: ["moderate"],
+    time: ["months"]
+  },
+  {
+    id: "af-results", name: "Adaptation Fund Results Framework", provider: "Adaptation Fund", type: "Framework (required)",
+    cost: "Free", link: "https://www.adaptation-fund.org/document/results-framework-and-baseline-guidance/",
+    what: "Standard outcome and output indicators for AF-funded projects, with gender and E&S markers.",
+    purpose: ["project_accountability"],
+    scope: ["adaptation"],
+    scale: ["subnational", "community"],
+    capacity: ["medium"],
+    approach: ["topdown", "blended"],
+    data: ["moderate"],
+    time: ["months"]
+  },
+  {
+    id: "cvca", name: "CARE Climate Vulnerability & Capacity Analysis (CVCA)", provider: "CARE", type: "Toolkit",
+    cost: "Free", link: "https://careclimatechange.org/cvca/",
+    what: "Community-level vulnerability assessment method combining participatory tools with climate information.",
+    purpose: ["community_monitoring", "project_accountability"],
+    scope: ["adaptation"],
+    scale: ["community"],
+    capacity: ["low", "medium"],
+    approach: ["bottomup"],
+    data: ["thin"],
+    time: ["weeks", "months"]
+  },
+  {
+    id: "pmerl", name: "PMERL — Participatory M&E, Reflection and Learning", provider: "CARE / IIED", type: "Framework",
+    cost: "Free", link: "https://www.careclimatechange.org/publications/participatory-monitoring-evaluation-reflection-and-learning-for-community-based-adaptation-pmerl/",
+    what: "Community-based adaptive M&E manual designed for community-based adaptation programmes.",
+    purpose: ["community_monitoring", "project_accountability", "learning_transformation"],
+    scope: ["adaptation", "loss_damage"],
+    scale: ["community"],
+    capacity: ["low", "medium"],
+    approach: ["bottomup"],
+    data: ["thin"],
+    time: ["months"]
+  },
+
+  {
+    id: "desinventar", name: "DesInventar Sendai", provider: "UNDRR", type: "Software + database",
+    cost: "Free", link: "https://www.desinventar.net/",
+    what: "Disaster loss database system with country instances; feeds Sendai Framework Monitor indicators.",
+    purpose: ["international_reporting", "national_policy"],
+    scope: ["loss_damage"],
+    scale: ["national", "subnational"],
+    capacity: ["low", "medium"],
+    approach: ["topdown"],
+    data: ["moderate"],
+    time: ["months"]
+  },
+  {
+    id: "emdat", name: "EM-DAT", provider: "CRED, UCLouvain", type: "Database",
+    cost: "Free (registration)", link: "https://www.emdat.be/",
+    what: "International disaster database, 1900 to present, with economic and human losses.",
+    purpose: ["international_reporting", "national_policy", "learning_transformation"],
+    scope: ["loss_damage"],
+    scale: ["international", "national"],
+    capacity: ["low", "medium", "high"],
+    approach: ["topdown"],
+    data: ["thin"],
+    time: ["weeks"]
+  },
+  {
+    id: "wim-nel", name: "WIM ExCom guidance on non-economic losses", provider: "UNFCCC WIM", type: "Guidance",
+    cost: "Free", link: "https://unfccc.int/topics/adaptation-and-resilience/workstreams/non-economic-losses",
+    what: "Technical papers and toolkits for assessing non-economic losses — culture, identity, ecosystems, health, mobility.",
+    purpose: ["learning_transformation", "community_monitoring"],
+    scope: ["loss_damage"],
+    scale: ["national", "subnational", "community"],
+    capacity: ["medium"],
+    approach: ["bottomup", "blended"],
+    data: ["thin", "moderate"],
+    time: ["months", "years"]
+  },
+  {
+    id: "outcome-harvest", name: "Outcome Harvesting", provider: "Wilson-Grau", type: "Evaluation method",
+    cost: "Free method; facilitator cost", link: "https://outcomeharvesting.net/",
+    what: "Retrospective method that identifies observed changes and traces contribution — works where pre-set indicators fail.",
+    purpose: ["learning_transformation", "project_accountability"],
+    scope: ["adaptation", "loss_damage", "crosscutting"],
+    scale: ["national", "subnational", "community"],
+    capacity: ["medium"],
+    approach: ["bottomup"],
+    data: ["thin"],
+    time: ["months"]
+  },
+
+  {
+    id: "gbf-mon", name: "GBF Monitoring Framework", provider: "CBD", type: "Framework (required)",
+    cost: "Free", link: "https://www.cbd.int/gbf/monitoring",
+    what: "Headline, component, and complementary indicators for the 23 Kunming-Montreal targets.",
+    purpose: ["international_reporting", "national_policy"],
+    scope: ["biodiversity"],
+    scale: ["national"],
+    capacity: ["medium", "high"],
+    approach: ["topdown"],
+    data: ["moderate", "rich"],
+    time: ["months", "years"]
+  },
+  {
+    id: "wdpa-mett", name: "WDPA + METT-4", provider: "UNEP-WCMC / IUCN WCPA", type: "Database + tool",
+    cost: "Free", link: "https://www.protectedplanet.net/",
+    what: "World Database on Protected Areas plus Management Effectiveness Tracking Tool.",
+    purpose: ["international_reporting", "project_accountability"],
+    scope: ["biodiversity"],
+    scale: ["national", "subnational"],
+    capacity: ["low", "medium"],
+    approach: ["topdown", "blended"],
+    data: ["moderate"],
+    time: ["months"]
+  },
+  {
+    id: "iucn-rl", name: "IUCN Red List", provider: "IUCN", type: "Database",
+    cost: "Free (commercial fee)", link: "https://www.iucnredlist.org/",
+    what: "Global species conservation status assessments; feeds the Red List Index headline GBF indicator.",
+    purpose: ["international_reporting", "national_policy", "learning_transformation"],
+    scope: ["biodiversity"],
+    scale: ["international", "national"],
+    capacity: ["low", "medium", "high"],
+    approach: ["topdown"],
+    data: ["thin"],
+    time: ["weeks"]
+  },
+  {
+    id: "gbif", name: "GBIF", provider: "GBIF Secretariat", type: "Database + API",
+    cost: "Free", link: "https://www.gbif.org/",
+    what: "Global occurrence records for biodiversity — over 2 billion records, machine-readable.",
+    purpose: ["national_policy", "learning_transformation"],
+    scope: ["biodiversity"],
+    scale: ["national", "subnational"],
+    capacity: ["medium", "high"],
+    approach: ["topdown"],
+    data: ["thin"],
+    time: ["weeks", "months"]
+  },
+  {
+    id: "biofin", name: "BIOFIN Workbook", provider: "UNDP", type: "Methodology",
+    cost: "Free", link: "https://www.biofin.org/knowledge-product/biofin-2024-workbook",
+    what: "Step-by-step methodology for biodiversity finance: policy review, expenditure review, finance plan.",
+    purpose: ["finance_tracking", "national_policy"],
+    scope: ["biodiversity", "crosscutting"],
+    scale: ["national"],
+    capacity: ["medium", "high"],
+    approach: ["topdown"],
+    data: ["moderate"],
+    time: ["months", "years"]
+  },
+
+  {
+    id: "opensdg", name: "Open SDG platform", provider: "ONS / UNSD community", type: "Software",
+    cost: "Free", link: "https://open-sdg.org/",
+    what: "Open-source national reporting platform for SDG indicators; generates charts and SDMX-compatible metadata.",
+    purpose: ["international_reporting", "national_policy"],
+    scope: ["crosscutting"],
+    scale: ["national"],
+    capacity: ["medium", "high"],
+    approach: ["topdown"],
+    data: ["moderate", "rich"],
+    time: ["months"]
+  },
+  {
+    id: "sdmx", name: "SDMX", provider: "SDMX Initiative", type: "Standard",
+    cost: "Free", link: "https://sdmx.org/",
+    what: "ISO-standard for machine-readable statistical data exchange, used by most international agencies.",
+    purpose: ["international_reporting"],
+    scope: ["crosscutting"],
+    scale: ["national", "international"],
+    capacity: ["high"],
+    approach: ["topdown"],
+    data: ["rich"],
+    time: ["years"]
+  },
+  {
+    id: "cbt", name: "Climate Budget Tagging", provider: "UNDP (and national variants)", type: "Methodology",
+    cost: "Free", link: "https://www.climatefinance-developmenteffectiveness.org/CBT-Database",
+    what: "Tagging public expenditure with climate relevance markers within the budget classification system.",
+    purpose: ["finance_tracking", "national_policy"],
+    scope: ["mitigation", "adaptation", "crosscutting"],
+    scale: ["national", "subnational"],
+    capacity: ["medium"],
+    approach: ["topdown"],
+    data: ["moderate"],
+    time: ["months", "years"]
+  },
+  {
+    id: "cpeir", name: "Climate Public Expenditure & Institutional Review", provider: "UNDP / ODI / World Bank", type: "Diagnostic",
+    cost: "Free method; consultancy cost", link: "https://www.undp.org/publications/methodological-guidebook-climate-public-expenditure-and-institutional-review-cpeir",
+    what: "Retrospective review of climate-relevant public expenditure and institutional arrangements.",
+    purpose: ["finance_tracking", "national_policy"],
+    scope: ["crosscutting"],
+    scale: ["national"],
+    capacity: ["medium", "high"],
+    approach: ["topdown"],
+    data: ["moderate", "rich"],
+    time: ["months"]
+  },
+  {
+    id: "ndc-portal", name: "NDC Partnership Knowledge Portal", provider: "NDC Partnership", type: "Platform",
+    cost: "Free", link: "https://ndcpartnership.org/knowledge-portal",
+    what: "Searchable portal of NDC implementation tools, technical support requests, and country good practices.",
+    purpose: ["national_policy"],
+    scope: ["crosscutting"],
+    scale: ["national"],
+    capacity: ["low", "medium", "high"],
+    approach: ["blended"],
+    data: ["thin"],
+    time: ["weeks"]
+  },
+
+  {
+    id: "c3s", name: "Copernicus Climate Data Store", provider: "ECMWF / EU", type: "Database",
+    cost: "Free", link: "https://cds.climate.copernicus.eu/",
+    what: "Reanalysis, seasonal forecasts, projections, sectoral indicators — all API-accessible.",
+    purpose: ["national_policy", "learning_transformation", "project_accountability"],
+    scope: ["adaptation", "crosscutting"],
+    scale: ["international", "national", "subnational"],
+    capacity: ["medium", "high"],
+    approach: ["topdown"],
+    data: ["thin"],
+    time: ["weeks", "months"]
+  },
+  {
+    id: "thinkhazard", name: "ThinkHazard!", provider: "GFDRR / World Bank", type: "Tool",
+    cost: "Free", link: "https://thinkhazard.org/",
+    what: "Country and district-level hazard screening across 11 hazards — simple low/medium/high ratings.",
+    purpose: ["project_accountability", "national_policy"],
+    scope: ["adaptation", "loss_damage"],
+    scale: ["national", "subnational"],
+    capacity: ["low"],
+    approach: ["topdown"],
+    data: ["thin"],
+    time: ["weeks"]
+  },
+  {
+    id: "inform", name: "INFORM Risk Index", provider: "JRC / IASC", type: "Database",
+    cost: "Free", link: "https://drmkc.jrc.ec.europa.eu/inform-index",
+    what: "Composite country risk index (hazard + vulnerability + lack of coping capacity).",
+    purpose: ["national_policy", "international_reporting"],
+    scope: ["adaptation", "loss_damage"],
+    scale: ["international", "national"],
+    capacity: ["low", "medium"],
+    approach: ["topdown"],
+    data: ["thin"],
+    time: ["weeks"]
+  },
+  {
+    id: "aqueduct", name: "Aqueduct Water Risk Atlas", provider: "WRI", type: "Tool + database",
+    cost: "Free", link: "https://www.wri.org/aqueduct",
+    what: "Global water stress, flood, and drought indicators at high spatial resolution.",
+    purpose: ["national_policy", "project_accountability"],
+    scope: ["adaptation"],
+    scale: ["national", "subnational"],
+    capacity: ["low", "medium"],
+    approach: ["topdown"],
+    data: ["thin"],
+    time: ["weeks"]
+  },
+  {
+    id: "aquastat", name: "AQUASTAT", provider: "FAO", type: "Database",
+    cost: "Free", link: "https://www.fao.org/aquastat/",
+    what: "National-level water resource and use statistics; canonical source for water-sector SDG indicators.",
+    purpose: ["international_reporting", "national_policy"],
+    scope: ["adaptation", "crosscutting"],
+    scale: ["international", "national"],
+    capacity: ["low"],
+    approach: ["topdown"],
+    data: ["thin"],
+    time: ["weeks"]
+  },
+  {
+    id: "kobo", name: "KoboToolbox", provider: "Kobo Inc / community", type: "Software",
+    cost: "Free tier generous; paid for scale", link: "https://www.kobotoolbox.org/",
+    what: "Mobile and tablet data collection platform, offline-capable, with survey logic and multi-language support.",
+    purpose: ["community_monitoring", "project_accountability"],
+    scope: ["adaptation", "loss_damage", "crosscutting"],
+    scale: ["community", "subnational"],
+    capacity: ["low", "medium"],
+    approach: ["bottomup"],
+    data: ["thin"],
+    time: ["weeks"]
+  },
+
+  {
+    id: "msc", name: "Most Significant Change (MSC)", provider: "Davies & Dart", type: "Evaluation method",
+    cost: "Free method", link: "https://www.betterevaluation.org/methods-approaches/approaches/most-significant-change",
+    what: "Story-based method where stakeholders select the most significant changes and explain why they matter.",
+    purpose: ["learning_transformation", "community_monitoring", "project_accountability"],
+    scope: ["adaptation", "loss_damage", "crosscutting"],
+    scale: ["subnational", "community"],
+    capacity: ["low", "medium"],
+    approach: ["bottomup"],
+    data: ["thin"],
+    time: ["months"]
+  },
+  {
+    id: "contrib", name: "Contribution Analysis", provider: "Mayne", type: "Evaluation method",
+    cost: "Free method", link: "https://www.betterevaluation.org/methods-approaches/approaches/contribution-analysis",
+    what: "Systematic approach to making causal claims under complexity, by assembling plausible contribution stories.",
+    purpose: ["learning_transformation", "project_accountability"],
+    scope: ["crosscutting"],
+    scale: ["national", "subnational"],
+    capacity: ["medium"],
+    approach: ["blended"],
+    data: ["moderate"],
+    time: ["months"]
+  },
+  {
+    id: "dev-eval", name: "Developmental Evaluation", provider: "Patton", type: "Evaluation approach",
+    cost: "Free approach", link: "https://www.betterevaluation.org/methods-approaches/approaches/developmental-evaluation",
+    what: "Real-time evaluation for complex, emergent initiatives — evaluator as part of the innovation team.",
+    purpose: ["learning_transformation"],
+    scope: ["crosscutting", "adaptation"],
+    scale: ["national", "subnational"],
+    capacity: ["medium", "high"],
+    approach: ["blended"],
+    data: ["moderate"],
+    time: ["months", "years"]
+  }
+];
+
+// ============================================================
+// ANSWER OPTIONS (displayed text + tag mappings)
+// ============================================================
+
+const OPT_PURPOSE = [
+  { id: "international_reporting", label: "International reporting obligation", help: "BTR, National Communication, CBD National Report, VNR, Sendai Framework Monitor" },
+  { id: "national_policy", label: "National policy & plan tracking", help: "NDC / NAP / NBSAP implementation, cross-ministerial coordination" },
+  { id: "project_accountability", label: "Project or programme accountability", help: "Donor-mandated results frameworks, project-level M&E" },
+  { id: "learning_transformation", label: "Learning & transformational change", help: "Understanding whether something is actually shifting — for pilots, policy influence, systemic change" },
+  { id: "finance_tracking", label: "Climate / biodiversity finance tracking", help: "Budget tagging, expenditure review, financial flow analysis" },
+  { id: "community_monitoring", label: "Community-level monitoring", help: "Local-scale vulnerability and outcome tracking, community-based adaptation" }
+];
+
+const OPT_SCOPE = [
+  { id: "mitigation", label: "Mitigation", help: "GHG inventory, MRV of reductions, energy / transport / industry / land-use" },
+  { id: "adaptation", label: "Adaptation", help: "Vulnerability, resilience, adaptive capacity" },
+  { id: "loss_damage", label: "Loss & damage", help: "Economic and non-economic losses from climate impacts" },
+  { id: "biodiversity", label: "Biodiversity / nature", help: "Species, ecosystems, protected areas, GBF targets" },
+  { id: "crosscutting", label: "Cross-cutting / integrated", help: "Enabling environment, finance, governance, just transitions" }
+];
+
+const OPT_SCALE = [
+  { id: "international", label: "International / cross-country", help: "Regional or global aggregation, comparative analysis" },
+  { id: "national", label: "National", help: "Country-wide, ministry-led" },
+  { id: "subnational", label: "Sub-national", help: "State, province, district, city, basin" },
+  { id: "community", label: "Community or project site", help: "Village, household, single project location" }
+];
+
+const OPT_CAPACITY = [
+  { id: "low", label: "Lower-resource", help: "LDC or SIDS profile, thin statistical capacity, minimal in-house analytics" },
+  { id: "medium", label: "Moderate", help: "Functional NSO, some in-house climate expertise, donor support available" },
+  { id: "high", label: "Higher / mature", help: "Multiple established M&E streams, in-house analytical teams" }
+];
+
+const OPT_APPROACH = [
+  { id: "topdown", label: "Top-down", help: "Indicator-based, statistical, expert-led" },
+  { id: "bottomup", label: "Bottom-up", help: "Participatory, story-based, community-led" },
+  { id: "blended", label: "Blended / undecided", help: "Combines both or not yet decided" }
+];
+
+const OPT_DATA = [
+  { id: "thin", label: "Thin", help: "Rely on pre-processed global datasets; minimal national data available" },
+  { id: "moderate", label: "Moderate", help: "Some national administrative data and statistical capacity" },
+  { id: "rich", label: "Rich", help: "Strong statistical system, dedicated sensors, regular surveys" }
+];
+
+const OPT_TIME = [
+  { id: "weeks", label: "Weeks", help: "Rapid diagnostic, quick screening, immediate decision support" },
+  { id: "months", label: "Months", help: "One cycle of planning-data-reporting; typical project baseline" },
+  { id: "years", label: "Years", help: "System-building, multi-cycle institutional embedding" }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+const state = {
+  stage: 1,
+  answers: {
+    purpose_primary: null,           // one id
+    purpose_secondary: [],           // array of ids
+    scope: [],                        // array of ids
+    scale: null,
+    capacity: null,
+    approach: null,
+    data: null,
+    time: null
+  },
+  showWeak: false
+};
+
+function stageComplete(n) {
+  if (n === 1) return !!state.answers.purpose_primary;
+  if (n === 2) return state.answers.scope.length > 0;
+  if (n === 3) return !!state.answers.scale && !!state.answers.capacity;
+  if (n === 4) return true; // stage 4 is results, always "complete"
+  return false;
+}
+function stageStarted(n) {
+  if (n === 1) return !!state.answers.purpose_primary || state.answers.purpose_secondary.length > 0;
+  if (n === 2) return state.answers.scope.length > 0;
+  if (n === 3) return !!state.answers.scale || !!state.answers.capacity || !!state.answers.approach || !!state.answers.data || !!state.answers.time;
+  return false;
+}
+
+// ============================================================
+// RANKING
+// ============================================================
+function fitScore(tool) {
+  const a = state.answers;
+  const breakdown = [];
+  let score = 0;
+
+  // Purpose
+  if (a.purpose_primary) {
+    if (tool.purpose.includes(a.purpose_primary)) {
+      score += 4;
+      breakdown.push({ kind: "pos", text: `matches primary purpose (+4)` });
+    } else {
+      breakdown.push({ kind: "neg", text: `not for primary purpose (0)` });
+    }
+  }
+  for (const sec of a.purpose_secondary) {
+    if (tool.purpose.includes(sec)) {
+      score += 2;
+      breakdown.push({ kind: "pos", text: `matches secondary purpose (+2)` });
+    }
+  }
+
+  // Scope
+  if (a.scope.length > 0) {
+    const overlap = a.scope.filter(s => tool.scope.includes(s));
+    if (overlap.length > 0) {
+      score += 3 * overlap.length;
+      breakdown.push({ kind: "pos", text: `scope overlap × ${overlap.length} (+${3 * overlap.length})` });
+    } else {
+      breakdown.push({ kind: "neg", text: `no scope overlap (0)` });
+    }
+  }
+
+  // Scale (adjacency: international↔national, national↔subnational, subnational↔community)
+  if (a.scale) {
+    if (tool.scale.includes(a.scale)) {
+      score += 2;
+      breakdown.push({ kind: "pos", text: `scale matches (+2)` });
+    } else {
+      const adjacency = {
+        international: ["national"],
+        national: ["international", "subnational"],
+        subnational: ["national", "community"],
+        community: ["subnational"]
+      };
+      if (tool.scale.some(s => adjacency[a.scale].includes(s))) {
+        score += 1;
+        breakdown.push({ kind: "zero", text: `scale adjacent (+1)` });
+      } else {
+        breakdown.push({ kind: "neg", text: `scale mismatch (0)` });
+      }
+    }
+  }
+
+  // Capacity — tool fits tier or below
+  if (a.capacity) {
+    if (tool.capacity.includes(a.capacity)) {
+      score += 2;
+      breakdown.push({ kind: "pos", text: `capacity fits (+2)` });
+    } else {
+      const order = { low: 0, medium: 1, high: 2 };
+      const toolMin = Math.min(...tool.capacity.map(c => order[c]));
+      if (toolMin > order[a.capacity]) {
+        breakdown.push({ kind: "neg", text: `needs capacity above your tier (0)` });
+      } else {
+        breakdown.push({ kind: "zero", text: `capacity borderline (0)` });
+      }
+    }
+  }
+
+  // Approach
+  if (a.approach) {
+    if (a.approach === "blended") {
+      // blended is lenient — any approach tool matches somewhat
+      score += 1;
+      breakdown.push({ kind: "pos", text: `blended approach — any fit (+1)` });
+    } else if (tool.approach.includes(a.approach)) {
+      score += 1;
+      breakdown.push({ kind: "pos", text: `approach matches (+1)` });
+    } else {
+      breakdown.push({ kind: "neg", text: `approach mismatch (0)` });
+    }
+  }
+
+  // Data readiness — tool requires data you have
+  if (a.data) {
+    const order = { thin: 0, moderate: 1, rich: 2 };
+    const userLvl = order[a.data];
+    const toolMin = Math.min(...tool.data.map(d => order[d]));
+    if (toolMin <= userLvl) {
+      score += 1;
+      breakdown.push({ kind: "pos", text: `data readiness sufficient (+1)` });
+    } else {
+      breakdown.push({ kind: "neg", text: `needs more data than you have (0)` });
+    }
+  }
+
+  // Time horizon match
+  if (a.time && tool.time.includes(a.time)) {
+    score += 1;
+    breakdown.push({ kind: "pos", text: `time horizon matches (+1)` });
+  }
+
+  return { score, breakdown };
+}
+
+function rankedTools() {
+  const withScores = TOOLS.map(t => {
+    const { score, breakdown } = fitScore(t);
+    return { ...t, _score: score, _breakdown: breakdown };
+  });
+  withScores.sort((a, b) => b._score - a._score || a.name.localeCompare(b.name));
+  return withScores;
+}
+
+function fitBand(score, maxPossible) {
+  // Absolute thresholds work better than percentage — they handle thin-answer cases
+  // without inflating the "strong" band, and preserve ranking stability across
+  // scenarios with different numbers of questions answered.
+  // The top band is further capped by size at render time.
+  if (score >= 12) return "strong";
+  if (score >= 6) return "possible";
+  return "weak";
+}
+
+function maxPossibleScore() {
+  // maximum score any tool could earn given current answers
+  const a = state.answers;
+  let max = 0;
+  if (a.purpose_primary) max += 4;
+  max += a.purpose_secondary.length * 2;
+  max += a.scope.length * 3;
+  if (a.scale) max += 2;
+  if (a.capacity) max += 2;
+  if (a.approach) max += 1;
+  if (a.data) max += 1;
+  if (a.time) max += 1;
+  return max;
+}
+
+// ============================================================
+// RENDERING
+// ============================================================
+function render() {
+  renderNav();
+  renderStage();
+}
+
+function renderNav() {
+  const nav = document.getElementById("stage-nav");
+  const stages = [
+    { n: 1, title: "Purpose", sub: "Why are you doing M&E?" },
+    { n: 2, title: "Scope", sub: "What are you measuring?" },
+    { n: 3, title: "Scale & constraints", sub: "Where, what size, with what?" },
+    { n: 4, title: "Your constellation", sub: "Tools ranked by fit" }
+  ];
+  nav.innerHTML = `<div class="stage-nav-inner">${stages.map(s => {
+    const isActive = state.stage === s.n;
+    const isDone = stageComplete(s.n) && s.n !== 4;
+    const isStarted = stageStarted(s.n);
+    let stateLabel = "not started";
+    if (isDone) stateLabel = "answered";
+    else if (isStarted && !isDone) stateLabel = "in progress";
+    else if (s.n === 4) stateLabel = stageComplete(1) && stageComplete(2) && stageComplete(3) ? "ready" : "partial";
+    return `<button class="stage-chip ${isActive ? 'active' : ''} ${isDone ? 'complete' : ''}" data-stage="${s.n}">
+      <span class="mono">Stage ${String(s.n).padStart(2,'0')}</span>
+      <span class="serif">${s.title}</span>
+      <span class="state">${stateLabel}</span>
+    </button>`;
+  }).join("")}</div>`;
+  nav.querySelectorAll(".stage-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      state.stage = parseInt(chip.dataset.stage);
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+}
+
+function renderStage() {
+  const c = document.getElementById("stage-container");
+  if (state.stage === 1) renderStage1(c);
+  else if (state.stage === 2) renderStage2(c);
+  else if (state.stage === 3) renderStage3(c);
+  else if (state.stage === 4) renderStage4(c);
+}
+
+// ----- shared helpers -----
+function stageBox({ stageN, stageTitle, steps, currentStep }) {
+  return `<div class="stage-box">
+    <div class="stage-box-header"><span>Stage</span><span>Steps</span></div>
+    <div class="stage-box-stage"><strong>${stageN}. ${stageTitle}</strong></div>
+    <div class="stage-box-steps"><ol>${steps.map((s, i) => `<li class="${i + 1 === currentStep ? 'current' : ''}">${s}</li>`).join("")}</ol></div>
+  </div>`;
+}
+
+function navFooter({ canBack, canNext, stage }) {
+  return `<div class="stage-footer">
+    <button class="btn" id="btn-back" ${canBack ? '' : 'disabled'}>← Back</button>
+    <div class="stage-footer-meta">Stage ${stage} of 4</div>
+    <button class="btn primary" id="btn-next">${stage < 4 ? 'Continue →' : 'Refresh results'}</button>
+  </div>`;
+}
+
+function attachNav() {
+  const back = document.getElementById("btn-back");
+  const next = document.getElementById("btn-next");
+  if (back) back.addEventListener("click", () => {
+    if (state.stage > 1) { state.stage--; render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  });
+  if (next) next.addEventListener("click", () => {
+    if (state.stage < 4) { state.stage++; render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+    else render();
+  });
+}
+
+// ----- STAGE 1 -----
+function renderStage1(c) {
+  c.innerHTML = `
+    <div class="stage-page" data-stage="1">
+      <div class="stage-intro">
+        <div class="stage-kicker mono">Stage 01</div>
+        <h1 class="stage-heading serif">Defining the <em>purpose</em></h1>
+        <div class="stage-intro-body">
+          <p>The point of this stage is simple: <em>why</em> do you need M&E right now?</p>
+          <p>Pick one <strong>primary</strong> purpose. You can also tick secondary purposes that matter but aren't the main driver — these will still influence the ranking at Stage 4, just less heavily.</p>
+        </div>
+        ${stageBox({
+          stageN: 1, stageTitle: "Defining the purpose",
+          steps: ["Pick primary purpose", "Pick any secondary purposes"],
+          currentStep: state.answers.purpose_primary ? 2 : 1
+        })}
+      </div>
+      <div class="stage-body">
+        <div class="step-block">
+          <div class="step-heading serif">Step 1 · What is the primary purpose?</div>
+          <div class="step-prompt">This is the single reason you're turning to M&E — the driver you would name first if asked.</div>
+          <div class="options" id="purpose-primary-opts"></div>
+        </div>
+        <div class="step-block" style="${state.answers.purpose_primary ? '' : 'opacity:0.5;pointer-events:none;'}">
+          <div class="step-heading serif">Step 2 · Any secondary purposes?</div>
+          <div class="step-prompt">Tick any that also matter — they'll nudge the ranking without overriding your primary.</div>
+          <div class="options grid-2" id="purpose-secondary-opts"></div>
+        </div>
+      </div>
+    </div>
+    ${navFooter({ canBack: false, canNext: !!state.answers.purpose_primary, stage: 1 })}
+  `;
+
+  const primaryC = document.getElementById("purpose-primary-opts");
+  OPT_PURPOSE.forEach(opt => {
+    const el = document.createElement("button");
+    el.className = "option" + (state.answers.purpose_primary === opt.id ? " selected" : "");
+    el.innerHTML = `<div class="option-marker"></div><div class="option-body"><div class="option-label">${opt.label}</div><div class="option-help">${opt.help}</div></div>`;
+    el.addEventListener("click", () => {
+      state.answers.purpose_primary = opt.id;
+      // if this was in secondary, remove
+      state.answers.purpose_secondary = state.answers.purpose_secondary.filter(x => x !== opt.id);
+      render();
+    });
+    primaryC.appendChild(el);
+  });
+
+  const secC = document.getElementById("purpose-secondary-opts");
+  OPT_PURPOSE.forEach(opt => {
+    if (opt.id === state.answers.purpose_primary) return;
+    const el = document.createElement("button");
+    el.setAttribute("data-kind", "check");
+    const isSel = state.answers.purpose_secondary.includes(opt.id);
+    el.className = "option" + (isSel ? " selected" : "");
+    el.innerHTML = `<div class="option-marker"></div><div class="option-body"><div class="option-label">${opt.label}</div><div class="option-help">${opt.help}</div></div>`;
+    el.addEventListener("click", () => {
+      if (isSel) state.answers.purpose_secondary = state.answers.purpose_secondary.filter(x => x !== opt.id);
+      else state.answers.purpose_secondary.push(opt.id);
+      render();
+    });
+    secC.appendChild(el);
+  });
+
+  attachNav();
+}
+
+// ----- STAGE 2 -----
+function renderStage2(c) {
+  c.innerHTML = `
+    <div class="stage-page" data-stage="2">
+      <div class="stage-intro">
+        <div class="stage-kicker mono">Stage 02</div>
+        <h1 class="stage-heading serif">Defining the <em>scope</em></h1>
+        <div class="stage-intro-body">
+          <p>What substantive area are you measuring? Tick all that apply.</p>
+          <p>Most national work cuts across multiple scopes. That's fine — scope overlap directly boosts fit scores at Stage 4.</p>
+        </div>
+        ${stageBox({
+          stageN: 2, stageTitle: "Defining the scope",
+          steps: ["Pick one or more scopes"],
+          currentStep: 1
+        })}
+      </div>
+      <div class="stage-body">
+        <div class="step-block">
+          <div class="step-heading serif">Step 1 · Which scopes apply?</div>
+          <div class="step-prompt">A single-scope answer (e.g. just mitigation) is valid. Multi-scope answers produce richer ranking because tools that bridge scopes float up.</div>
+          <div class="options grid-2" id="scope-opts"></div>
+        </div>
+      </div>
+    </div>
+    ${navFooter({ canBack: true, canNext: state.answers.scope.length > 0, stage: 2 })}
+  `;
+
+  const opts = document.getElementById("scope-opts");
+  OPT_SCOPE.forEach(opt => {
+    const el = document.createElement("button");
+    el.setAttribute("data-kind", "check");
+    const isSel = state.answers.scope.includes(opt.id);
+    el.className = "option" + (isSel ? " selected" : "");
+    el.innerHTML = `<div class="option-marker"></div><div class="option-body"><div class="option-label">${opt.label}</div><div class="option-help">${opt.help}</div></div>`;
+    el.addEventListener("click", () => {
+      if (isSel) state.answers.scope = state.answers.scope.filter(x => x !== opt.id);
+      else state.answers.scope.push(opt.id);
+      render();
+    });
+    opts.appendChild(el);
+  });
+
+  attachNav();
+}
+
+// ----- STAGE 3 -----
+function renderStage3(c) {
+  c.innerHTML = `
+    <div class="stage-page" data-stage="3">
+      <div class="stage-intro">
+        <div class="stage-kicker mono">Stage 03</div>
+        <h1 class="stage-heading serif">Scale &amp; <em>constraints</em></h1>
+        <div class="stage-intro-body">
+          <p>Five short questions about where you work, what you can mobilize, and how long you have. Each one narrows the constellation.</p>
+          <p>Scale and capacity are required. Approach, data readiness, and time horizon are optional — answering them sharpens ranking but isn't needed.</p>
+        </div>
+        ${stageBox({
+          stageN: 3, stageTitle: "Scale & constraints",
+          steps: ["Scale (required)", "Capacity (required)", "Approach preference (optional)", "Data readiness (optional)", "Time horizon (optional)"],
+          currentStep: 1
+        })}
+      </div>
+      <div class="stage-body">
+        <div class="step-block">
+          <div class="step-heading serif">Step 1 · At what scale?</div>
+          <div class="step-prompt">The geographic or administrative level of your primary unit of analysis.</div>
+          <div class="options grid-2" id="scale-opts"></div>
+        </div>
+        <div class="step-block">
+          <div class="step-heading serif">Step 2 · What's the realistic capacity?</div>
+          <div class="step-prompt">Tools that need capacity above your tier will show a lower fit score — they stay visible but are honestly flagged.</div>
+          <div class="options grid-2" id="capacity-opts"></div>
+        </div>
+        <div class="step-block">
+          <div class="step-heading serif">Step 3 · Approach preference <span style="color:var(--ink-muted);font-size:13px;font-weight:400;font-style:italic;">(optional)</span></div>
+          <div class="step-prompt">If you already know whether you want a top-down, bottom-up, or blended approach, say so. Pick <em>blended</em> if undecided.</div>
+          <div class="options grid-2" id="approach-opts"></div>
+        </div>
+        <div class="step-block">
+          <div class="step-heading serif">Step 4 · Data readiness <span style="color:var(--ink-muted);font-size:13px;font-weight:400;font-style:italic;">(optional)</span></div>
+          <div class="step-prompt">The data you can realistically draw on. Tools that require richer data than you have will drop in fit.</div>
+          <div class="options grid-2" id="data-opts"></div>
+        </div>
+        <div class="step-block">
+          <div class="step-heading serif">Step 5 · Time to first useful result <span style="color:var(--ink-muted);font-size:13px;font-weight:400;font-style:italic;">(optional)</span></div>
+          <div class="step-prompt">How soon do you need something useful — not perfect, just useful?</div>
+          <div class="options grid-2" id="time-opts"></div>
+        </div>
+      </div>
+    </div>
+    ${navFooter({ canBack: true, canNext: !!state.answers.scale && !!state.answers.capacity, stage: 3 })}
+  `;
+
+  function wireSingle(containerId, options, key) {
+    const cEl = document.getElementById(containerId);
+    options.forEach(opt => {
+      const el = document.createElement("button");
+      el.className = "option" + (state.answers[key] === opt.id ? " selected" : "");
+      el.innerHTML = `<div class="option-marker"></div><div class="option-body"><div class="option-label">${opt.label}</div><div class="option-help">${opt.help}</div></div>`;
+      el.addEventListener("click", () => {
+        state.answers[key] = state.answers[key] === opt.id ? null : opt.id;
+        render();
+      });
+      cEl.appendChild(el);
+    });
+  }
+  wireSingle("scale-opts", OPT_SCALE, "scale");
+  wireSingle("capacity-opts", OPT_CAPACITY, "capacity");
+  wireSingle("approach-opts", OPT_APPROACH, "approach");
+  wireSingle("data-opts", OPT_DATA, "data");
+  wireSingle("time-opts", OPT_TIME, "time");
+
+  attachNav();
+}
+
+// ----- STAGE 4 — constellation -----
+function labelFor(options, id) {
+  if (!id) return null;
+  const found = options.find(o => o.id === id);
+  return found ? found.label : id;
+}
+function labelsFor(options, ids) {
+  return (ids || []).map(id => labelFor(options, id)).filter(Boolean);
+}
+
+function renderStage4(c) {
+  const ranked = rankedTools();
+  const maxScore = maxPossibleScore();
+  const bands = { strong: [], possible: [], weak: [] };
+  ranked.forEach(t => bands[fitBand(t._score, maxScore)].push(t));
+
+  // Cap the strong band — when many tools score high, show top 8 as strong
+  // and push the rest into "possible" so the top recommendation stays scannable.
+  const STRONG_CAP = 8;
+  if (bands.strong.length > STRONG_CAP) {
+    const overflow = bands.strong.slice(STRONG_CAP);
+    bands.strong = bands.strong.slice(0, STRONG_CAP);
+    bands.possible = [...overflow, ...bands.possible];
+    // keep possible sorted by score (overflow items have the highest scores)
+    bands.possible.sort((a, b) => b._score - a._score);
+  }
+
+  const incomplete = !stageComplete(1) || !stageComplete(2) || !stageComplete(3);
+  const missingStages = [
+    stageComplete(1) ? null : "Stage 1 (purpose)",
+    stageComplete(2) ? null : "Stage 2 (scope)",
+    stageComplete(3) ? null : "Stage 3 (scale &amp; capacity)"
+  ].filter(Boolean);
+
+  // Adapt band descriptions to the completeness state
+  const strongDesc = incomplete
+    ? "Tools that fit the signals you've given so far. Answer more stages to sharpen."
+    : "Tools whose tagging matches most of your answers. Start here.";
+  const possibleDesc = incomplete
+    ? "Partial matches on what you've answered."
+    : "Partial matches — useful as complements or when the strong-fit tools don't cover your whole scope.";
+  const weakDesc = incomplete
+    ? "Too little signal to rank these yet. Complete the earlier stages."
+    : "Included so you can see the full inventory. These usually serve a different purpose or scale than yours.";
+
+  c.innerHTML = `
+    <div class="stage-page" data-stage="4">
+      <div class="constellation-header">
+        <div class="stage-kicker mono">Stage 04</div>
+        <h1 class="stage-heading serif">Your <em>constellation</em></h1>
+
+        ${incomplete ? `<div class="incomplete-notice"><strong>Ranking is partial.</strong> You haven't yet answered: ${missingStages.join(", ")}. The list below shows every tool, but the sort is only using the signals you've given so far. <button class="answers-summary-edit" data-goto="${!stageComplete(1) ? 1 : (!stageComplete(2) ? 2 : 3)}">Complete the questions →</button></div>` : ''}
+
+        <div class="answers-summary">
+          <div class="answers-summary-item">
+            <span class="answers-summary-label">Primary purpose</span>
+            <span class="answers-summary-value ${state.answers.purpose_primary ? '' : 'empty'}">${labelFor(OPT_PURPOSE, state.answers.purpose_primary) || 'not answered'}<button class="answers-summary-edit" data-goto="1">edit</button></span>
+          </div>
+          ${state.answers.purpose_secondary.length ? `<div class="answers-summary-item">
+            <span class="answers-summary-label">Secondary</span>
+            <span class="answers-summary-value">${labelsFor(OPT_PURPOSE, state.answers.purpose_secondary).join(", ")}</span>
+          </div>` : ''}
+          <div class="answers-summary-item">
+            <span class="answers-summary-label">Scope</span>
+            <span class="answers-summary-value ${state.answers.scope.length ? '' : 'empty'}">${labelsFor(OPT_SCOPE, state.answers.scope).join(", ") || 'not answered'}<button class="answers-summary-edit" data-goto="2">edit</button></span>
+          </div>
+          <div class="answers-summary-item">
+            <span class="answers-summary-label">Scale</span>
+            <span class="answers-summary-value ${state.answers.scale ? '' : 'empty'}">${labelFor(OPT_SCALE, state.answers.scale) || 'not answered'}<button class="answers-summary-edit" data-goto="3">edit</button></span>
+          </div>
+          <div class="answers-summary-item">
+            <span class="answers-summary-label">Capacity</span>
+            <span class="answers-summary-value ${state.answers.capacity ? '' : 'empty'}">${labelFor(OPT_CAPACITY, state.answers.capacity) || 'not answered'}</span>
+          </div>
+          ${state.answers.approach ? `<div class="answers-summary-item">
+            <span class="answers-summary-label">Approach</span>
+            <span class="answers-summary-value">${labelFor(OPT_APPROACH, state.answers.approach)}</span>
+          </div>` : ''}
+          ${state.answers.data ? `<div class="answers-summary-item">
+            <span class="answers-summary-label">Data</span>
+            <span class="answers-summary-value">${labelFor(OPT_DATA, state.answers.data)}</span>
+          </div>` : ''}
+          ${state.answers.time ? `<div class="answers-summary-item">
+            <span class="answers-summary-label">Time</span>
+            <span class="answers-summary-value">${labelFor(OPT_TIME, state.answers.time)}</span>
+          </div>` : ''}
+        </div>
+
+        ${renderBand("Strong fit", "strong", bands.strong, strongDesc)}
+        ${renderBand("Possible fit", "possible", bands.possible, possibleDesc)}
+        ${bands.weak.length ? `<button class="collapse-toggle" id="toggle-weak">${state.showWeak ? 'Hide' : 'Show'} weaker-fit tools · ${bands.weak.length}</button>` : ''}
+        ${state.showWeak ? renderBand("Weaker fit", "weak", bands.weak, weakDesc) : ''}
+      </div>
+    </div>
+    ${navFooter({ canBack: true, canNext: false, stage: 4 })}
+  `;
+
+  // wire the "edit" / "goto" buttons in the summary
+  c.querySelectorAll(".answers-summary-edit").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const n = parseInt(btn.dataset.goto);
+      if (n) { state.stage = n; render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+    });
+  });
+  // weak toggle
+  const wt = document.getElementById("toggle-weak");
+  if (wt) wt.addEventListener("click", () => { state.showWeak = !state.showWeak; render(); });
+  attachNav();
+}
+
+function renderBand(heading, cls, tools, desc) {
+  if (tools.length === 0) {
+    return `<div class="results-band">
+      <div class="results-band-header">
+        <h2 class="results-band-heading serif">${heading}</h2>
+        <span class="results-band-count mono">0 tools</span>
+        <span class="results-band-desc">${desc}</span>
+      </div>
+      <div style="padding:20px; color:var(--ink-muted); font-style:italic; font-size:13px; border:1px dashed var(--rule); border-radius:var(--radius);">
+        No tools in this band given your answers. ${cls === "strong" ? "Consider broadening scope or capacity tier." : ""}
+      </div>
+    </div>`;
+  }
+  return `<div class="results-band">
+    <div class="results-band-header">
+      <h2 class="results-band-heading serif">${heading}</h2>
+      <span class="results-band-count mono">${tools.length} tool${tools.length === 1 ? '' : 's'}</span>
+      <span class="results-band-desc">${desc}</span>
+    </div>
+    <div class="results-grid">
+      ${tools.map(t => toolCardHTML(t, cls)).join("")}
+    </div>
+  </div>`;
+}
+
+function toolCardHTML(t, cls) {
+  const breakdown = t._breakdown.map(b => `<li class="${b.kind}">${b.text}</li>`).join("");
+  // generate a "why" line from the strongest positive reasons
+  const positives = t._breakdown.filter(b => b.kind === "pos");
+  let why = "";
+  if (positives.length > 0) {
+    why = `<div class="tool-card-why"><strong>Why this fits:</strong> ${positives.slice(0, 3).map(p => p.text.replace(/\s*\(\+\d+\)/, '')).join("; ")}.</div>`;
+  } else if (cls === "weak") {
+    const negatives = t._breakdown.filter(b => b.kind === "neg");
+    if (negatives.length) {
+      why = `<div class="tool-card-why"><strong>Why it ranks weak:</strong> ${negatives.slice(0, 2).map(p => p.text.replace(/\s*\(0\)/, '')).join("; ")}.</div>`;
+    }
+  }
+  return `<article class="tool-card ${cls}">
+    <div class="tool-card-fit" tabindex="0">
+      fit ${t._score}
+      <div class="fit-tooltip"><ul>${breakdown || '<li class="zero">Answer the questions to see how this ranks.</li>'}</ul></div>
+    </div>
+    <div class="tool-card-name serif">${t.name}</div>
+    <div class="tool-card-meta mono">${t.type}<span class="sep">·</span>${t.provider}</div>
+    <div class="tool-card-what">${t.what}</div>
+    ${why}
+    <div class="tool-card-footer">
+      <span class="tool-card-cost">${t.cost}</span>
+      <a class="tool-card-link" href="${t.link}" target="_blank" rel="noopener">Source →</a>
+    </div>
+  </article>`;
+}
+
+// ============================================================
+// FEEDBACK
+// ============================================================
+function buildFeedbackMailto() {
+  const a = state.answers;
+  const lines = [];
+  lines.push("Thanks for sending feedback on the Climate M&E Navigator.");
+  lines.push("");
+  lines.push("--- Your current context (auto-filled; edit or delete if not relevant) ---");
+  lines.push(`Stage you are on: ${state.stage} of 4`);
+  lines.push(`Primary purpose: ${labelFor(OPT_PURPOSE, a.purpose_primary) || "not answered"}`);
+  if (a.purpose_secondary.length) {
+    lines.push(`Secondary purposes: ${labelsFor(OPT_PURPOSE, a.purpose_secondary).join(", ")}`);
+  }
+  lines.push(`Scope: ${a.scope.length ? labelsFor(OPT_SCOPE, a.scope).join(", ") : "not answered"}`);
+  lines.push(`Scale: ${labelFor(OPT_SCALE, a.scale) || "not answered"}`);
+  lines.push(`Capacity: ${labelFor(OPT_CAPACITY, a.capacity) || "not answered"}`);
+  if (a.approach) lines.push(`Approach: ${labelFor(OPT_APPROACH, a.approach)}`);
+  if (a.data) lines.push(`Data readiness: ${labelFor(OPT_DATA, a.data)}`);
+  if (a.time) lines.push(`Time horizon: ${labelFor(OPT_TIME, a.time)}`);
+  lines.push("");
+  lines.push("--- Your feedback (please write below) ---");
+  lines.push("");
+  lines.push("What worked well:");
+  lines.push("");
+  lines.push("What did not work / felt wrong:");
+  lines.push("");
+  lines.push("Tools or methods that should be added or removed:");
+  lines.push("");
+  lines.push("Anything else:");
+  lines.push("");
+
+  const subject = "Feedback on Climate M&E Navigator (v0.2)";
+  const body = lines.join("\n");
+  return `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function wireFeedbackButton() {
+  const btn = document.getElementById("feedback-btn");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    if (FEEDBACK_EMAIL === "YOUR-EMAIL@example.com") {
+      alert("Feedback email is not yet configured.\n\nThe person who shared this tool needs to set the FEEDBACK_EMAIL constant at the top of the <script> block in the HTML file before sharing.");
+      return;
+    }
+    window.location.href = buildFeedbackMailto();
+  });
+}
+
+// INIT
+render();
+wireFeedbackButton();
+</script>
+
+</body>
+</html>
