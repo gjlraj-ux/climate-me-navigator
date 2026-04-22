@@ -418,6 +418,69 @@ body {
 }
 .constellation-header .stage-heading { max-width: none; }
 
+.share-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 14px 0 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.share-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  padding: 8px 14px;
+  background: var(--paper);
+  color: var(--ink-soft);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+.share-btn:hover {
+  background: var(--paper-warm);
+  border-color: var(--ink-muted);
+  color: var(--ink);
+}
+.share-btn-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+.share-btn.confirmed {
+  background: var(--strong-wash);
+  border-color: var(--strong);
+  color: var(--strong);
+}
+
+/* Print view — triggered when the body has class 'printing' */
+@media print {
+  body { background: white; color: black; }
+  .masthead, .stage-nav, .share-row, .stage-footer, .pagefoot,
+  .feedback-btn, .answers-summary-edit, .collapse-toggle,
+  .incomplete-notice button, .fit-tooltip {
+    display: none !important;
+  }
+  .stage-page { grid-template-columns: 1fr !important; padding: 0 !important; }
+  .tool-card, .results-band, .answers-summary {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .tool-card-fit { background: #f0f0f0 !important; }
+  .tool-card.strong::before { background: #333 !important; }
+  .results-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+  .tool-card { border-color: #888 !important; padding: 12px 14px !important; }
+  .tool-card-examples { background: #f7f5ef !important; border-left-color: #888 !important; }
+  a { color: black !important; text-decoration: none !important; }
+  a::after { content: " (" attr(href) ")"; font-size: 9px; color: #666; }
+  .cards-panel a::after { content: ""; }
+  @page { margin: 1.5cm; }
+}
+
 .answers-summary {
   background: var(--paper-warm);
   border: 1px solid var(--rule);
@@ -632,6 +695,25 @@ body {
   font-style: italic;
 }
 .tool-card-why strong { color: var(--ink); font-style: normal; font-weight: 500; }
+
+.tool-card-examples {
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  background: var(--paper-shade);
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  border-left: 2px solid var(--clay);
+}
+.tool-card-examples-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--clay);
+  font-weight: 500;
+  margin-right: 2px;
+}
 .tool-card-footer {
   display: flex;
   justify-content: space-between;
@@ -817,6 +899,7 @@ const TOOLS = [
     id: "ipcc-inv", name: "IPCC Inventory Software", provider: "IPCC TFI", type: "Software",
     cost: "Free", link: "https://www.ipcc-nggip.iges.or.jp/software/",
     what: "Desktop application implementing the IPCC Guidelines for national GHG inventories across all sectors.",
+    examples: "Used in national GHG inventories by Brazil (SIRENE system, operational since 2017), South Africa, and many others.",
     purpose: ["international_reporting", "national_policy"],
     scope: ["mitigation"],
     scale: ["national"],
@@ -829,6 +912,7 @@ const TOOLS = [
     id: "ghg-proto", name: "GHG Protocol — Policy & Action Standard", provider: "WRI / WBCSD", type: "Framework",
     cost: "Free", link: "https://ghgprotocol.org/policy-and-action-standard",
     what: "Methodology for estimating the GHG effects of specific policies and actions.",
+    examples: "",
     purpose: ["project_accountability", "national_policy"],
     scope: ["mitigation"],
     scale: ["national", "subnational"],
@@ -841,6 +925,7 @@ const TOOLS = [
     id: "icat", name: "ICAT Policy Assessment Guides", provider: "ICAT", type: "Framework",
     cost: "Free", link: "https://climateactiontransparency.org/our-work/icat-toolbox/",
     what: "Sector-specific guides (energy, transport, forest, agriculture) plus sustainable development and transformational change methods.",
+    examples: "Applied in Laos cities (Pakse and Kaysone Phomvihane) for community-scale GHG inventories.",
     purpose: ["national_policy", "project_accountability", "learning_transformation"],
     scope: ["mitigation", "crosscutting"],
     scale: ["national", "subnational"],
@@ -853,6 +938,7 @@ const TOOLS = [
     id: "gpc", name: "GPC — Global Protocol for Community-Scale GHG Inventories", provider: "WRI / C40 / ICLEI", type: "Framework",
     cost: "Free", link: "https://ghgprotocol.org/ghg-protocol-cities",
     what: "Standard for city-level GHG inventories, harmonized with CDP-ICLEI Unified Reporting.",
+    examples: "Applied in Pakse and Kaysone Phomvihane (Laos); widely used in C40 cities including São Paulo's municipal climate plan.",
     purpose: ["international_reporting", "national_policy"],
     scope: ["mitigation"],
     scale: ["subnational"],
@@ -865,6 +951,7 @@ const TOOLS = [
     id: "open-foris", name: "Open Foris + SEPAL", provider: "FAO", type: "Software",
     cost: "Free", link: "https://openforis.org/",
     what: "Cloud platform for forest monitoring using satellite imagery.",
+    examples: "Underpins Ethiopia's National Forest Monitoring System for REDD+ MRV; complements Brazil's INPE satellite monitoring of the Amazon.",
     purpose: ["international_reporting", "national_policy", "project_accountability"],
     scope: ["mitigation", "biodiversity"],
     scale: ["national", "subnational"],
@@ -877,6 +964,7 @@ const TOOLS = [
     id: "gfw", name: "Global Forest Watch", provider: "WRI", type: "Database",
     cost: "Free", link: "https://www.globalforestwatch.org/",
     what: "Near-real-time forest cover, loss, and fire alerts globally.",
+    examples: "Used by national teams as a cross-check on in-country forest data; complements Brazil's INPE deforestation monitoring.",
     purpose: ["project_accountability", "national_policy"],
     scope: ["mitigation", "biodiversity"],
     scale: ["national", "subnational", "community"],
@@ -889,6 +977,7 @@ const TOOLS = [
     id: "article6", name: "CDM / Article 6 methodologies", provider: "UNFCCC", type: "Framework",
     cost: "Free", link: "https://cdm.unfccc.int/methodologies/",
     what: "Pre-approved baseline and monitoring methodologies for project-level emission reductions.",
+    examples: "",
     purpose: ["project_accountability"],
     scope: ["mitigation"],
     scale: ["subnational", "community"],
@@ -902,6 +991,7 @@ const TOOLS = [
     id: "tamd", name: "TAMD — Tracking Adaptation & Measuring Development", provider: "IIED", type: "Framework",
     cost: "Free", link: "https://www.iied.org/tracking-adaptation-measuring-development-tamd",
     what: "Two-track framework linking climate risk management with development performance under a changing climate.",
+    examples: "Adopted by Kenya, Mozambique, and Cambodia; integrated with the BRACED approach in Ethiopia, Nepal, and Senegal.",
     purpose: ["national_policy", "project_accountability", "learning_transformation"],
     scope: ["adaptation", "crosscutting"],
     scale: ["national", "subnational"],
@@ -915,6 +1005,7 @@ const TOOLS = [
     id: "adaptme", name: "AdaptME Toolkit", provider: "UKCIP", type: "Framework",
     cost: "Free", link: "https://www.ukcip.org.uk/wp-content/PDFs/UKCIP-AdaptME.pdf",
     what: "Question-based approach for designing fit-for-purpose adaptation M&E.",
+    examples: "Used across diverse adaptation programmes where flexibility and learning matter more than standardised indicators.",
     purpose: ["project_accountability", "learning_transformation"],
     scope: ["adaptation"],
     scale: ["national", "subnational", "community"],
@@ -928,6 +1019,7 @@ const TOOLS = [
     id: "nap-gn", name: "NAP Global Network M&E guidance", provider: "IISD / NAP Global Network", type: "Guidance",
     cost: "Free", link: "https://napglobalnetwork.org/themes/monitoring-evaluation-learning/",
     what: "Practical guidance and peer cases for designing adaptation M&E systems, with FAQs on BTR adaptation reporting.",
+    examples: "Informs NAP development in countries like Bangladesh (BCCSAP) and Nepal (LAPA framework).",
     purpose: ["international_reporting", "national_policy"],
     scope: ["adaptation"],
     scale: ["national"],
@@ -940,6 +1032,7 @@ const TOOLS = [
     id: "gcf-irmf", name: "GCF Integrated Results Management Framework", provider: "Green Climate Fund", type: "Framework (required)",
     cost: "Free", link: "https://www.greenclimate.fund/document/integrated-results-management-framework",
     what: "Mandatory results framework for GCF-funded projects, with core indicators for paradigm shift, mitigation and adaptation.",
+    examples: "Applied in all GCF-funded projects — including Rwanda's access under its Green Growth and Climate Resilience Strategy.",
     purpose: ["project_accountability"],
     scope: ["mitigation", "adaptation", "crosscutting"],
     scale: ["national", "subnational", "community"],
@@ -952,6 +1045,7 @@ const TOOLS = [
     id: "gef-amat", name: "GEF Adaptation Monitoring & Assessment Tool (AMAT)", provider: "Global Environment Facility", type: "Framework (required)",
     cost: "Free", link: "https://www.thegef.org/documents/results-framework-tracking-tools",
     what: "Standardized reporting tool for LDCF/SCCF-funded adaptation projects.",
+    examples: "Applied across LDCF and SCCF adaptation portfolios globally.",
     purpose: ["project_accountability"],
     scope: ["adaptation"],
     scale: ["national", "subnational", "community"],
@@ -964,6 +1058,7 @@ const TOOLS = [
     id: "af-results", name: "Adaptation Fund Results Framework", provider: "Adaptation Fund", type: "Framework (required)",
     cost: "Free", link: "https://www.adaptation-fund.org/document/results-framework-and-baseline-guidance/",
     what: "Standard outcome and output indicators for AF-funded projects, with gender and E&S markers.",
+    examples: "Used by Adaptation Fund National Implementing Entities across LDCs and SIDS.",
     purpose: ["project_accountability"],
     scope: ["adaptation"],
     scale: ["subnational", "community"],
@@ -976,6 +1071,7 @@ const TOOLS = [
     id: "cvca", name: "CARE Climate Vulnerability & Capacity Analysis (CVCA)", provider: "CARE", type: "Toolkit",
     cost: "Free", link: "https://careclimatechange.org/cvca/",
     what: "Community-level vulnerability assessment method combining participatory tools with climate information.",
+    examples: "Used in CARE-supported community-based adaptation programmes across Africa and Asia.",
     purpose: ["community_monitoring", "project_accountability"],
     scope: ["adaptation"],
     scale: ["community"],
@@ -988,6 +1084,7 @@ const TOOLS = [
     id: "pmerl", name: "PMERL — Participatory M&E, Reflection and Learning", provider: "CARE / IIED", type: "Framework",
     cost: "Free", link: "https://www.careclimatechange.org/publications/participatory-monitoring-evaluation-reflection-and-learning-for-community-based-adaptation-pmerl/",
     what: "Community-based adaptive M&E manual designed for community-based adaptation programmes.",
+    examples: "Applied in community-based adaptation programmes where local input and adaptive management matter — notably Bangladesh's community-based monitoring.",
     purpose: ["community_monitoring", "project_accountability", "learning_transformation"],
     scope: ["adaptation", "loss_damage"],
     scale: ["community"],
@@ -1002,6 +1099,7 @@ const TOOLS = [
     id: "desinventar", name: "DesInventar Sendai", provider: "UNDRR", type: "Software + database",
     cost: "Free", link: "https://www.desinventar.net/",
     what: "Disaster loss database system with country instances; feeds Sendai Framework Monitor indicators.",
+    examples: "Integrated into Colombia's SISCLIMA and used in many other countries for sub-national disaster loss tracking.",
     purpose: ["international_reporting", "national_policy"],
     scope: ["loss_damage"],
     scale: ["national", "subnational"],
@@ -1014,6 +1112,7 @@ const TOOLS = [
     id: "emdat", name: "EM-DAT", provider: "CRED, UCLouvain", type: "Database",
     cost: "Free (registration)", link: "https://www.emdat.be/",
     what: "International disaster database, 1900 to present, with economic and human losses.",
+    examples: "",
     purpose: ["international_reporting", "national_policy", "learning_transformation"],
     scope: ["loss_damage"],
     scale: ["international", "national"],
@@ -1026,6 +1125,7 @@ const TOOLS = [
     id: "wim-nel", name: "WIM ExCom guidance on non-economic losses", provider: "UNFCCC WIM", type: "Guidance",
     cost: "Free", link: "https://unfccc.int/topics/adaptation-and-resilience/workstreams/non-economic-losses",
     what: "Technical papers and toolkits for assessing non-economic losses — culture, identity, ecosystems, health, mobility.",
+    examples: "",
     purpose: ["learning_transformation", "community_monitoring"],
     scope: ["loss_damage"],
     scale: ["national", "subnational", "community"],
@@ -1038,6 +1138,7 @@ const TOOLS = [
     id: "outcome-harvest", name: "Outcome Harvesting", provider: "Wilson-Grau", type: "Evaluation method",
     cost: "Free method; facilitator cost", link: "https://outcomeharvesting.net/",
     what: "Retrospective method that identifies observed changes and traces contribution — works where pre-set indicators fail.",
+    examples: "Featured in Box 5 of the GEI paper as a method suited to climate adaptation M&E where pre-set indicators miss emergent outcomes.",
     purpose: ["learning_transformation", "project_accountability"],
     scope: ["adaptation", "loss_damage", "crosscutting"],
     scale: ["national", "subnational", "community"],
@@ -1052,6 +1153,7 @@ const TOOLS = [
     id: "gbf-mon", name: "GBF Monitoring Framework", provider: "CBD", type: "Framework (required)",
     cost: "Free", link: "https://www.cbd.int/gbf/monitoring",
     what: "Headline, component, and complementary indicators for the 23 Kunming-Montreal targets.",
+    examples: "",
     purpose: ["international_reporting", "national_policy"],
     scope: ["biodiversity"],
     scale: ["national"],
@@ -1064,6 +1166,7 @@ const TOOLS = [
     id: "wdpa-mett", name: "WDPA + METT-4", provider: "UNEP-WCMC / IUCN WCPA", type: "Database + tool",
     cost: "Free", link: "https://www.protectedplanet.net/",
     what: "World Database on Protected Areas plus Management Effectiveness Tracking Tool.",
+    examples: "",
     purpose: ["international_reporting", "project_accountability"],
     scope: ["biodiversity"],
     scale: ["national", "subnational"],
@@ -1076,6 +1179,7 @@ const TOOLS = [
     id: "iucn-rl", name: "IUCN Red List", provider: "IUCN", type: "Database",
     cost: "Free (commercial fee)", link: "https://www.iucnredlist.org/",
     what: "Global species conservation status assessments; feeds the Red List Index headline GBF indicator.",
+    examples: "",
     purpose: ["international_reporting", "national_policy", "learning_transformation"],
     scope: ["biodiversity"],
     scale: ["international", "national"],
@@ -1088,6 +1192,7 @@ const TOOLS = [
     id: "gbif", name: "GBIF", provider: "GBIF Secretariat", type: "Database + API",
     cost: "Free", link: "https://www.gbif.org/",
     what: "Global occurrence records for biodiversity — over 2 billion records, machine-readable.",
+    examples: "",
     purpose: ["national_policy", "learning_transformation"],
     scope: ["biodiversity"],
     scale: ["national", "subnational"],
@@ -1100,6 +1205,7 @@ const TOOLS = [
     id: "biofin", name: "BIOFIN Workbook", provider: "UNDP", type: "Methodology",
     cost: "Free", link: "https://www.biofin.org/knowledge-product/biofin-2024-workbook",
     what: "Step-by-step methodology for biodiversity finance: policy review, expenditure review, finance plan.",
+    examples: "",
     purpose: ["finance_tracking", "national_policy"],
     scope: ["biodiversity", "crosscutting"],
     scale: ["national"],
@@ -1113,6 +1219,7 @@ const TOOLS = [
     id: "opensdg", name: "Open SDG platform", provider: "ONS / UNSD community", type: "Software",
     cost: "Free", link: "https://open-sdg.org/",
     what: "Open-source national reporting platform for SDG indicators; generates charts and SDMX-compatible metadata.",
+    examples: "Used in Kenya and Uganda to feed VNR annex tables directly from a national indicator portal.",
     purpose: ["international_reporting", "national_policy"],
     scope: ["crosscutting"],
     scale: ["national"],
@@ -1125,6 +1232,7 @@ const TOOLS = [
     id: "sdmx", name: "SDMX", provider: "SDMX Initiative", type: "Standard",
     cost: "Free", link: "https://sdmx.org/",
     what: "ISO-standard for machine-readable statistical data exchange, used by most international agencies.",
+    examples: "",
     purpose: ["international_reporting"],
     scope: ["crosscutting"],
     scale: ["national", "international"],
@@ -1137,6 +1245,7 @@ const TOOLS = [
     id: "cbt", name: "Climate Budget Tagging", provider: "UNDP (and national variants)", type: "Methodology",
     cost: "Free", link: "https://www.climatefinance-developmenteffectiveness.org/CBT-Database",
     what: "Tagging public expenditure with climate relevance markers within the budget classification system.",
+    examples: "Embedded in Kenya's MRV+ system via the Climate Budget Coding and Tracking Tool (in development since 2012).",
     purpose: ["finance_tracking", "national_policy"],
     scope: ["mitigation", "adaptation", "crosscutting"],
     scale: ["national", "subnational"],
@@ -1149,6 +1258,7 @@ const TOOLS = [
     id: "cpeir", name: "Climate Public Expenditure & Institutional Review", provider: "UNDP / ODI / World Bank", type: "Diagnostic",
     cost: "Free method; consultancy cost", link: "https://www.undp.org/publications/methodological-guidebook-climate-public-expenditure-and-institutional-review-cpeir",
     what: "Retrospective review of climate-relevant public expenditure and institutional arrangements.",
+    examples: "Applied in Nepal, Bangladesh, and the Philippines as a baseline before designing climate budget tagging systems.",
     purpose: ["finance_tracking", "national_policy"],
     scope: ["crosscutting"],
     scale: ["national"],
@@ -1161,6 +1271,7 @@ const TOOLS = [
     id: "ndc-portal", name: "NDC Partnership Knowledge Portal", provider: "NDC Partnership", type: "Platform",
     cost: "Free", link: "https://ndcpartnership.org/knowledge-portal",
     what: "Searchable portal of NDC implementation tools, technical support requests, and country good practices.",
+    examples: "",
     purpose: ["national_policy"],
     scope: ["crosscutting"],
     scale: ["national"],
@@ -1174,6 +1285,7 @@ const TOOLS = [
     id: "c3s", name: "Copernicus Climate Data Store", provider: "ECMWF / EU", type: "Database",
     cost: "Free", link: "https://cds.climate.copernicus.eu/",
     what: "Reanalysis, seasonal forecasts, projections, sectoral indicators — all API-accessible.",
+    examples: "",
     purpose: ["national_policy", "learning_transformation", "project_accountability"],
     scope: ["adaptation", "crosscutting"],
     scale: ["international", "national", "subnational"],
@@ -1186,6 +1298,7 @@ const TOOLS = [
     id: "thinkhazard", name: "ThinkHazard!", provider: "GFDRR / World Bank", type: "Tool",
     cost: "Free", link: "https://thinkhazard.org/",
     what: "Country and district-level hazard screening across 11 hazards — simple low/medium/high ratings.",
+    examples: "",
     purpose: ["project_accountability", "national_policy"],
     scope: ["adaptation", "loss_damage"],
     scale: ["national", "subnational"],
@@ -1198,6 +1311,7 @@ const TOOLS = [
     id: "inform", name: "INFORM Risk Index", provider: "JRC / IASC", type: "Database",
     cost: "Free", link: "https://drmkc.jrc.ec.europa.eu/inform-index",
     what: "Composite country risk index (hazard + vulnerability + lack of coping capacity).",
+    examples: "",
     purpose: ["national_policy", "international_reporting"],
     scope: ["adaptation", "loss_damage"],
     scale: ["international", "national"],
@@ -1210,6 +1324,7 @@ const TOOLS = [
     id: "aqueduct", name: "Aqueduct Water Risk Atlas", provider: "WRI", type: "Tool + database",
     cost: "Free", link: "https://www.wri.org/aqueduct",
     what: "Global water stress, flood, and drought indicators at high spatial resolution.",
+    examples: "",
     purpose: ["national_policy", "project_accountability"],
     scope: ["adaptation"],
     scale: ["national", "subnational"],
@@ -1222,6 +1337,7 @@ const TOOLS = [
     id: "aquastat", name: "AQUASTAT", provider: "FAO", type: "Database",
     cost: "Free", link: "https://www.fao.org/aquastat/",
     what: "National-level water resource and use statistics; canonical source for water-sector SDG indicators.",
+    examples: "",
     purpose: ["international_reporting", "national_policy"],
     scope: ["adaptation", "crosscutting"],
     scale: ["international", "national"],
@@ -1234,6 +1350,7 @@ const TOOLS = [
     id: "kobo", name: "KoboToolbox", provider: "Kobo Inc / community", type: "Software",
     cost: "Free tier generous; paid for scale", link: "https://www.kobotoolbox.org/",
     what: "Mobile and tablet data collection platform, offline-capable, with survey logic and multi-language support.",
+    examples: "Used in Bangladesh for mobile-based flood risk monitoring and in Kenya for community-based climate impact apps; similar approaches in India's rural crowdsourcing.",
     purpose: ["community_monitoring", "project_accountability"],
     scope: ["adaptation", "loss_damage", "crosscutting"],
     scale: ["community", "subnational"],
@@ -1247,6 +1364,7 @@ const TOOLS = [
     id: "msc", name: "Most Significant Change (MSC)", provider: "Davies & Dart", type: "Evaluation method",
     cost: "Free method", link: "https://www.betterevaluation.org/methods-approaches/approaches/most-significant-change",
     what: "Story-based method where stakeholders select the most significant changes and explain why they matter.",
+    examples: "",
     purpose: ["learning_transformation", "community_monitoring", "project_accountability"],
     scope: ["adaptation", "loss_damage", "crosscutting"],
     scale: ["subnational", "community"],
@@ -1260,6 +1378,7 @@ const TOOLS = [
     id: "contrib", name: "Contribution Analysis", provider: "Mayne", type: "Evaluation method",
     cost: "Free method", link: "https://www.betterevaluation.org/methods-approaches/approaches/contribution-analysis",
     what: "Systematic approach to making causal claims under complexity, by assembling plausible contribution stories.",
+    examples: "",
     purpose: ["learning_transformation", "project_accountability"],
     scope: ["crosscutting"],
     scale: ["national", "subnational"],
@@ -1273,6 +1392,7 @@ const TOOLS = [
     id: "dev-eval", name: "Developmental Evaluation", provider: "Patton", type: "Evaluation approach",
     cost: "Free approach", link: "https://www.betterevaluation.org/methods-approaches/approaches/developmental-evaluation",
     what: "Real-time evaluation for complex, emergent initiatives — evaluator as part of the innovation team.",
+    examples: "Suited to transformational-change initiatives and just transitions where the intervention itself is still being shaped.",
     purpose: ["learning_transformation"],
     scope: ["crosscutting", "adaptation"],
     scale: ["national", "subnational"],
@@ -1841,6 +1961,18 @@ function renderStage4(c) {
         <div class="stage-kicker mono">Stage 04</div>
         <h1 class="stage-heading serif">Tools <em>for your work</em></h1>
 
+        <div class="share-row">
+          <button class="share-btn" id="btn-copy-summary" title="Copy a plain-text summary of your answers and shortlist to paste into an email, Word, or Slack">
+            <span class="share-btn-icon">⧉</span> Copy summary
+          </button>
+          <button class="share-btn" id="btn-print-summary" title="Open a clean printable view — use Save as PDF in your browser's print dialog">
+            <span class="share-btn-icon">⎙</span> Save as PDF
+          </button>
+          <button class="share-btn" id="btn-save-offline" title="Download a copy of this tool that works without internet">
+            <span class="share-btn-icon">↓</span> Save for offline use
+          </button>
+        </div>
+
         ${incomplete ? `<div class="incomplete-notice"><strong>The list is still rough.</strong> You haven't answered: ${missingStages.join(", ")}. Every tool appears below, but the order will get better as you answer more questions. <button class="answers-summary-edit" data-goto="${!stageComplete(1) ? 1 : (!stageComplete(2) ? 2 : 3)}">Answer the missing questions →</button></div>` : ''}
 
         <div class="answers-summary">
@@ -1913,7 +2045,120 @@ function renderStage4(c) {
   // weak toggle
   const wt = document.getElementById("toggle-weak");
   if (wt) wt.addEventListener("click", () => { state.showWeak = !state.showWeak; render(); });
+
+  // ===== Share buttons =====
+  const copyBtn = document.getElementById("btn-copy-summary");
+  if (copyBtn) copyBtn.addEventListener("click", async () => {
+    const text = buildPlainSummary();
+    try {
+      await navigator.clipboard.writeText(text);
+      copyBtn.classList.add("confirmed");
+      const original = copyBtn.innerHTML;
+      copyBtn.innerHTML = '<span class="share-btn-icon">✓</span> Copied — paste anywhere';
+      setTimeout(() => { copyBtn.classList.remove("confirmed"); copyBtn.innerHTML = original; }, 2800);
+    } catch (err) {
+      // Fallback for older browsers or when clipboard API is blocked (e.g., non-HTTPS)
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); copyBtn.innerHTML = '<span class="share-btn-icon">✓</span> Copied'; }
+      catch (e2) { alert("Couldn't copy automatically. The summary is in a text box — select and copy it manually."); }
+      document.body.removeChild(ta);
+    }
+  });
+
+  const printBtn = document.getElementById("btn-print-summary");
+  if (printBtn) printBtn.addEventListener("click", () => {
+    // Browsers' print dialog handles PDF save natively.
+    // The @media print styles hide the nav, share row, and tooltips so the
+    // printed page shows just the answers + ranked tools.
+    window.print();
+  });
+
+  const offlineBtn = document.getElementById("btn-save-offline");
+  if (offlineBtn) offlineBtn.addEventListener("click", () => {
+    // The whole navigator is a single self-contained HTML file.
+    // We also embed the current state so the offline copy reopens at Stage 4
+    // with the user's answers intact — useful for sharing a scenario with a
+    // colleague, or picking up work on a laptop without internet.
+    const stateJson = JSON.stringify(state).replace(/</g, "\\u003c");
+    document.body.setAttribute("data-saved-state", stateJson);
+    const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    document.body.removeAttribute("data-saved-state"); // don't pollute the live DOM
+    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "climate-me-navigator.html";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    offlineBtn.classList.add("confirmed");
+    const original = offlineBtn.innerHTML;
+    offlineBtn.innerHTML = '<span class="share-btn-icon">✓</span> Saved — open anytime, no internet needed';
+    setTimeout(() => { offlineBtn.classList.remove("confirmed"); offlineBtn.innerHTML = original; }, 4000);
+  });
+
   attachNav();
+}
+
+// Build a plain-text summary of the user's answers and top-ranked tools,
+// suitable for pasting into an email, Word doc, or Slack.
+function buildPlainSummary() {
+  const a = state.answers;
+  const ranked = rankedTools();
+  const max = maxPossibleScore();
+  const strong = ranked.filter(t => fitBand(t._score, max) === "strong").slice(0, 8);
+  const possible = ranked.filter(t => fitBand(t._score, max) === "possible").slice(0, 6);
+
+  const L = [];
+  L.push("CLIMATE M&E NAVIGATOR — YOUR SHORTLIST");
+  L.push("Generated " + new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }));
+  L.push("");
+  L.push("YOUR ANSWERS");
+  L.push("Primary purpose:   " + (labelFor(OPT_PURPOSE, a.purpose_primary) || "not answered"));
+  if (a.purpose_secondary.length) L.push("Secondary:         " + labelsFor(OPT_PURPOSE, a.purpose_secondary).join(", "));
+  L.push("Scope:             " + (a.scope.length ? labelsFor(OPT_SCOPE, a.scope).join(", ") : "not answered"));
+  L.push("Scale:             " + (labelFor(OPT_SCALE, a.scale) || "not answered"));
+  L.push("Capacity:          " + (labelFor(OPT_CAPACITY, a.capacity) || "not answered"));
+  if (a.approach) L.push("Approach:          " + labelFor(OPT_APPROACH, a.approach));
+  if (a.data) L.push("Data readiness:    " + labelFor(OPT_DATA, a.data));
+  if (a.time) L.push("Time horizon:      " + labelFor(OPT_TIME, a.time));
+  if (a.toc) L.push("Theory of change:  " + labelFor(OPT_TOC, a.toc));
+  L.push("");
+
+  if (strong.length) {
+    L.push("STRONG FIT — start here");
+    L.push("");
+    strong.forEach((t, i) => {
+      L.push(`${i + 1}. ${t.name}`);
+      L.push(`   ${t.type} · ${t.provider} · ${t.cost}`);
+      L.push(`   ${t.what}`);
+      if (t.examples) L.push(`   In use: ${t.examples}`);
+      L.push(`   Source: ${t.link}`);
+      L.push("");
+    });
+  }
+
+  if (possible.length) {
+    L.push("POSSIBLE FIT — useful as complements");
+    L.push("");
+    possible.forEach((t, i) => {
+      L.push(`${i + 1}. ${t.name}  (${t.provider})`);
+      L.push(`   ${t.what}`);
+      L.push(`   Source: ${t.link}`);
+      L.push("");
+    });
+  }
+
+  L.push("---");
+  L.push("Generated by the Climate M&E Navigator, a working-draft diagnostic tool.");
+  L.push("Rankings reflect the answers above. Your context matters more than the ranking —");
+  L.push("treat this as a starting shortlist, not a prescription.");
+  return L.join("\n");
 }
 
 function renderBand(heading, cls, tools, desc) {
@@ -1963,6 +2208,7 @@ function toolCardHTML(t, cls) {
     <div class="tool-card-meta mono">${t.type}<span class="sep">·</span>${t.provider}</div>
     ${t.toc ? `<div class="tool-card-toc-badge">Works with theory of change</div>` : ''}
     <div class="tool-card-what">${t.what}</div>
+    ${t.examples ? `<div class="tool-card-examples"><span class="tool-card-examples-label">In use:</span> ${t.examples}</div>` : ''}
     ${why}
     <div class="tool-card-footer">
       <span class="tool-card-cost">${t.cost}</span>
@@ -2022,6 +2268,19 @@ function wireFeedbackButton() {
 }
 
 // INIT
+// If this file was saved with answers (via "Save for offline use"), restore them.
+const savedState = document.body.getAttribute("data-saved-state");
+if (savedState) {
+  try {
+    const parsed = JSON.parse(savedState);
+    if (parsed && parsed.answers) {
+      Object.assign(state, parsed);
+      document.body.removeAttribute("data-saved-state");
+    }
+  } catch (e) {
+    // Malformed state — just start fresh.
+  }
+}
 render();
 wireFeedbackButton();
 </script>
