@@ -62,6 +62,10 @@ body {
   align-items: flex-end;
   gap: 4px;
 }
+.masthead-buttons {
+  display: flex;
+  gap: 8px;
+}
 .feedback-btn {
   font-family: 'Inter', sans-serif;
   font-size: 12.5px;
@@ -480,6 +484,11 @@ body {
   padding: 28px 32px 26px;
   position: relative;
   box-shadow: 0 12px 40px rgba(26, 26, 23, 0.18);
+  max-height: 88vh;
+  overflow-y: auto;
+}
+.feedback-dialog-panel.wide {
+  max-width: 760px;
 }
 .feedback-dialog-close {
   position: absolute;
@@ -627,6 +636,79 @@ body {
   background: var(--strong-wash);
   border-color: var(--strong);
   color: var(--strong);
+}
+
+/* Help dialog uses the feedback-dialog shell for the modal frame; these
+   are the help-specific extras for sections and glossary layout. */
+.help-dialog-section {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule-soft);
+}
+.help-dialog-section:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+.help-dialog-section h4 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: -0.005em;
+}
+.help-dialog-section p {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+.help-dialog-section p:last-child { margin-bottom: 0; }
+.help-dialog-section p strong { color: var(--ink); font-weight: 500; }
+
+.glossary-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 4px;
+}
+.glossary-item {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 16px;
+  align-items: start;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--rule);
+}
+.glossary-item:last-child { border-bottom: none; padding-bottom: 0; }
+.glossary-term {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+}
+.glossary-term-acronym {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--clay);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 2px;
+  font-weight: 400;
+}
+.glossary-def {
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+@media (max-width: 720px) {
+  .glossary-item { grid-template-columns: 1fr; gap: 4px; padding-bottom: 12px; }
+  .glossary-term-acronym { display: inline; margin-left: 6px; }
 }
 
 /* Print view — triggered when the body has class 'printing' */
@@ -959,21 +1041,17 @@ body {
 .pagefoot {
   max-width: var(--max-w);
   margin: 32px auto 0;
-  padding: 24px 40px 40px;
+  padding: 22px 40px 36px;
   border-top: 1px solid var(--rule);
-  font-size: 12.5px;
+}
+.pagefoot-inner {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--ink-muted);
   line-height: 1.65;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 36px;
-}
-.pagefoot h4 {
-  font-family: 'Fraunces', serif;
-  font-weight: 500;
-  font-size: 13.5px;
-  color: var(--ink);
-  margin-bottom: 6px;
+  text-align: center;
 }
 
 /* ========== RESPONSIVE ========== */
@@ -985,7 +1063,6 @@ body {
   }
   .stage-nav-inner { flex-wrap: wrap; gap: 4px; }
   .stage-chip { flex: 1 1 45%; padding: 8px 10px; border-left: 1px solid var(--rule); }
-  .pagefoot { grid-template-columns: 1fr; gap: 20px; }
   .options.grid-2 { grid-template-columns: 1fr; }
   .results-band-desc { margin-left: 0; }
   .results-band-header { flex-wrap: wrap; }
@@ -1016,11 +1093,16 @@ button:focus-visible, a:focus-visible {
       <div class="wordmark-sub">Tools and methods for climate change M&amp;E</div>
     </div>
     <div class="masthead-right">
-      <button class="feedback-btn" id="feedback-btn" title="Send feedback on the tool, rankings, or tool list">
-        <span class="feedback-btn-icon">✎</span>
-        Send feedback
-      </button>
-      <div class="wordmark-sub" style="text-align:right; margin-top:6px;">Working draft · v0.2</div>
+      <div class="masthead-buttons">
+        <button class="feedback-btn" id="help-btn" title="How to use this tool, and glossary of climate M&E terms">
+          <span class="feedback-btn-icon">?</span>
+          Help &amp; glossary
+        </button>
+        <button class="feedback-btn" id="feedback-btn" title="Send feedback on the tool, rankings, or tool list">
+          <span class="feedback-btn-icon">✎</span>
+          Send feedback
+        </button>
+      </div>
     </div>
   </div>
 </header>
@@ -1030,17 +1112,8 @@ button:focus-visible, a:focus-visible {
 <main id="stage-container"></main>
 
 <footer class="pagefoot">
-  <div>
-    <h4>How to use this</h4>
-    <p>Answer the four stages in order. Each answer helps narrow down the tools at the end. You can jump ahead at any point — if you do, the final list will be rougher until you come back and fill in the gaps.</p>
-  </div>
-  <div>
-    <h4>Why tools appear where they do</h4>
-    <p>Each tool is matched against your answers — purpose, scope, scale, capacity, and so on. Hover the small grey box on any tool card to see why it ranked where it did. This is deliberately open so you can challenge choices that look wrong.</p>
-  </div>
-  <div>
-    <h4>What this tool is not</h4>
-    <p>It doesn't tell you what to do. It narrows a wide field of tools to a shorter list that fits your situation. The final choice is yours — you know things about your context that this tool can't see.</p>
+  <div class="pagefoot-inner">
+    <p>Working draft · v0.4 — Lingaraj G Jayaprakash</p>
   </div>
 </footer>
 
@@ -2390,6 +2463,181 @@ function toolCardHTML(t, cls) {
 }
 
 // ============================================================
+// HELP & GLOSSARY
+// ============================================================
+
+// Glossary entries — kept short, written for someone new to climate M&E.
+const GLOSSARY = [
+  {
+    term: "Biennial Transparency Report",
+    acronym: "BTR",
+    def: "The main reporting document countries submit to the UNFCCC under the Paris Agreement, every two years. Covers GHG emissions, progress on NDC targets, climate impacts and adaptation, and finance received or provided. First BTRs were due by end of 2024."
+  },
+  {
+    term: "Nationally Determined Contribution",
+    acronym: "NDC",
+    def: "A country's pledge under the Paris Agreement covering what it will do to reduce emissions and (often) how it will adapt. Updated every five years, with each update expected to be more ambitious than the last."
+  },
+  {
+    term: "National Adaptation Plan",
+    acronym: "NAP",
+    def: "A country's medium-to-long-term strategy for adapting to climate change — identifying vulnerabilities, prioritising actions, and laying out implementation arrangements. Many developing countries are now turning their NAPs into actual delivery plans, which is what M&E systems track."
+  },
+  {
+    term: "National Biodiversity Strategy and Action Plan",
+    acronym: "NBSAP",
+    def: "The country-level instrument for delivering on the UN Convention on Biological Diversity. Currently being updated to align with the Kunming-Montreal Global Biodiversity Framework adopted in 2022."
+  },
+  {
+    term: "Measurement, Reporting and Verification",
+    acronym: "MRV",
+    def: "The standard process for tracking GHG emissions and reductions in a way that is credible to the UNFCCC and to funders. Measurement is collecting the data, reporting is putting it into the right format, and verification is independent checking that the numbers hold up."
+  },
+  {
+    term: "Enhanced Transparency Framework",
+    acronym: "ETF",
+    def: "The Paris Agreement's reporting regime — the system that BTRs feed into. Replaced the older two-track system that gave developing countries lighter requirements; now everyone reports against the same template, with flexibility on detail for those that need it."
+  },
+  {
+    term: "GHG inventory",
+    acronym: "",
+    def: "A systematic accounting of a country's (or city's, or company's) greenhouse gas emissions, broken down by sector and gas. The starting point for almost any mitigation work. Built using IPCC methodologies."
+  },
+  {
+    term: "Sendai Framework",
+    acronym: "",
+    def: "The global agreement on disaster risk reduction (2015–2030). Has seven global targets countries report against — covering disaster mortality, affected populations, economic losses, damage to infrastructure, and the existence of national DRR strategies."
+  },
+  {
+    term: "Voluntary National Review",
+    acronym: "VNR",
+    def: "A country's self-assessment of progress on the Sustainable Development Goals, presented at the UN's High-Level Political Forum. Both narrative and indicator-based; some countries integrate climate and biodiversity SDG reporting here."
+  },
+  {
+    term: "Global Biodiversity Framework",
+    acronym: "GBF",
+    def: "The Kunming-Montreal Global Biodiversity Framework, adopted at CBD COP15 in 2022. Has 23 targets for 2030, including the well-known 30-by-30 target on protected areas. Comes with a monitoring framework of headline indicators."
+  },
+  {
+    term: "Theory of change",
+    acronym: "ToC",
+    def: "A clear statement of how and why your activities are expected to lead to the outcomes you want — including the assumptions and intermediate steps along the way. Useful for M&E because it tells you what to measure and where to look for problems if things are not working."
+  },
+  {
+    term: "Transformational change",
+    acronym: "",
+    def: "Systemic shifts in how a sector or society works — going beyond incremental improvement. Examples: shifting energy systems to renewables, reorganising land use, changing institutions and norms. Hard to measure with traditional logframes, which is why methods like Outcome Harvesting and Contribution Analysis appear in the toolkit."
+  },
+  {
+    term: "Locally-led adaptation",
+    acronym: "LLA",
+    def: "An approach where decisions about adaptation are made by people most affected, with resources flowing to local institutions. Defined by eight principles agreed in 2021. Implies M&E approaches that capture local definitions of success, not just donor-set indicators."
+  },
+  {
+    term: "National Implementing Entity",
+    acronym: "NIE",
+    def: "An in-country organisation accredited to receive climate finance directly (mainly under the Adaptation Fund and GCF), without going through a multilateral intermediary. Direct access matters for country ownership but comes with full reporting obligations — which is where many of the project-level M&E tools come in."
+  },
+  {
+    term: "AFOLU",
+    acronym: "",
+    def: "Agriculture, Forestry and Other Land Use — the IPCC's combined category for emissions and removals from land-based activities. Often the trickiest part of a national inventory, especially for forest-rich countries where REDD+ work overlaps."
+  },
+  {
+    term: "Results framework",
+    acronym: "",
+    def: "A structured table laying out what a project or programme aims to achieve — typically with goals, outcomes, outputs, indicators, baselines, and targets. Most major climate funds (GCF, GEF, AF) have mandatory results frameworks projects must use."
+  },
+  {
+    term: "Indicator",
+    acronym: "",
+    def: "A specific, measurable thing that tells you whether something is happening — like hectares of forest under improved management, or number of households with climate-resilient water supply. Good indicators are specific, relevant, and feasible to measure regularly."
+  },
+  {
+    term: "Baseline",
+    acronym: "",
+    def: "The starting state against which change will be measured. Without a credible baseline, you cannot claim a project caused improvement — you do not know what was happening before. Establishing baselines is often half the work of designing M&E."
+  },
+  {
+    term: "MEL",
+    acronym: "",
+    def: "Monitoring, Evaluation and Learning. The L matters: it is what distinguishes M&E that just produces reports from M&E that actually changes how a programme is run. Most modern frameworks emphasise MEL rather than M&E alone."
+  },
+  {
+    term: "Loss and damage",
+    acronym: "L&D",
+    def: "The harms from climate change that go beyond what adaptation can prevent — including economic losses (damaged infrastructure, lost crops) and non-economic ones (cultural loss, displacement, ecosystem damage). A formal track under the UNFCCC since 2013, with the Loss and Damage Fund agreed at COP28."
+  }
+];
+
+function openHelpDialog() {
+  const existing = document.getElementById("help-dialog");
+  if (existing) existing.remove();
+
+  const dialog = document.createElement("div");
+  dialog.id = "help-dialog";
+  dialog.className = "feedback-dialog-backdrop";
+
+  const glossaryHTML = GLOSSARY
+    .slice()
+    .sort((a, b) => a.term.localeCompare(b.term))
+    .map(g => `
+      <div class="glossary-item">
+        <div class="glossary-term">
+          ${g.term}
+          ${g.acronym ? `<span class="glossary-term-acronym">${g.acronym}</span>` : ''}
+        </div>
+        <div class="glossary-def">${g.def}</div>
+      </div>
+    `).join("");
+
+  dialog.innerHTML = `
+    <div class="feedback-dialog-panel wide">
+      <button class="feedback-dialog-close" id="help-close" aria-label="Close">×</button>
+      <h3 class="feedback-dialog-title serif">Help &amp; glossary</h3>
+
+      <div class="help-dialog-section">
+        <h4>How to use this</h4>
+        <p>Four short stages, about two minutes. <strong>Stage 1</strong> asks why you need M&amp;E. <strong>Stage 2</strong> asks what you are measuring. <strong>Stage 3</strong> asks where you work and what resources you have. <strong>Stage 4</strong> shows you a ranked shortlist of tools that fit your answers.</p>
+        <p>You can <strong>jump between stages</strong> at any time using the bar at the top — your answers are kept. Required questions are marked, optional ones are clearly labelled. The more you answer, the sharper the shortlist gets.</p>
+        <p>If a term is unfamiliar, check the glossary below. If you do not know how to answer something, skip it — most questions are optional and the tool works fine with partial answers.</p>
+        <p>At Stage 4 you can <strong>copy the shortlist</strong>, <strong>save it as PDF</strong>, or <strong>save the whole tool with your answers for offline use</strong> — useful for sharing a scenario with a colleague or for working without internet.</p>
+      </div>
+
+      <div class="help-dialog-section">
+        <h4>What the rankings mean</h4>
+        <p><strong>Strong fit</strong> are tools whose tagged purpose, scope, scale, and capacity overlap most with your answers. Start here — but do not treat them as a recommendation. Your context (country, donor, team, history) matters more than the ranking.</p>
+        <p><strong>Possible fit</strong> tools partly overlap. Often useful as complements to a strong-fit choice — for example, a participatory method paired with an indicator framework.</p>
+        <p><strong>Weaker fit</strong> tools usually serve a different purpose or scale. Shown so you can see the full inventory; mostly safe to skip.</p>
+        <p>Hover the small grey "fit" box on any tool card to see exactly which of your answers pushed its score up or down. This is deliberately transparent — the logic can be debated and improved.</p>
+      </div>
+
+      <div class="help-dialog-section">
+        <h4>Glossary of climate M&amp;E terms</h4>
+        <p style="margin-bottom: 14px;">Brief plain-language definitions. Not exhaustive — just the terms you are most likely to bump into in tool descriptions and option labels.</p>
+        <div class="glossary-list">
+          ${glossaryHTML}
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(dialog);
+
+  const close = () => dialog.remove();
+  document.getElementById("help-close").addEventListener("click", close);
+  dialog.addEventListener("click", (e) => { if (e.target === dialog) close(); });
+  document.addEventListener("keydown", function escHandler(e) {
+    if (e.key === "Escape") { close(); document.removeEventListener("keydown", escHandler); }
+  });
+}
+
+function wireHelpButton() {
+  const btn = document.getElementById("help-btn");
+  if (!btn) return;
+  btn.addEventListener("click", openHelpDialog);
+}
+
+// ============================================================
 // FEEDBACK
 // ============================================================
 function buildFeedbackMailto() {
@@ -2422,7 +2670,7 @@ function buildFeedbackMailto() {
   lines.push("Anything else:");
   lines.push("");
 
-  const subject = "Feedback on Climate M&E Navigator (v0.2)";
+  const subject = "Feedback on Climate M&E Navigator (v0.4)";
   const body = lines.join("\n");
   return `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
@@ -2471,7 +2719,7 @@ function openFeedbackDialog() {
   lines.push("Anything else:");
   lines.push("");
 
-  const subject = "Feedback on Climate M&E Navigator (v0.2)";
+  const subject = "Feedback on Climate M&E Navigator (v0.4)";
   const body = lines.join("\n");
   const mailtoUrl = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(FEEDBACK_EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -2570,6 +2818,7 @@ if (savedState) {
 }
 render();
 wireFeedbackButton();
+wireHelpButton();
 </script>
 
 </body>
