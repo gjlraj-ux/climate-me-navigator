@@ -25,9 +25,8 @@
   --strong-wash: #dfe8df;
   --weak: #8f7a4a;
   --weak-wash: #ede5cf;
-  --ground: #4a5d6e;          /* slate-blue for Stage 0, distinct from accent */
-  --ground-wash: #e2e7ec;
-  --ground-deep: #2f3d49;
+  --grounding: #4a5a7a;
+  --grounding-wash: #e2e6ee;
   --radius: 4px;
   --max-w: 1220px;
 }
@@ -90,7 +89,10 @@ body {
   color: var(--paper);
   border-color: var(--accent);
 }
-.feedback-btn-icon { font-size: 13px; line-height: 1; }
+.feedback-btn-icon {
+  font-size: 13px;
+  line-height: 1;
+}
 .wordmark-title {
   font-family: 'Fraunces', serif;
   font-weight: 500;
@@ -147,7 +149,7 @@ body {
   box-shadow: inset 0 -2px 0 var(--accent);
 }
 .stage-chip.active[data-stage="0"] {
-  box-shadow: inset 0 -2px 0 var(--ground);
+  box-shadow: inset 0 -2px 0 var(--grounding);
 }
 .stage-chip .mono {
   font-size: 10px;
@@ -156,7 +158,7 @@ body {
   color: var(--ink-muted);
 }
 .stage-chip .serif {
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 500;
   letter-spacing: -0.005em;
 }
@@ -166,7 +168,7 @@ body {
   font-style: italic;
 }
 .stage-chip.active .state { color: var(--accent); font-style: normal; }
-.stage-chip.active[data-stage="0"] .state { color: var(--ground); }
+.stage-chip.active[data-stage="0"] .state { color: var(--grounding); }
 .stage-chip.complete .state { color: var(--strong); font-style: normal; }
 .stage-chip.complete .state::before { content: "● "; }
 
@@ -181,6 +183,7 @@ body {
 }
 .stage-page[data-stage="4"] { grid-template-columns: 1fr; }
 
+/* left column: stage card + explanatory */
 .stage-intro {
   display: flex;
   flex-direction: column;
@@ -202,10 +205,7 @@ body {
   color: var(--accent);
 }
 .stage-heading em { color: var(--ink); font-style: italic; font-weight: 400; }
-/* Stage 0 uses ground color instead of accent */
-.stage-page[data-stage="0"] .stage-heading { color: var(--ground); }
-.stage-page[data-stage="0"] .stage-kicker { color: var(--ground); }
-
+.stage-page[data-stage="0"] .stage-heading { color: var(--grounding); }
 .stage-intro-body {
   font-size: 14.5px;
   line-height: 1.65;
@@ -246,17 +246,23 @@ body {
 .stage-box-stage { border-right: 1px dashed var(--ink-ghost); }
 .stage-box-steps ol { padding-left: 14px; }
 .stage-box-steps li { margin-bottom: 3px; }
-.stage-box-steps li.current { color: var(--accent); font-weight: 500; }
-.stage-page[data-stage="0"] .stage-box-steps li.current { color: var(--ground); }
+.stage-box-steps li.current {
+  color: var(--accent);
+  font-weight: 500;
+}
+.stage-page[data-stage="0"] .stage-box-steps li.current { color: var(--grounding); }
 
+/* right column: the questions */
 .stage-body {
   display: flex;
   flex-direction: column;
   gap: 32px;
 }
-.step-block { border-top: 2px solid var(--accent); padding-top: 22px; }
-.stage-page[data-stage="0"] .step-block { border-top-color: var(--ground); }
-
+.step-block {
+  border-top: 2px solid var(--accent);
+  padding-top: 22px;
+}
+.stage-page[data-stage="0"] .step-block { border-top-color: var(--grounding); }
 .step-heading {
   font-family: 'Fraunces', serif;
   font-size: 20px;
@@ -265,8 +271,7 @@ body {
   color: var(--accent);
   margin-bottom: 16px;
 }
-.stage-page[data-stage="0"] .step-heading { color: var(--ground); }
-
+.stage-page[data-stage="0"] .step-heading { color: var(--grounding); }
 .step-prompt {
   font-size: 14.5px;
   line-height: 1.6;
@@ -276,32 +281,86 @@ body {
 }
 .step-prompt em { color: var(--ink); font-style: italic; }
 
-/* ========== STAGE 0 — GROUNDING CARDS ========== */
-.grounding-list {
+/* ========== GROUNDING CARDS (Stage 0) ========== */
+.grounding-stack {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
-.grounding-card {
-  border: 1px dashed var(--ground);
-  background: var(--paper);
-  border-radius: var(--radius);
-  padding: 20px 22px;
-  position: relative;
-}
-.grounding-card-head {
+.grounding-toolbar {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
+  align-items: center;
+  padding: 0 4px 12px;
   margin-bottom: 4px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.grounding-toolbar-count {
+  font-size: 10.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.grounding-expand-all {
+  background: none;
+  border: 1px solid var(--rule);
+  padding: 6px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  cursor: pointer;
+  border-radius: var(--radius);
+  transition: all 0.15s;
+}
+.grounding-expand-all:hover {
+  color: var(--grounding);
+  border-color: var(--grounding);
+}
+.grounding-card {
+  border: 1px dashed var(--grounding);
+  border-radius: var(--radius);
+  background: var(--paper-warm);
+  position: relative;
+  transition: background 0.15s;
+}
+.grounding-card.collapsed {
+  background: var(--paper);
+}
+.grounding-card.collapsed:hover {
+  background: var(--paper-warm);
+}
+.grounding-card-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 16px 22px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+}
+.grounding-card.open .grounding-card-toggle {
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--rule);
+}
+.grounding-card-toggle-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 .grounding-card-name {
   font-family: 'Fraunces', serif;
   font-weight: 500;
-  font-size: 18px;
-  line-height: 1.25;
+  font-size: 17px;
   letter-spacing: -0.005em;
+  line-height: 1.3;
   color: var(--ink);
 }
 .grounding-card-meta {
@@ -309,53 +368,89 @@ body {
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ground);
-  margin-bottom: 12px;
+  color: var(--grounding);
 }
 .grounding-card-meta .sep { color: var(--ink-ghost); margin: 0 6px; }
+.grounding-card-chevron {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--grounding);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--grounding);
+  border-radius: 50%;
+  line-height: 1;
+}
+.grounding-card.collapsed .grounding-card-chevron {
+  color: var(--ink-muted);
+  border-color: var(--rule);
+}
+.grounding-card-toggle:hover .grounding-card-chevron {
+  color: var(--grounding);
+  border-color: var(--grounding);
+}
+.grounding-card-body {
+  padding: 6px 22px 18px;
+}
 .grounding-card-section {
-  margin-top: 10px;
+  margin-top: 12px;
   font-size: 13.5px;
   line-height: 1.6;
   color: var(--ink-soft);
 }
-.grounding-card-label {
+.grounding-card-section-label {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ground);
+  color: var(--grounding);
   font-weight: 500;
   display: block;
   margin-bottom: 4px;
 }
-.grounding-card-label.caution { color: var(--accent-deep); }
+.grounding-card-section.caution .grounding-card-section-label {
+  color: var(--accent);
+}
+.grounding-card-section.caution {
+  border-left: 2px solid var(--accent-wash);
+  padding-left: 12px;
+  margin-left: -2px;
+}
 .grounding-card-footer {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--rule);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px dashed var(--rule);
+  gap: 12px;
 }
 .grounding-card-link {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ground);
+  color: var(--grounding);
   text-decoration: none;
-  border-bottom: 1px solid var(--ground-wash);
+  border-bottom: 1px solid var(--grounding-wash);
   padding-bottom: 1px;
 }
-.grounding-card-link:hover { color: var(--ground-deep); border-color: var(--ground-deep); }
-.grounding-mark {
+.grounding-card-link:hover {
+  color: var(--accent);
+  border-color: var(--accent-wash);
+}
+.grounding-toggle {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-muted);
   background: none;
@@ -365,35 +460,35 @@ body {
   cursor: pointer;
   transition: all 0.15s;
 }
-.grounding-mark:hover { border-color: var(--ground); color: var(--ground); }
-.grounding-mark.marked {
-  background: var(--ground-wash);
-  border-color: var(--ground);
-  color: var(--ground-deep);
+.grounding-toggle:hover {
+  border-color: var(--grounding);
+  color: var(--grounding);
 }
-.grounding-mark.marked::before { content: "✓ "; }
+.grounding-toggle.read {
+  background: var(--strong-wash);
+  border-color: var(--strong);
+  color: var(--strong);
+}
+.grounding-toggle.read::before {
+  content: "✓";
+  font-size: 11px;
+}
 
 .grounding-skip-row {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
   display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
 }
-.grounding-skip-btn {
-  font-family: 'Inter', sans-serif;
+.grounding-skip-text {
   font-size: 13px;
-  font-weight: 500;
-  letter-spacing: -0.005em;
-  padding: 9px 18px;
-  background: var(--paper);
-  color: var(--ground-deep);
-  border: 1px solid var(--ground);
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.grounding-skip-btn:hover {
-  background: var(--ground);
-  color: var(--paper);
+  color: var(--ink-muted);
+  font-style: italic;
+  max-width: 50ch;
 }
 
 /* ========== OPTIONS ========== */
@@ -422,7 +517,10 @@ body {
   width: 100%;
 }
 .option:hover { border-color: var(--ink-muted); background: var(--paper-warm); }
-.option.selected { border-color: var(--accent); background: var(--accent-wash); }
+.option.selected {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
 .option-marker {
   flex-shrink: 0;
   width: 16px;
@@ -446,6 +544,7 @@ body {
 }
 .option[data-kind="check"] .option-marker { border-radius: 3px; }
 .option[data-kind="check"].selected .option-marker::after { border-radius: 0; inset: 2px; }
+
 .option-body { flex: 1; }
 .option-label {
   font-weight: 500;
@@ -460,33 +559,42 @@ body {
   margin-top: 3px;
 }
 
-/* ========== STAGE 3 — collapsible optionals ========== */
-.optional-toggle-row {
-  border-top: 1px dashed var(--rule);
-  padding-top: 18px;
-  margin-top: 8px;
-}
-.optional-toggle {
-  background: none;
+/* ========== OPTIONAL QUESTIONS — collapsible ========== */
+.refine-toggle {
+  background: var(--paper-warm);
   border: 1px solid var(--rule);
-  padding: 10px 16px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
+  padding: 14px 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  color: var(--ink-soft);
   cursor: pointer;
   border-radius: var(--radius);
-  width: 100%;
-  text-align: left;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  text-align: left;
+  font-weight: 500;
   transition: all 0.15s;
 }
-.optional-toggle:hover { color: var(--ink); border-color: var(--ink-muted); }
-.optional-toggle .chev { transition: transform 0.2s; }
-.optional-toggle.open .chev { transform: rotate(90deg); }
+.refine-toggle:hover { border-color: var(--ink-muted); background: var(--paper-shade); }
+.refine-toggle-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.refine-toggle-arrow { color: var(--ink-muted); font-size: 14px; transition: transform 0.2s; }
+.refine-toggle.open .refine-toggle-arrow { transform: rotate(90deg); }
+.refine-block {
+  display: none;
+  flex-direction: column;
+  gap: 28px;
+  margin-top: 22px;
+  padding-top: 4px;
+}
+.refine-block.open { display: flex; }
 
 /* ========== NAVIGATION FOOTER ========== */
 .stage-footer {
@@ -500,7 +608,10 @@ body {
   border-top: 1px solid var(--rule-soft);
   margin-top: 32px;
 }
-.stage-footer-nav { display: flex; gap: 8px; }
+.stage-footer-nav {
+  display: flex;
+  gap: 8px;
+}
 .btn {
   font-family: inherit;
   font-size: 13.5px;
@@ -521,6 +632,12 @@ body {
   border-color: var(--ink);
 }
 .btn.primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+.btn.skip {
+  background: var(--grounding);
+  color: var(--paper);
+  border-color: var(--grounding);
+}
+.btn.skip:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .stage-footer-meta {
   font-family: 'JetBrains Mono', monospace;
@@ -530,7 +647,7 @@ body {
   color: var(--ink-muted);
 }
 
-/* ========== STAGE 4 ========== */
+/* ========== STAGE 4 — CONSTELLATION ========== */
 .constellation-header {
   max-width: var(--max-w);
   margin: 0 auto;
@@ -567,14 +684,17 @@ body {
   border-color: var(--ink-muted);
   color: var(--ink);
 }
-.share-btn-icon { font-size: 14px; line-height: 1; }
+.share-btn-icon {
+  font-size: 14px;
+  line-height: 1;
+}
 .share-btn.confirmed {
   background: var(--strong-wash);
   border-color: var(--strong);
   color: var(--strong);
 }
 
-/* ===== DIALOGS ===== */
+/* ===== FEEDBACK / HELP DIALOG ===== */
 .feedback-dialog-backdrop {
   position: fixed;
   inset: 0;
@@ -629,7 +749,12 @@ body {
   line-height: 1.55;
   margin-bottom: 20px;
 }
-.feedback-dialog-actions { display: flex; flex-direction: column; gap: 6px; margin-bottom: 22px; }
+.feedback-dialog-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 22px;
+}
 .feedback-dialog-btn {
   display: flex;
   align-items: baseline;
@@ -647,11 +772,7 @@ body {
   transition: all 0.15s;
 }
 .feedback-dialog-btn:hover { background: var(--paper-warm); border-color: var(--ink-muted); }
-.feedback-dialog-btn.primary {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
-}
+.feedback-dialog-btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .feedback-dialog-btn.primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
 .feedback-dialog-btn-sub {
   font-family: 'JetBrains Mono', monospace;
@@ -661,7 +782,10 @@ body {
   color: var(--ink-muted);
   font-weight: 400;
 }
-.feedback-dialog-section { border-top: 1px solid var(--rule-soft); padding-top: 18px; }
+.feedback-dialog-section {
+  border-top: 1px solid var(--rule-soft);
+  padding-top: 18px;
+}
 .feedback-dialog-or { font-size: 12.5px; color: var(--ink-muted); font-style: italic; margin-bottom: 12px; }
 .feedback-dialog-field { margin-bottom: 14px; }
 .feedback-dialog-field label {
@@ -763,20 +887,107 @@ body {
   .glossary-term-acronym { display: inline; margin-left: 6px; }
 }
 
+/* ========== ORIENTATION BANNER (Stage 0 top) ========== */
+.orientation-banner {
+  background: linear-gradient(to bottom, var(--paper-warm), var(--paper));
+  border-bottom: 1px solid var(--rule);
+}
+.orientation-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 36px 40px 32px;
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 48px;
+  align-items: center;
+}
+.orientation-text { max-width: 64ch; }
+.orientation-heading {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.orientation-heading em { color: var(--accent); font-style: italic; font-weight: 400; }
+.orientation-text p {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+}
+.orientation-text p:last-child { margin-bottom: 0; }
+.orientation-text p em { color: var(--ink); font-style: italic; }
+.orientation-text p strong { color: var(--ink); font-weight: 500; }
+.orientation-fine {
+  font-size: 12.5px !important;
+  color: var(--ink-muted) !important;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--rule);
+}
+.orientation-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+.orientation-cta .btn.skip {
+  font-size: 14px;
+  padding: 13px 18px;
+  text-align: center;
+}
+.orientation-reset {
+  background: none;
+  border: 1px solid var(--rule);
+  padding: 8px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  color: var(--ink-muted);
+  cursor: pointer;
+  border-radius: var(--radius);
+  text-align: center;
+  transition: all 0.15s;
+}
+.orientation-reset:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-wash);
+}
+@media (max-width: 960px) {
+  .orientation-inner {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 28px 24px 24px;
+  }
+  .orientation-heading { font-size: 22px; }
+}
+@media (max-width: 560px) {
+  .orientation-inner { padding: 24px 18px 22px; }
+  .orientation-heading { font-size: 20px; }
+}
+
+/* Print view */
 @media print {
   body { background: white; color: black; }
   .masthead, .stage-nav, .share-row, .stage-footer, .pagefoot,
   .feedback-btn, .answers-summary-edit, .collapse-toggle,
-  .incomplete-notice button, .fit-tooltip, .grounding-skip-row,
-  .optional-toggle-row, .grounding-mark {
+  .incomplete-notice button, .fit-tooltip, .grounding-toggle, .grounding-skip-row,
+  .refine-toggle, .orientation-banner {
     display: none !important;
   }
+  .refine-block { display: flex !important; }
+  .grounding-card-body[hidden] { display: block !important; }
+  .grounding-card-toggle { padding-bottom: 10px !important; border-bottom: 1px dashed #ccc !important; }
+  .grounding-card-chevron { display: none !important; }
   .stage-page { grid-template-columns: 1fr !important; padding: 0 !important; }
   .tool-card, .results-band, .answers-summary, .grounding-card {
     break-inside: avoid;
     page-break-inside: avoid;
   }
-  .tool-card-fit-band { background: #f0f0f0 !important; }
+  .tool-card-fit { background: #f0f0f0 !important; }
   .tool-card.strong::before { background: #333 !important; }
   .results-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
   .tool-card { border-color: #888 !important; padding: 12px 14px !important; }
@@ -889,22 +1100,21 @@ body {
   background: var(--strong);
   border-radius: var(--radius) var(--radius) 0 0;
 }
-.tool-card-fit-band {
+.tool-card-fit {
   position: absolute;
   top: 12px;
   right: 14px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 9.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 3px 9px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
   border-radius: 2px;
   background: var(--paper-warm);
   color: var(--ink-muted);
   cursor: help;
 }
-.tool-card.strong .tool-card-fit-band { background: var(--strong-wash); color: var(--strong); }
-.tool-card.weak .tool-card-fit-band { background: var(--weak-wash); color: var(--weak); }
+.tool-card.strong .tool-card-fit { background: var(--strong-wash); color: var(--strong); }
+.tool-card.weak .tool-card-fit { background: var(--weak-wash); color: var(--weak); }
 
 .tool-card-toc-badge {
   display: inline-flex;
@@ -957,7 +1167,7 @@ body {
   font-size: 17px;
   letter-spacing: -0.005em;
   line-height: 1.25;
-  padding-right: 90px;
+  padding-right: 60px;
 }
 .tool-card-meta {
   font-family: 'JetBrains Mono', monospace;
@@ -985,7 +1195,7 @@ body {
   background: var(--paper-shade);
   padding: 8px 10px;
   border-radius: var(--radius);
-  border-left: 2px solid var(--ink-ghost);
+  border-left: 2px solid var(--ink-muted);
 }
 .tool-card-examples-label {
   font-family: 'JetBrains Mono', monospace;
@@ -1056,15 +1266,17 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   display: none;
 }
-.tool-card-fit-band:hover .fit-tooltip,
-.tool-card-fit-band:focus .fit-tooltip { display: block; }
+.tool-card-fit:hover .fit-tooltip,
+.tool-card-fit:focus .fit-tooltip { display: block; }
 .fit-tooltip-header {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.1em;
-  color: #c5b890;
-  margin-bottom: 6px;
   text-transform: uppercase;
+  color: #c0b89e;
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
 }
 .fit-tooltip ul { padding-left: 0; list-style: none; margin: 0; }
 .fit-tooltip li { padding: 2px 0; color: #e0d8c7; }
@@ -1072,6 +1284,7 @@ body {
 .fit-tooltip li.neg::before { content: "− "; color: #e7a785; }
 .fit-tooltip li.zero::before { content: "  "; }
 
+/* ========== FOOTER ========== */
 .pagefoot {
   max-width: var(--max-w);
   margin: 32px auto 0;
@@ -1088,6 +1301,7 @@ body {
   text-align: center;
 }
 
+/* ========== RESPONSIVE ========== */
 @media (max-width: 960px) {
   .stage-page { grid-template-columns: 1fr; gap: 32px; padding: 28px; }
   .stage-heading { font-size: 28px; }
@@ -1095,10 +1309,12 @@ body {
     padding-left: 24px; padding-right: 24px;
   }
   .stage-nav-inner { flex-wrap: wrap; gap: 4px; }
-  .stage-chip { flex: 1 1 30%; padding: 8px 10px; border-left: 1px solid var(--rule); }
+  .stage-chip { flex: 1 1 45%; padding: 8px 10px; border-left: 1px solid var(--rule); }
   .options.grid-2 { grid-template-columns: 1fr; }
   .results-band-desc { margin-left: 0; }
   .results-band-header { flex-wrap: wrap; }
+}
+@media (max-width: 720px) {
   .stage-box { display: none; }
 }
 @media (max-width: 560px) {
@@ -1111,7 +1327,6 @@ body {
   .masthead-right { align-items: flex-start; width: 100%; flex-direction: row; justify-content: space-between; align-items: center; }
   .masthead-right .wordmark-sub { margin-top: 0; }
   .stage-chip .serif { font-size: 13px; }
-  .stage-chip { flex: 1 1 45%; }
 }
 button:focus-visible, a:focus-visible {
   outline: 2px solid var(--accent);
@@ -1148,7 +1363,7 @@ button:focus-visible, a:focus-visible {
 
 <footer class="pagefoot">
   <div class="pagefoot-inner">
-    <p>Working draft · v0.5 — Lingaraj G Jayaprakash</p>
+    <p>Working draft · v0.8 — Lingaraj G Jayaprakash</p>
   </div>
 </footer>
 
@@ -1157,15 +1372,14 @@ button:focus-visible, a:focus-visible {
 // CONFIG
 // ============================================================
 const FEEDBACK_EMAIL = "gjlraj@gmail.com";
-const VERSION = "v0.5";
 
 // ============================================================
-// DATA — GROUNDING DOCUMENTS (Stage 0)
+// DATA — Grounding documents (Stage 0)
 // ============================================================
-// These are not tools — they are situational analyses and strategy
-// documents that should be read BEFORE picking tools. The M&E system
-// is designed in response to these, not in spite of them.
-
+// These are not tools. They are country-level reference documents and policy
+// documents that should shape WHAT an M&E system tracks, before tools
+// are picked. Read-only, no ranking, fixed order.
+// ============================================================
 const GROUNDING_DOCS = [
   {
     id: "ccdr",
@@ -1174,100 +1388,111 @@ const GROUNDING_DOCS = [
     provider: "World Bank",
     type: "Country diagnostic",
     link: "https://www.worldbank.org/en/publication/country-climate-development-reports",
-    what: "Country-level analysis integrating climate action with development priorities — emissions pathways, climate risks, fiscal implications, policy options. Typically 100–200 pages.",
-    howToUse: "Read the chapters on your priority sectors and on institutional arrangements. The CCDR tells you what your government has already committed to caring about — which should shape your indicator choices more than donor templates do. Identify (a) what outcomes matter at national level, (b) which sectors have existing data systems you can build on, and (c) where the political space for M&E investment lies.",
-    caution: "CCDRs are diagnostic, not directive. They identify issues; they do not prescribe indicators or M&E systems. They also reflect World Bank framing — useful but not the only lens."
+    what: "Country-level analysis integrating climate action with development priorities — emissions pathways, climate risks, fiscal implications, sectoral policy options. Typically 100–200 pages, with a clear development lens.",
+    howToUse: "Read the chapters on your priority sectors and on institutional arrangements. The CCDR tells you what your government has already engaged with — which should shape your indicator choices more than donor templates do. Identify (a) what outcomes matter at national level, (b) which sectors have existing data systems you can build on, and (c) where the political space for M&amp;E investment actually lies.",
+    caution: "CCDRs are diagnostic, not directive. They identify issues; they do not prescribe indicators or M&amp;E systems. They also reflect World Bank framing — useful but not the only lens. Pair with national strategies and IPCC science."
+  },
+  {
+    id: "cea",
+    name: "Country Environmental Analysis",
+    acronym: "CEA",
+    provider: "World Bank",
+    type: "Sector diagnostic",
+    link: "https://www.worldbank.org/en/topic/environment/publication/country-environmental-analysis",
+    what: "Long-standing World Bank diagnostic on environmental priorities — pollution, natural resource management, environmental governance — and their links to growth, poverty and health. Predates the CCDR by two decades; in many countries the institutional baseline against which CCDRs build.",
+    howToUse: "Where a CCDR sets the climate-development frame, the CEA gives you the environmental sector frame — air and water quality regimes, forest and fisheries governance, mining and pollution institutions. For M&amp;E systems that touch biodiversity, ecosystem services or environmental health, the CEA usually identifies which institutions hold the relevant data and where the regulatory hooks are. Read the institutional chapter; that's where the design constraints live.",
+    caution: "Coverage and recency vary widely — some CEAs are over a decade old. Check the publication date. Where a recent CCDR exists, it may already integrate the key CEA findings; check that before duplicating."
   },
   {
     id: "nap",
-    name: "National Adaptation Plan",
+    name: "Your country's National Adaptation Plan",
     acronym: "NAP",
-    provider: "Your government / UNFCCC NAP Central",
+    provider: "Government · UNFCCC NAP Central",
     type: "National strategy",
     link: "https://napcentral.org/submitted-naps",
-    what: "Your country's medium-to-long-term adaptation strategy — vulnerabilities, priorities, implementation arrangements. The document an adaptation M&E system most directly serves.",
-    howToUse: "The implementation chapter usually lists priority actions and the institutions responsible. Your M&E system needs to track those, not generic adaptation indicators. Look for explicit or implicit indicators in the text — these are your starting list.",
-    caution: "Many NAPs were written aspirationally and are weaker on M&E than on diagnosis. If your NAP does not specify how progress will be measured, that is a gap your system has to fill — not a constraint to accept."
+    what: "Your country's medium-to-long-term adaptation strategy — vulnerabilities, priorities, implementation arrangements. The document an adaptation M&amp;E system most directly serves.",
+    howToUse: "The implementation chapter usually lists priority actions and the institutions responsible. Your M&amp;E system needs to track those, not generic adaptation indicators. Look for explicit or implicit indicators in the document — these are your starting list. Check whether the NAP has its own M&amp;E section; if it does, that's your anchor.",
+    caution: "Many NAPs were written aspirationally and are weaker on M&amp;E than on diagnosis. If yours doesn't specify how progress will be measured, that's a gap your system has to fill — not a constraint to inherit."
   },
   {
     id: "ndc",
-    name: "Nationally Determined Contribution",
+    name: "Your country's Nationally Determined Contribution",
     acronym: "NDC",
-    provider: "Your government / UNFCCC NDC Registry",
+    provider: "Government · UNFCCC NDC Registry",
     type: "National pledge",
     link: "https://unfccc.int/NDCREG",
-    what: "Your country's pledge under the Paris Agreement — mitigation targets, adaptation priorities, and increasingly, implementation arrangements and means of implementation.",
-    howToUse: "The NDC defines what your BTR will have to report on. Any M&E system serving international reporting starts here. Pay attention to indicators and baselines (or their absence) — gaps here predict where your system will struggle.",
-    caution: "NDCs are political documents. Targets may be more ambitious than current systems can track. The job of M&E is to make the gap visible and shrinking, not to hide it."
+    what: "Your country's pledge under the Paris Agreement — mitigation targets, often adaptation priorities, and increasingly, implementation arrangements and means of implementation.",
+    howToUse: "The NDC defines what your BTR will have to report on. Any M&amp;E system serving international reporting starts here. Pay attention to the indicators and baselines (or their absence) — gaps here predict where your system will struggle. The 2025 NDC update cycle is a useful re-anchoring point.",
+    caution: "NDCs are political documents. Targets may be more ambitious than current systems can track. The job of M&amp;E is to make the gap visible and shrinking, not to hide it."
+  },
+  {
+    id: "natcom",
+    name: "National Communications to the UNFCCC",
+    acronym: "NATCOM",
+    provider: "Government · UNFCCC Secretariat",
+    type: "Reporting archive",
+    link: "https://unfccc.int/non-annex-I-NCs",
+    what: "The original reporting line under the Convention — each non-Annex I Party submits a National Communication covering national circumstances, GHG inventory, vulnerability and adaptation, mitigation, and constraints. Most developing countries have submitted three or four NATCOMs over two decades; Biennial Transparency Reports under the Paris Agreement are now taking over much of this role.",
+    howToUse: "NATCOMs are the deepest publicly available archive of how a country has framed its own climate position — emission profiles, vulnerability assessments, sectoral priorities, all in the country's own words. Read the National Circumstances chapter for how the government characterises its own development trajectory and climate exposure. The historical sequence (NC1 → NC4) often reveals which priorities have shifted, which have hardened, and which institutions have actually delivered.",
+    caution: "NATCOMs have varied widely in quality and depth — some are thin, some are exceptional. Older NATCOMs may report against earlier IPCC guidelines and earlier institutional arrangements. Treat as historical record and framing source, not as current operational data."
   },
   {
     id: "nbsap",
-    name: "National Biodiversity Strategy & Action Plan",
+    name: "Your country's National Biodiversity Strategy &amp; Action Plan",
     acronym: "NBSAP",
-    provider: "Your government / CBD Secretariat",
+    provider: "Government · CBD Secretariat",
     type: "National strategy",
     link: "https://www.cbd.int/nbsap",
     what: "Your country's strategy for delivering on the Convention on Biological Diversity — being updated to align with the Kunming-Montreal Global Biodiversity Framework's 23 targets.",
-    howToUse: "If biodiversity is in your scope, the NBSAP update is your alignment point. Map your indicators to GBF headline indicators where you can — this saves duplicate reporting and improves comparability across countries.",
-    caution: "Many NBSAPs predate the GBF and are being revised. Check which version you are working with, and whether the update has formally happened."
+    howToUse: "If biodiversity is in your scope, the NBSAP update process is your alignment point. Map your indicators to the GBF headline indicators where you can — this saves duplicate reporting and improves comparability with other countries. The update process is itself an opportunity to design better M&amp;E in.",
+    caution: "Many NBSAPs predate the GBF and are being revised. Check which version you are working with, and whether the update has formally happened. An old NBSAP with new GBF reporting requirements is a common trap."
   },
   {
     id: "ndgain",
     name: "ND-GAIN Country Index profile",
-    acronym: "ND-GAIN",
+    acronym: "",
     provider: "University of Notre Dame",
     type: "External diagnostic",
     link: "https://gain.nd.edu/our-work/country-index/",
-    what: "Composite index of vulnerability and readiness, with sub-indicators across health, food, water, ecosystems, human habitat, and infrastructure. Time-series back to 1995.",
-    howToUse: "Useful as an external mirror — how does the world see your country's climate position? Sub-indicators sometimes flag sectors that domestic diagnostics underweight. Good for situating your country in regional context.",
-    caution: "Index-based, so methodology choices drive results. Use to ask questions, not to settle them. Especially weak for country-specific institutional realities."
+    what: "Composite index of vulnerability and readiness, with sub-indicators across health, food, water, ecosystems, human habitat, and infrastructure. Time-series data back to 1995.",
+    howToUse: "Useful as an external mirror — how does the world see your country's climate position? The sub-indicators sometimes flag sectors that domestic diagnostics underweight. Good for situating your country in regional context and for spotting trends your own data may not yet show.",
+    caution: "Index-based, so methodology choices drive results. Use to ask questions, not to settle them. Especially weak for country-specific institutional realities and for capturing recent rapid change."
   },
   {
     id: "ipcc-wg2",
-    name: "IPCC AR6 Working Group II — your regional chapter",
-    acronym: "AR6 WG2",
+    name: "IPCC AR6 WG2 — regional chapter",
+    acronym: "",
     provider: "IPCC",
     type: "Scientific assessment",
     link: "https://www.ipcc.ch/report/ar6/wg2/",
-    what: "The most authoritative scientific synthesis of climate impacts, adaptation, and vulnerability for your world region — chapters for Africa, Asia, Australasia, Central & South America, Europe, North America, Small Islands, Polar.",
-    howToUse: "Read the chapter for your region as a check on what your national documents say. The IPCC will sometimes name risks or sectoral concerns that domestic strategies have not yet absorbed. Cite it when you need to argue for an indicator that policymakers have not prioritised yet.",
+    what: "The most authoritative scientific synthesis of climate impacts, adaptation, and vulnerability for your world region — chapters cover Africa, Asia, Australasia, Central &amp; South America, Europe, North America, Small Islands, and Polar regions.",
+    howToUse: "Read the chapter for your region as a check on what your national documents say. The IPCC chapter will sometimes name risks or sectoral concerns that domestic strategies have not yet absorbed. Cite it when you need to argue for an indicator that policymakers haven't prioritised yet but the science already supports.",
     caution: "Written for a global audience — country-specific detail varies. Best used alongside national assessments, not in place of them."
   }
 ];
 
 // ============================================================
-// DATA — TOOLS
+// DATA — Tools tagged across six dimensions
 // ============================================================
-// Tag families:
-//   purpose:   international_reporting, national_policy, project_accountability,
-//              learning_transformation, finance_tracking, community_monitoring
-//   scope:     mitigation, adaptation, loss_damage, biodiversity, crosscutting
-//   scale:     international, national, subnational, community
-//   capacity:  low, medium, high  (list of tiers the tool fits — tool can fit multiple)
-//   approach:  topdown, bottomup, blended
-//   data:      thin, moderate, rich  (data availability the tool REQUIRES)
-//   time:      weeks, months, years  (realistic time-to-first-useful-result)
-//   toc:       true if the tool/method works well with a theory of change
-
 const TOOLS = [
   {
     id: "ipcc-inv", name: "IPCC Inventory Software", provider: "IPCC TFI", type: "Software",
     cost: "Free", link: "https://www.ipcc-nggip.iges.or.jp/software/",
     what: "Desktop application implementing the IPCC Guidelines for national GHG inventories across all sectors.",
-    examples: "Used by many developing countries to compile inventories for BTRs where they don't yet have a custom system; complements country-built tools like Brazil's SIRENE (which uses IPCC methodologies but its own platform).",
+    examples: "Used in national GHG inventories by Brazil (whose SIRENE system applies IPCC methodologies), South Africa, and many others.",
     purpose: ["international_reporting", "national_policy"],
     scope: ["mitigation"],
     scale: ["national"],
-    capacity: ["low", "medium", "high"],
+    capacity: ["medium", "high"],
     approach: ["topdown"],
     data: ["moderate"],
     time: ["months"]
   },
   {
-    id: "cbit", name: "Capacity-building Initiative for Transparency (CBIT)", provider: "GEF", type: "Funding mechanism + technical support",
-    cost: "Grant-funded; no cost to country", link: "https://www.thegef.org/what-we-do/topics/capacity-building-initiative-transparency-cbit",
-    what: "GEF mechanism specifically designed to help developing countries build the institutional and technical capacity to meet Paris Agreement transparency requirements — including BTRs and supporting M&E systems.",
-    examples: "Used by over 90 countries to build national MRV systems, train staff, and set up the data architecture behind BTR reporting. Often the funding source that lets countries take ownership of their reporting rather than relying on external consultants.",
+    id: "cbit", name: "Capacity-building Initiative for Transparency (CBIT)", provider: "GEF", type: "Funding & support programme",
+    cost: "Grant-funded", link: "https://www.thegef.org/what-we-do/topics/capacity-building-initiative-transparency-cbit",
+    what: "GEF funding window specifically for building country capacity to meet Enhanced Transparency Framework requirements — including national M&E and MRV systems.",
+    examples: "Active CBIT projects in 90+ developing countries, building national MRV platforms, BTR-ready inventory systems, and adaptation tracking.",
     purpose: ["international_reporting", "national_policy"],
     scope: ["mitigation", "adaptation", "crosscutting"],
     scale: ["national"],
@@ -1293,7 +1518,7 @@ const TOOLS = [
     id: "icat", name: "ICAT Policy Assessment Guides", provider: "ICAT", type: "Framework",
     cost: "Free", link: "https://climateactiontransparency.org/our-work/icat-toolbox/",
     what: "Sector-specific guides (energy, transport, forest, agriculture) plus sustainable development and transformational change methods.",
-    examples: "Applied in Laos cities (Pakse, Kaysone Phomvihane) for community-scale GHG inventories.",
+    examples: "Applied in Laos cities (Pakse and Kaysone Phomvihane) for community-scale GHG inventories.",
     purpose: ["national_policy", "project_accountability", "learning_transformation"],
     scope: ["mitigation", "crosscutting"],
     scale: ["national", "subnational"],
@@ -1305,8 +1530,8 @@ const TOOLS = [
   {
     id: "gpc", name: "GPC — Global Protocol for Community-Scale GHG Inventories", provider: "WRI / C40 / ICLEI", type: "Framework",
     cost: "Free", link: "https://ghgprotocol.org/ghg-protocol-cities",
-    what: "Standard for city-level GHG inventories, harmonized with CDP-ICLEI Unified Reporting.",
-    examples: "Widely used in C40 cities including São Paulo's municipal climate plan.",
+    what: "Standard for city-level GHG inventories, harmonised with CDP-ICLEI Unified Reporting.",
+    examples: "Widely used in C40 cities including São Paulo's municipal climate plan; applied in Laos cities Pakse and Kaysone Phomvihane.",
     purpose: ["international_reporting", "national_policy"],
     scope: ["mitigation"],
     scale: ["subnational"],
@@ -1319,7 +1544,7 @@ const TOOLS = [
     id: "open-foris", name: "Open Foris + SEPAL", provider: "FAO", type: "Software",
     cost: "Free", link: "https://openforis.org/",
     what: "Cloud platform for forest monitoring using satellite imagery.",
-    examples: "Underpins Ethiopia's National Forest Monitoring System for REDD+ MRV.",
+    examples: "Underpins Ethiopia's National Forest Monitoring System for REDD+ MRV; complements Brazil's INPE satellite monitoring of the Amazon.",
     purpose: ["international_reporting", "national_policy", "project_accountability"],
     scope: ["mitigation", "biodiversity"],
     scale: ["national", "subnational"],
@@ -1332,7 +1557,7 @@ const TOOLS = [
     id: "gfw", name: "Global Forest Watch", provider: "WRI", type: "Database",
     cost: "Free", link: "https://www.globalforestwatch.org/",
     what: "Near-real-time forest cover, loss, and fire alerts globally.",
-    examples: "Used by national teams as a cross-check on in-country forest data; complements Brazil's INPE deforestation monitoring of the Amazon.",
+    examples: "Used by national teams as a cross-check on in-country forest data; complements Brazil's INPE deforestation monitoring.",
     purpose: ["project_accountability", "national_policy"],
     scope: ["mitigation", "biodiversity"],
     scale: ["national", "subnational", "community"],
@@ -1354,6 +1579,7 @@ const TOOLS = [
     data: ["rich"],
     time: ["months", "years"]
   },
+
   {
     id: "tamd", name: "TAMD — Tracking Adaptation & Measuring Development", provider: "IIED", type: "Framework",
     cost: "Free", link: "https://www.iied.org/tracking-adaptation-measuring-development-tamd",
@@ -1398,8 +1624,8 @@ const TOOLS = [
   {
     id: "gcf-irmf", name: "GCF Integrated Results Management Framework", provider: "Green Climate Fund", type: "Framework (required)",
     cost: "Free", link: "https://www.greenclimate.fund/document/integrated-results-management-framework",
-    what: "Mandatory results framework for GCF-funded projects, with core indicators for paradigm shift, mitigation, and adaptation.",
-    examples: "Applied in all GCF-funded projects across more than 100 countries.",
+    what: "Mandatory results framework for GCF-funded projects, with core indicators for paradigm shift, mitigation and adaptation.",
+    examples: "Applied in all GCF-funded projects across LDCs, SIDS, and other developing countries.",
     purpose: ["project_accountability"],
     scope: ["mitigation", "adaptation", "crosscutting"],
     scale: ["national", "subnational", "community"],
@@ -1411,7 +1637,7 @@ const TOOLS = [
   {
     id: "gef-amat", name: "GEF Adaptation Monitoring & Assessment Tool (AMAT)", provider: "Global Environment Facility", type: "Framework (required)",
     cost: "Free", link: "https://www.thegef.org/documents/results-framework-tracking-tools",
-    what: "Standardized reporting tool for LDCF/SCCF-funded adaptation projects.",
+    what: "Standardised reporting tool for LDCF/SCCF-funded adaptation projects.",
     examples: "Applied across LDCF and SCCF adaptation portfolios globally.",
     purpose: ["project_accountability"],
     scope: ["adaptation"],
@@ -1424,7 +1650,7 @@ const TOOLS = [
   {
     id: "af-results", name: "Adaptation Fund Results Framework", provider: "Adaptation Fund", type: "Framework (required)",
     cost: "Free", link: "https://www.adaptation-fund.org/document/results-framework-and-baseline-guidance/",
-    what: "Standard outcome and output indicators for AF-funded projects, with gender and E&S markers.",
+    what: "Standard outcome and output indicators for AF-funded projects, with gender and environmental & social markers.",
     examples: "Used by Adaptation Fund National Implementing Entities across LDCs and SIDS.",
     purpose: ["project_accountability"],
     scope: ["adaptation"],
@@ -1451,7 +1677,7 @@ const TOOLS = [
     id: "pmerl", name: "PMERL — Participatory M&E, Reflection and Learning", provider: "CARE / IIED", type: "Framework",
     cost: "Free", link: "https://www.careclimatechange.org/publications/participatory-monitoring-evaluation-reflection-and-learning-for-community-based-adaptation-pmerl/",
     what: "Community-based adaptive M&E manual designed for community-based adaptation programmes.",
-    examples: "Applied where local input and adaptive management matter — including CARE's Where the Rain Falls programme in Bangladesh, India, and Thailand.",
+    examples: "Applied in community-based adaptation programmes where local input and adaptive management matter most.",
     purpose: ["community_monitoring", "project_accountability", "learning_transformation"],
     scope: ["adaptation", "loss_damage"],
     scale: ["community"],
@@ -1461,6 +1687,7 @@ const TOOLS = [
     time: ["months"],
     toc: true
   },
+
   {
     id: "desinventar", name: "DesInventar Sendai", provider: "UNDRR", type: "Software + database",
     cost: "Free", link: "https://www.desinventar.net/",
@@ -1477,9 +1704,9 @@ const TOOLS = [
   {
     id: "sfm", name: "Sendai Framework Monitor", provider: "UNDRR", type: "Reporting platform",
     cost: "Free", link: "https://sendaimonitor.undrr.org/",
-    what: "Online platform countries use to report against the seven Sendai Framework global targets — mortality, affected populations, economic losses, infrastructure damage, DRR strategies, international cooperation, and early warning.",
-    examples: "Used by all countries reporting on Sendai Framework progress; data feeds back into the global biennial reviews and SDG indicators 1.5, 11.5, and 13.1.",
-    purpose: ["international_reporting", "national_policy"],
+    what: "The official online platform for countries to report against the seven Sendai Framework global targets — disaster mortality, affected populations, economic loss, infrastructure damage, and DRR strategies.",
+    examples: "All UN member states use it for Sendai reporting; often linked to national DesInventar instances for the underlying data.",
+    purpose: ["international_reporting"],
     scope: ["loss_damage"],
     scale: ["national"],
     capacity: ["low", "medium"],
@@ -1517,7 +1744,7 @@ const TOOLS = [
     id: "outcome-harvest", name: "Outcome Harvesting", provider: "Wilson-Grau", type: "Evaluation method",
     cost: "Free method; facilitator cost", link: "https://outcomeharvesting.net/",
     what: "Retrospective method that identifies observed changes and traces contribution — works where pre-set indicators fail.",
-    examples: "Featured in the GEI paper on the Belém Adaptation Indicators as a method suited to climate adaptation M&E where pre-set indicators miss emergent outcomes.",
+    examples: "Featured in Box 5 of the GEI paper as a method suited to climate adaptation M&E where pre-set indicators miss emergent outcomes.",
     purpose: ["learning_transformation", "project_accountability"],
     scope: ["adaptation", "loss_damage", "crosscutting"],
     scale: ["national", "subnational", "community"],
@@ -1527,6 +1754,7 @@ const TOOLS = [
     time: ["months"],
     toc: true
   },
+
   {
     id: "gbf-mon", name: "GBF Monitoring Framework", provider: "CBD", type: "Framework (required)",
     cost: "Free", link: "https://www.cbd.int/gbf/monitoring",
@@ -1592,6 +1820,7 @@ const TOOLS = [
     data: ["moderate"],
     time: ["months", "years"]
   },
+
   {
     id: "opensdg", name: "Open SDG platform", provider: "ONS / UNSD community", type: "Software",
     cost: "Free", link: "https://open-sdg.org/",
@@ -1622,7 +1851,7 @@ const TOOLS = [
     id: "cbt", name: "Climate Budget Tagging", provider: "UNDP (and national variants)", type: "Methodology",
     cost: "Free", link: "https://www.climatefinance-developmenteffectiveness.org/CBT-Database",
     what: "Tagging public expenditure with climate relevance markers within the budget classification system.",
-    examples: "Embedded in Kenya's MRV+ system via the Climate Budget Coding and Tracking Tool.",
+    examples: "Embedded in Kenya's MRV+ system via the Climate Budget Coding and Tracking Tool (in development since 2012).",
     purpose: ["finance_tracking", "national_policy"],
     scope: ["mitigation", "adaptation", "crosscutting"],
     scale: ["national", "subnational"],
@@ -1657,6 +1886,7 @@ const TOOLS = [
     data: ["thin"],
     time: ["weeks"]
   },
+
   {
     id: "c3s", name: "Copernicus Climate Data Store", provider: "ECMWF / EU", type: "Database",
     cost: "Free", link: "https://cds.climate.copernicus.eu/",
@@ -1726,7 +1956,7 @@ const TOOLS = [
     id: "kobo", name: "KoboToolbox", provider: "Kobo Inc / community", type: "Software",
     cost: "Free tier generous; paid for scale", link: "https://www.kobotoolbox.org/",
     what: "Mobile and tablet data collection platform, offline-capable, with survey logic and multi-language support.",
-    examples: "Used widely for field data collection in low-bandwidth contexts — including Kenya's community-based adaptation monitoring and various household climate vulnerability surveys.",
+    examples: "Used by NGOs and government teams worldwide for offline survey work — from flood-risk monitoring in Bangladesh to community climate-impact tracking in East Africa.",
     purpose: ["community_monitoring", "project_accountability"],
     scope: ["adaptation", "loss_damage", "crosscutting"],
     scale: ["community", "subnational"],
@@ -1735,6 +1965,7 @@ const TOOLS = [
     data: ["thin"],
     time: ["weeks"]
   },
+
   {
     id: "msc", name: "Most Significant Change (MSC)", provider: "Davies & Dart", type: "Evaluation method",
     cost: "Free method", link: "https://www.betterevaluation.org/methods-approaches/approaches/most-significant-change",
@@ -1776,13 +2007,66 @@ const TOOLS = [
     data: ["moderate"],
     time: ["months", "years"],
     toc: true
+  },
+
+  {
+    id: "lla-principles", name: "Locally Led Adaptation Principles", provider: "Global Commission on Adaptation / IIED / WRI", type: "Governance framework",
+    cost: "Free", link: "https://gca.org/principles-for-locally-led-adaptation/",
+    what: "Eight principles for ensuring adaptation is owned by local communities — including devolved decision-making, longer-term funding, and investing in local capabilities.",
+    examples: "Endorsed by over 100 organisations and governments. Used to reorient M&amp;E from donor-compliance reporting toward locally meaningful learning, including by NIEs in LDCs and SIDS.",
+    purpose: ["community_monitoring", "learning_transformation"],
+    scope: ["adaptation", "crosscutting"],
+    scale: ["community", "subnational"],
+    capacity: ["low", "medium"],
+    approach: ["bottomup"],
+    data: ["thin"],
+    time: ["months", "years"],
+    toc: true
+  },
+  {
+    id: "surge", name: "SURGE — Urban Resilience", provider: "IIED", type: "Diagnostic toolkit",
+    cost: "Free", link: "https://www.iied.org/surge-cities-resource-hub",
+    what: "Diagnostic and planning resources for secondary cities — assessing climate resilience alongside basic-service delivery and informal settlement realities.",
+    examples: "Aimed at rapidly growing secondary cities in Africa and South Asia where standard city-climate frameworks designed for megacities don't fit local capacity or data realities.",
+    purpose: ["national_policy", "project_accountability", "community_monitoring"],
+    scope: ["adaptation", "crosscutting"],
+    scale: ["subnational"],
+    capacity: ["low", "medium"],
+    approach: ["blended"],
+    data: ["thin", "moderate"],
+    time: ["months"]
+  },
+  {
+    id: "sei-pcs", name: "SEI-PCS — Producer to Consumer Sustainability", provider: "Stockholm Environment Institute", type: "Modelling framework",
+    cost: "Free", link: "https://www.sei.org/projects-and-tools/tools/sei-pcs/",
+    what: "Method for connecting sub-national production data (soy, beef, timber, etc.) to international supply chains — tracking embodied deforestation and other impacts.",
+    examples: "Used by export-oriented economies (Brazil, Indonesia, Paraguay) to evidence low-deforestation supply chains for EUDR and similar import regulations.",
+    purpose: ["finance_tracking", "international_reporting", "national_policy"],
+    scope: ["mitigation", "biodiversity"],
+    scale: ["national", "subnational", "international"],
+    capacity: ["high"],
+    approach: ["topdown"],
+    data: ["rich"],
+    time: ["months", "years"]
+  },
+  {
+    id: "hydromet-diag", name: "Country Hydromet Diagnostics", provider: "WMO / Alliance for Hydromet Development", type: "Diagnostic framework",
+    cost: "Free", link: "https://library.wmo.int/idurl/4/57608",
+    what: "Standardised approach for assessing the maturity of national meteorological and hydrological services — covering observations, data management, forecasting, service delivery, and governance.",
+    examples: "Used by LDCs and SIDS to identify gaps in early warning system readiness before applying for GCF, AF or CREWS support — feeds into Early Warnings for All implementation planning.",
+    purpose: ["national_policy", "learning_transformation"],
+    scope: ["adaptation", "loss_damage"],
+    scale: ["national"],
+    capacity: ["low", "medium"],
+    approach: ["topdown", "blended"],
+    data: ["thin", "moderate"],
+    time: ["weeks", "months"]
   }
 ];
 
 // ============================================================
 // ANSWER OPTIONS
 // ============================================================
-
 const OPT_PURPOSE = [
   { id: "international_reporting", label: "International reporting obligation", help: "BTR, National Communication, CBD National Report, VNR, Sendai Framework Monitor" },
   { id: "national_policy", label: "National policy & plan tracking", help: "NDC / NAP / NBSAP implementation, cross-ministerial coordination" },
@@ -1842,6 +2126,9 @@ const OPT_TOC = [
 // ============================================================
 const state = {
   stage: 0,
+  groundingRead: {},
+  groundingExpanded: {},
+  refineOpen: false,
   answers: {
     purpose_primary: null,
     purpose_secondary: [],
@@ -1853,9 +2140,7 @@ const state = {
     time: null,
     toc: null
   },
-  groundingMarked: {},        // { docId: true } for cosmetic "I have this" toggles
-  showWeak: false,
-  showOptional: false         // Stage 3 optional questions collapsed by default
+  showWeak: false
 };
 
 function stageComplete(n) {
@@ -1867,7 +2152,7 @@ function stageComplete(n) {
   return false;
 }
 function stageStarted(n) {
-  if (n === 0) return Object.keys(state.groundingMarked).length > 0;
+  if (n === 0) return Object.values(state.groundingRead).some(Boolean);
   if (n === 1) return !!state.answers.purpose_primary || state.answers.purpose_secondary.length > 0;
   if (n === 2) return state.answers.scope.length > 0;
   if (n === 3) return !!state.answers.scale || !!state.answers.capacity || !!state.answers.approach || !!state.answers.data || !!state.answers.time;
@@ -1875,45 +2160,51 @@ function stageStarted(n) {
 }
 
 // ============================================================
-// RANKING (with fixes from review)
+// RANKING — with fixes from feedback
+// ============================================================
+// Changes from v0.4:
+// - Blended approach no longer gives free +1 to every tool;
+//   it now gives +1 only to tools tagged blended.
+// - Capacity check is "tool's minimum ≤ user's" rather than membership,
+//   so a high-capacity team can use a low-capacity tool without penalty.
+// - Time mismatch now costs -1 when the tool's minimum time exceeds
+//   the user's time horizon.
+// - STRONG_CAP only activates when all three required stages complete.
 // ============================================================
 function fitScore(tool) {
   const a = state.answers;
   const breakdown = [];
   let score = 0;
 
-  // ---- Purpose ----
   if (a.purpose_primary) {
     if (tool.purpose.includes(a.purpose_primary)) {
       score += 4;
-      breakdown.push({ kind: "pos", text: `matches primary purpose (+4)` });
+      breakdown.push({ kind: "pos", text: "matches primary purpose (+4)" });
     } else {
-      breakdown.push({ kind: "neg", text: `not for primary purpose (0)` });
+      breakdown.push({ kind: "neg", text: "not for primary purpose (0)" });
     }
   }
   for (const sec of a.purpose_secondary) {
     if (tool.purpose.includes(sec)) {
       score += 2;
-      breakdown.push({ kind: "pos", text: `matches secondary purpose (+2)` });
+      breakdown.push({ kind: "pos", text: "matches secondary purpose (+2)" });
     }
   }
 
-  // ---- Scope ----
   if (a.scope.length > 0) {
     const overlap = a.scope.filter(s => tool.scope.includes(s));
     if (overlap.length > 0) {
       score += 3 * overlap.length;
       breakdown.push({ kind: "pos", text: `scope overlap × ${overlap.length} (+${3 * overlap.length})` });
     } else {
-      breakdown.push({ kind: "neg", text: `no scope overlap (0)` });
+      breakdown.push({ kind: "neg", text: "no scope overlap (0)" });
     }
   }
 
-  // ---- Scale (adjacency awarded for adjacent levels) ----
   if (a.scale) {
     if (tool.scale.includes(a.scale)) {
       score += 2;
-      breakdown.push({ kind: "pos", text: `scale matches (+2)` });
+      breakdown.push({ kind: "pos", text: "scale matches (+2)" });
     } else {
       const adjacency = {
         international: ["national"],
@@ -1923,93 +2214,69 @@ function fitScore(tool) {
       };
       if (tool.scale.some(s => adjacency[a.scale].includes(s))) {
         score += 1;
-        breakdown.push({ kind: "zero", text: `scale adjacent (+1)` });
+        breakdown.push({ kind: "zero", text: "scale adjacent (+1)" });
       } else {
-        breakdown.push({ kind: "neg", text: `scale mismatch (0)` });
+        breakdown.push({ kind: "neg", text: "scale mismatch (0)" });
       }
     }
   }
 
-  // ---- Capacity — FIXED: tool's minimum capacity must be <= user's tier ----
-  // (Previously, a high-capacity user got 0 for a low-capacity tool, which was wrong:
-  //  a strong team can absolutely run a simple tool. The right check is whether the
-  //  tool requires MORE capacity than the user has.)
+  // Capacity — high-capacity teams can use low-capacity tools without penalty
   if (a.capacity) {
     const order = { low: 0, medium: 1, high: 2 };
     const userLvl = order[a.capacity];
     const toolMin = Math.min(...tool.capacity.map(c => order[c]));
-    if (tool.capacity.includes(a.capacity)) {
+    if (toolMin <= userLvl) {
       score += 2;
-      breakdown.push({ kind: "pos", text: `capacity fits (+2)` });
-    } else if (toolMin < userLvl) {
-      // tool is below user's tier — usable, just maybe under-using capacity
-      score += 1;
-      breakdown.push({ kind: "zero", text: `tool is simpler than your capacity (+1)` });
+      breakdown.push({ kind: "pos", text: "capacity fits (+2)" });
     } else {
-      // tool requires capacity above what user has
-      breakdown.push({ kind: "neg", text: `needs more capacity than you have (0)` });
+      breakdown.push({ kind: "neg", text: "needs capacity above your tier (0)" });
     }
   }
 
-  // ---- Approach — FIXED: blended user no longer gets free +1 for every tool ----
-  // (Previously every tool got +1 if the user said "blended", which flattened the
-  //  dimension. Now blended only rewards tools that are tagged blended OR that
-  //  combine top-down and bottom-up.)
+  // Approach — blended user gets +1 only on blended-tagged tools, not universal
   if (a.approach) {
-    if (a.approach === "blended") {
-      if (tool.approach.includes("blended") || tool.approach.length > 1) {
-        score += 1;
-        breakdown.push({ kind: "pos", text: `combines methods (+1)` });
-      }
-    } else if (tool.approach.includes(a.approach)) {
+    if (tool.approach.includes(a.approach)) {
       score += 1;
-      breakdown.push({ kind: "pos", text: `approach matches (+1)` });
+      breakdown.push({ kind: "pos", text: "approach matches (+1)" });
+    } else if (a.approach === "blended" && tool.approach.includes("blended")) {
+      score += 1;
+      breakdown.push({ kind: "pos", text: "approach matches (+1)" });
     } else {
-      breakdown.push({ kind: "neg", text: `approach mismatch (0)` });
+      breakdown.push({ kind: "neg", text: "approach mismatch (0)" });
     }
   }
 
-  // ---- Data readiness ----
   if (a.data) {
     const order = { thin: 0, moderate: 1, rich: 2 };
     const userLvl = order[a.data];
     const toolMin = Math.min(...tool.data.map(d => order[d]));
     if (toolMin <= userLvl) {
       score += 1;
-      breakdown.push({ kind: "pos", text: `data readiness sufficient (+1)` });
+      breakdown.push({ kind: "pos", text: "data readiness sufficient (+1)" });
     } else {
-      breakdown.push({ kind: "neg", text: `needs more data than you have (0)` });
+      breakdown.push({ kind: "neg", text: "needs more data than you have (0)" });
     }
   }
 
-  // ---- Time horizon — FIXED: penalise far mismatches, not just reward matches ----
-  // (Previously time horizon was reward-only. Now a tool needing years scores
-  //  worse when the user has weeks, and vice-versa, because horizon mismatches
-  //  are a real practical issue.)
+  // Time — mismatch now penalised when tool needs more time than user has
   if (a.time) {
     const order = { weeks: 0, months: 1, years: 2 };
     const userLvl = order[a.time];
-    const toolLvls = tool.time.map(t => order[t]);
+    const toolMin = Math.min(...tool.time.map(t => order[t]));
     if (tool.time.includes(a.time)) {
       score += 1;
-      breakdown.push({ kind: "pos", text: `time horizon matches (+1)` });
-    } else {
-      const minDist = Math.min(...toolLvls.map(l => Math.abs(l - userLvl)));
-      if (minDist >= 2) {
-        // far mismatch (weeks vs years) — meaningful negative signal
-        score -= 1;
-        breakdown.push({ kind: "neg", text: `time horizon far off (−1)` });
-      } else {
-        breakdown.push({ kind: "zero", text: `time horizon adjacent (0)` });
-      }
+      breakdown.push({ kind: "pos", text: "time horizon matches (+1)" });
+    } else if (toolMin > userLvl) {
+      score -= 1;
+      breakdown.push({ kind: "neg", text: "needs more time than you have (-1)" });
     }
   }
 
-  // ---- Theory of change ----
   if (a.toc === "have" || a.toc === "building") {
     if (tool.toc) {
       score += 2;
-      breakdown.push({ kind: "pos", text: `works with theory of change (+2)` });
+      breakdown.push({ kind: "pos", text: "works with theory of change (+2)" });
     }
   }
 
@@ -2023,6 +2290,12 @@ function rankedTools() {
   });
   withScores.sort((a, b) => b._score - a._score || a.name.localeCompare(b.name));
   return withScores;
+}
+
+function fitBand(score) {
+  if (score >= 12) return "strong";
+  if (score >= 6) return "possible";
+  return "weak";
 }
 
 function maxPossibleScore() {
@@ -2040,19 +2313,7 @@ function maxPossibleScore() {
   return max;
 }
 
-function fitBand(score) {
-  if (score >= 12) return "strong";
-  if (score >= 6) return "possible";
-  return "weak";
-}
-
-function fitPercent(score) {
-  const max = maxPossibleScore();
-  if (max === 0) return 0;
-  return Math.round((score / max) * 100);
-}
-
-function requiredStagesDone() {
+function allRequiredComplete() {
   return stageComplete(1) && stageComplete(2) && stageComplete(3);
 }
 
@@ -2062,26 +2323,55 @@ function requiredStagesDone() {
 function render() {
   renderNav();
   renderStage();
+  // Persist to localStorage so refresh doesn't lose progress.
+  // Wrapped in try/catch — fails silently in private browsing or quota cases.
+  try {
+    localStorage.setItem("nav_state_v8", JSON.stringify(state));
+  } catch (e) { /* ignore */ }
+}
+
+function resetState() {
+  state.stage = 0;
+  state.groundingRead = {};
+  state.groundingExpanded = {};
+  state.refineOpen = false;
+  state.answers = {
+    purpose_primary: null,
+    purpose_secondary: [],
+    scope: [],
+    scale: null,
+    capacity: null,
+    approach: null,
+    data: null,
+    time: null,
+    toc: null
+  };
+  state.showWeak = false;
+  try { localStorage.removeItem("nav_state_v8"); } catch (e) {}
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function renderNav() {
   const nav = document.getElementById("stage-nav");
   const stages = [
-    { n: 0, title: "Grounding", sub: "Country diagnostics" },
+    { n: 0, title: "Grounding", sub: "Reference documents" },
     { n: 1, title: "Purpose", sub: "Why you need M&E" },
     { n: 2, title: "Scope", sub: "What you're measuring" },
     { n: 3, title: "Scale & constraints", sub: "Where, with what" },
-    { n: 4, title: "Your shortlist", sub: "Tools that support your design" }
+    { n: 4, title: "Your shortlist", sub: "Tools to support" }
   ];
   nav.innerHTML = `<div class="stage-nav-inner">${stages.map(s => {
     const isActive = state.stage === s.n;
     const isDone = stageComplete(s.n) && s.n !== 4 && s.n !== 0;
     const isStarted = stageStarted(s.n);
     let stateLabel = "not started";
-    if (s.n === 0) stateLabel = stageStarted(0) ? "reviewed" : "optional";
-    else if (isDone) stateLabel = "answered";
+    if (s.n === 0) {
+      const readCount = Object.values(state.groundingRead).filter(Boolean).length;
+      stateLabel = readCount > 0 ? `${readCount} read` : "optional";
+    } else if (isDone) stateLabel = "answered";
     else if (isStarted && !isDone) stateLabel = "in progress";
-    else if (s.n === 4) stateLabel = requiredStagesDone() ? "ready" : "partial";
+    else if (s.n === 4) stateLabel = allRequiredComplete() ? "ready" : "partial";
     return `<button class="stage-chip ${isActive ? 'active' : ''} ${isDone ? 'complete' : ''}" data-stage="${s.n}">
       <span class="mono">Stage ${String(s.n).padStart(2,'0')}</span>
       <span class="serif">${s.title}</span>
@@ -2106,6 +2396,7 @@ function renderStage() {
   else if (state.stage === 4) renderStage4(c);
 }
 
+// ----- shared helpers -----
 function stageBox({ stageN, stageTitle, steps, currentStep }) {
   return `<div class="stage-box">
     <div class="stage-box-header"><span>Stage</span><span>Steps</span></div>
@@ -2114,13 +2405,12 @@ function stageBox({ stageN, stageTitle, steps, currentStep }) {
   </div>`;
 }
 
-function navFooter({ canBack, stage }) {
-  const isLast = stage === 4;
-  const nextLabel = isLast ? "Refresh results" : (stage === 0 ? "Continue to Stage 1 →" : "Continue →");
+function navFooter({ canBack, canNext, stage, nextLabel }) {
+  const label = nextLabel || (stage < 4 ? 'Continue →' : 'Refresh results');
   return `<div class="stage-footer">
     <button class="btn" id="btn-back" ${canBack ? '' : 'disabled'}>← Back</button>
     <div class="stage-footer-meta">Stage ${stage} of 4</div>
-    <button class="btn primary" id="btn-next">${nextLabel}</button>
+    <button class="btn primary" id="btn-next">${label}</button>
   </div>`;
 }
 
@@ -2136,80 +2426,141 @@ function attachNav() {
   });
 }
 
-// ----- STAGE 0 — Grounding -----
+// ----- STAGE 0 — GROUNDING -----
 function renderStage0(c) {
+  const cards = GROUNDING_DOCS.map(d => {
+    const isRead = !!state.groundingRead[d.id];
+    const isOpen = !!state.groundingExpanded[d.id];
+    return `<article class="grounding-card ${isOpen ? 'open' : 'collapsed'}">
+      <button class="grounding-card-toggle" data-toggle="${d.id}" aria-expanded="${isOpen}">
+        <div class="grounding-card-toggle-text">
+          <div class="grounding-card-name serif">${d.name}${d.acronym ? ` <span style="color:var(--ink-muted);font-size:14px;font-weight:400;">(${d.acronym})</span>` : ''}</div>
+          <div class="grounding-card-meta">${d.type}<span class="sep">·</span>${d.provider}</div>
+        </div>
+        <span class="grounding-card-chevron" aria-hidden="true">${isOpen ? '−' : '+'}</span>
+      </button>
+
+      <div class="grounding-card-body" ${isOpen ? '' : 'hidden'}>
+        <div class="grounding-card-section">
+          <span class="grounding-card-section-label">What it is</span>
+          ${d.what}
+        </div>
+
+        <div class="grounding-card-section">
+          <span class="grounding-card-section-label">How to use it for M&amp;E design</span>
+          ${d.howToUse}
+        </div>
+
+        <div class="grounding-card-section caution">
+          <span class="grounding-card-section-label">When not to lean on it</span>
+          ${d.caution}
+        </div>
+
+        <div class="grounding-card-footer">
+          <a class="grounding-card-link" href="${d.link}" target="_blank" rel="noopener">Open source →</a>
+          <button class="grounding-toggle ${isRead ? 'read' : ''}" data-doc="${d.id}">${isRead ? 'Read' : 'Mark as read'}</button>
+        </div>
+      </div>
+    </article>`;
+  }).join("");
+
+  // Show "start over" only if there's something to start over from
+  const hasProgress = stageStarted(0) || stageStarted(1) || stageStarted(2) || stageStarted(3);
+
   c.innerHTML = `
+    <section class="orientation-banner">
+      <div class="orientation-inner">
+        <div class="orientation-text">
+          <h2 class="orientation-heading serif">Find the right tools for your climate M&amp;E system.</h2>
+          <p>This navigator builds you a tailored shortlist of climate M&amp;E tools, frameworks and methods — drawn from a curated set of over forty — based on what you're trying to track, where, and with what resources. Country-owned systems first; tools as support.</p>
+          <p>Five short stages, about three minutes. You'll be asked what your M&amp;E system is <em>for</em>, what it has to cover, where you're working, and what resources you have. You can move between stages freely. Only Stage 1 (purpose), Stage 2 (scope), and parts of Stage 3 are required for a shortlist. The present stage — country-level reference documents worth reading before picking tools — is optional and you can skip it.</p>
+          <p class="orientation-fine">No data leaves your browser. Answers are saved locally so a refresh won't lose them. The <strong>Help &amp; glossary</strong> button at the top right explains every term.</p>
+        </div>
+        <div class="orientation-cta">
+          <button class="btn skip" id="btn-skip-grounding-top">Skip to Stage 1 — Purpose →</button>
+          ${hasProgress ? `<button class="orientation-reset" id="btn-reset-state" title="Clear all answers and start fresh">Clear answers &amp; start over</button>` : ''}
+        </div>
+      </div>
+    </section>
+
     <div class="stage-page" data-stage="0">
       <div class="stage-intro">
         <div class="stage-kicker mono">Stage 00 · Optional</div>
-        <h1 class="stage-heading serif">Before tools, <em>context</em></h1>
+        <h1 class="stage-heading serif">Start from <em>context</em></h1>
         <div class="stage-intro-body">
-          <p>Designing an M&amp;E system means knowing what your country has already committed to caring about — and what the evidence base says it should care about. Tools come later.</p>
-          <p>These six documents are the most common starting points. If you have already read them for your context, skip ahead. If you have not, they will save you false starts later.</p>
-          <p><em>An M&amp;E system you can own is one designed in response to these — not in spite of them.</em></p>
+          <p>Climate M&amp;E sits at the intersection of development priorities, environmental conditions, and national circumstances. The documents below cover those three lenses: how the country frames its growth trajectory, the state of its environmental commons, and the climate position it has staked out internationally.</p>
+          <p>Most will be available for most countries; not all will be current.</p>
+          <p>Click any document to expand it. The right-hand column tells you what each is, how to read it for M&amp;E design, and where it's weakest.</p>
+          <p style="font-size:13px;color:var(--ink-muted);font-style:italic;">Marking documents as read is only for your own tracking.</p>
         </div>
         ${stageBox({
           stageN: 0, stageTitle: "Grounding",
-          steps: ["Skim the six grounding documents", "Mark which apply to your context", "Move to Stage 1 when ready"],
+          steps: ["Scan the reference points for your country", "Move to Stage 1 when ready"],
           currentStep: 1
         })}
       </div>
       <div class="stage-body">
-        <div class="grounding-list" id="grounding-list"></div>
+        <div class="grounding-toolbar">
+          <div class="grounding-toolbar-count mono">${GROUNDING_DOCS.length} reference points</div>
+          <button class="grounding-expand-all" id="grounding-expand-all">${GROUNDING_DOCS.every(d => state.groundingExpanded[d.id]) ? 'Collapse all' : 'Expand all'}</button>
+        </div>
+        <div class="grounding-stack">
+          ${cards}
+        </div>
         <div class="grounding-skip-row">
-          <button class="grounding-skip-btn" id="grounding-skip">Skip to Stage 1 →</button>
+          <div class="grounding-skip-text">You can come back to Stage 0 at any time using the tabs above.</div>
+          <button class="btn skip" id="btn-skip-grounding">Skip to Stage 1 — Purpose →</button>
         </div>
       </div>
     </div>
-    ${navFooter({ canBack: false, stage: 0 })}
+    ${navFooter({ canBack: false, canNext: true, stage: 0, nextLabel: 'Continue to Stage 1 →' })}
   `;
 
-  const listEl = document.getElementById("grounding-list");
-  GROUNDING_DOCS.forEach(doc => {
-    const isMarked = !!state.groundingMarked[doc.id];
-    const card = document.createElement("article");
-    card.className = "grounding-card";
-    card.innerHTML = `
-      <div class="grounding-card-head">
-        <h3 class="grounding-card-name">${doc.name}</h3>
-      </div>
-      <div class="grounding-card-meta">${doc.type}<span class="sep">·</span>${doc.provider}${doc.acronym ? `<span class="sep">·</span>${doc.acronym}` : ''}</div>
-      <div class="grounding-card-section">
-        <span class="grounding-card-label">What it is</span>
-        ${doc.what}
-      </div>
-      <div class="grounding-card-section">
-        <span class="grounding-card-label">How to use it for M&amp;E design</span>
-        ${doc.howToUse}
-      </div>
-      <div class="grounding-card-section">
-        <span class="grounding-card-label caution">When not to lean on it</span>
-        ${doc.caution}
-      </div>
-      <div class="grounding-card-footer">
-        <button class="grounding-mark ${isMarked ? 'marked' : ''}" data-doc="${doc.id}">
-          ${isMarked ? 'Marked for my context' : 'Mark for my context'}
-        </button>
-        <a class="grounding-card-link" href="${doc.link}" target="_blank" rel="noopener">Find it →</a>
-      </div>
-    `;
-    listEl.appendChild(card);
-  });
-
-  listEl.querySelectorAll(".grounding-mark").forEach(btn => {
+  c.querySelectorAll(".grounding-card-toggle").forEach(btn => {
     btn.addEventListener("click", () => {
-      const id = btn.dataset.doc;
-      if (state.groundingMarked[id]) delete state.groundingMarked[id];
-      else state.groundingMarked[id] = true;
+      const id = btn.dataset.toggle;
+      state.groundingExpanded[id] = !state.groundingExpanded[id];
       render();
     });
   });
 
-  document.getElementById("grounding-skip").addEventListener("click", () => {
+  c.querySelectorAll(".grounding-toggle").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.doc;
+      state.groundingRead[id] = !state.groundingRead[id];
+      render();
+    });
+  });
+
+  const expandAllBtn = document.getElementById("grounding-expand-all");
+  if (expandAllBtn) {
+    expandAllBtn.addEventListener("click", () => {
+      const allOpen = GROUNDING_DOCS.every(d => state.groundingExpanded[d.id]);
+      GROUNDING_DOCS.forEach(d => {
+        state.groundingExpanded[d.id] = !allOpen;
+      });
+      render();
+    });
+  }
+
+  const skipToStage1 = () => {
     state.stage = 1;
     render();
     window.scrollTo({ top: 0, behavior: "smooth" });
-  });
+  };
+  document.getElementById("btn-skip-grounding").addEventListener("click", skipToStage1);
+  const skipTop = document.getElementById("btn-skip-grounding-top");
+  if (skipTop) skipTop.addEventListener("click", skipToStage1);
+
+  const resetBtn = document.getElementById("btn-reset-state");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      if (confirm("Clear all answers and start over? This cannot be undone.")) {
+        resetState();
+      }
+    });
+  }
 
   attachNav();
 }
@@ -2220,13 +2571,13 @@ function renderStage1(c) {
     <div class="stage-page" data-stage="1">
       <div class="stage-intro">
         <div class="stage-kicker mono">Stage 01</div>
-        <h1 class="stage-heading serif">What is your M&amp;E system <em>for</em>?</h1>
+        <h1 class="stage-heading serif">What is the system <em>for</em>?</h1>
         <div class="stage-intro-body">
           <p>Before tools, purpose. An M&amp;E system designed around international reporting looks very different from one designed for community learning — even if some tools appear in both.</p>
-          <p>Pick one <strong>primary</strong> purpose: the reason your system exists. Add secondary purposes if the same system also has to serve them.</p>
+          <p>Pick one <strong>primary</strong> purpose: the reason your system exists. Add secondary purposes if the same system also has to serve them. The shortlist at the end will reflect this hierarchy.</p>
         </div>
         ${stageBox({
-          stageN: 1, stageTitle: "Purpose",
+          stageN: 1, stageTitle: "Defining the purpose",
           steps: ["Pick primary purpose", "Pick any secondary purposes"],
           currentStep: state.answers.purpose_primary ? 2 : 1
         })}
@@ -2234,17 +2585,17 @@ function renderStage1(c) {
       <div class="stage-body">
         <div class="step-block">
           <div class="step-heading serif">Step 1 · What is the primary purpose?</div>
-          <div class="step-prompt">Pick the main reason your M&amp;E system exists. If more than one applies, pick the most important one for now.</div>
+          <div class="step-prompt">Pick the main reason you need M&amp;E. If more than one applies, pick the most important one for now.</div>
           <div class="options" id="purpose-primary-opts"></div>
         </div>
         <div class="step-block" style="${state.answers.purpose_primary ? '' : 'opacity:0.5;pointer-events:none;'}">
           <div class="step-heading serif">Step 2 · Any secondary purposes? <span style="color:var(--ink-muted);font-size:13px;font-weight:400;font-style:italic;">(choose any that apply)</span></div>
-          <div class="step-prompt">If other purposes also apply to your system, tick them. Skip if only the primary purpose matters.</div>
+          <div class="step-prompt">You can pick more than one here. If other purposes also apply to your needs, tick them. Skip this step if only the primary purpose matters.</div>
           <div class="options grid-2" id="purpose-secondary-opts"></div>
         </div>
       </div>
     </div>
-    ${navFooter({ canBack: true, stage: 1 })}
+    ${navFooter({ canBack: true, canNext: !!state.answers.purpose_primary, stage: 1 })}
   `;
 
   const primaryC = document.getElementById("purpose-primary-opts");
@@ -2291,7 +2642,7 @@ function renderStage2(c) {
           <p>Most national work covers more than one. Tick every one that applies — tools that work across several areas will rise to the top.</p>
         </div>
         ${stageBox({
-          stageN: 2, stageTitle: "Scope",
+          stageN: 2, stageTitle: "Defining the scope",
           steps: ["Pick one or more scopes"],
           currentStep: 1
         })}
@@ -2304,7 +2655,7 @@ function renderStage2(c) {
         </div>
       </div>
     </div>
-    ${navFooter({ canBack: true, stage: 2 })}
+    ${navFooter({ canBack: true, canNext: state.answers.scope.length > 0, stage: 2 })}
   `;
 
   const opts = document.getElementById("scope-opts");
@@ -2325,7 +2676,7 @@ function renderStage2(c) {
   attachNav();
 }
 
-// Helper for single-select wiring (used in Stage 3)
+// Helper used by both required and optional stage-3 question blocks
 function wireSingleSelect(containerId, options, key) {
   const cEl = document.getElementById(containerId);
   if (!cEl) return;
@@ -2341,11 +2692,12 @@ function wireSingleSelect(containerId, options, key) {
   });
 }
 
-// ----- STAGE 3 — required + collapsible optionals -----
+// ----- STAGE 3 -----
 function renderStage3(c) {
-  const optionalAnswered = !!state.answers.approach || !!state.answers.data || !!state.answers.time || !!state.answers.toc;
-  const optionalCount = [state.answers.approach, state.answers.data, state.answers.time, state.answers.toc].filter(Boolean).length;
-  const showOpt = state.showOptional || optionalAnswered;
+  // Count how many optional questions have been answered, for the toggle label
+  const optionalAnswered = [state.answers.approach, state.answers.data, state.answers.time, state.answers.toc].filter(Boolean).length;
+  // Auto-open the refine block if any optional question has been answered
+  const refineIsOpen = state.refineOpen || optionalAnswered > 0;
 
   c.innerHTML = `
     <div class="stage-page" data-stage="3">
@@ -2353,12 +2705,13 @@ function renderStage3(c) {
         <div class="stage-kicker mono">Stage 03</div>
         <h1 class="stage-heading serif">Scale &amp; <em>constraints</em></h1>
         <div class="stage-intro-body">
-          <p>Two required questions about where you work and what you have to work with — then optional refinements if you want a sharper shortlist.</p>
+          <p>Two required questions about where you work and what you have to work with — and optional questions to refine the shortlist further.</p>
+          <p>You can produce a useful shortlist with just the two required questions. Open the refine section if you want a tighter list.</p>
         </div>
         ${stageBox({
           stageN: 3, stageTitle: "Scale & constraints",
-          steps: ["Scale (required)", "Capacity (required)", "Refinements (optional)"],
-          currentStep: !state.answers.scale ? 1 : (!state.answers.capacity ? 2 : 3)
+          steps: ["Scale (required)", "Capacity (required)", "Optional refinements"],
+          currentStep: state.answers.scale && state.answers.capacity ? 3 : (state.answers.scale ? 2 : 1)
         })}
       </div>
       <div class="stage-body">
@@ -2373,58 +2726,63 @@ function renderStage3(c) {
           <div class="options grid-2" id="capacity-opts"></div>
         </div>
 
-        <div class="optional-toggle-row">
-          <button class="optional-toggle ${showOpt ? 'open' : ''}" id="toggle-optional">
-            <span>Refine further · 4 optional questions${optionalCount > 0 ? ` · ${optionalCount} answered` : ''}</span>
-            <span class="chev">›</span>
-          </button>
-        </div>
+        <button class="refine-toggle ${refineIsOpen ? 'open' : ''}" id="refine-toggle-btn">
+          <span>
+            Refine the shortlist further
+            <span style="display:block;font-size:12px;font-weight:400;color:var(--ink-muted);margin-top:2px;">Four optional questions — approach, data, time, theory of change</span>
+          </span>
+          <span style="display:flex;align-items:center;gap:14px;">
+            <span class="refine-toggle-meta">${optionalAnswered ? `${optionalAnswered} of 4 answered` : 'optional'}</span>
+            <span class="refine-toggle-arrow">▶</span>
+          </span>
+        </button>
 
-        ${showOpt ? `
-        <div class="step-block">
-          <div class="step-heading serif">Step 3 · Approach preference</div>
-          <div class="step-prompt">Different methods lean on different kinds of evidence. If you already know your preference, say so. Otherwise pick the last option.</div>
-          <div class="options grid-2" id="approach-opts"></div>
+        <div class="refine-block ${refineIsOpen ? 'open' : ''}" id="refine-block">
+          <div class="step-block">
+            <div class="step-heading serif">Approach preference</div>
+            <div class="step-prompt">Different methods lean on different kinds of evidence. If you already know your preference, say so. Otherwise pick the last option.</div>
+            <div class="options grid-2" id="approach-opts"></div>
+          </div>
+          <div class="step-block">
+            <div class="step-heading serif">Data readiness</div>
+            <div class="step-prompt">What national data can you actually use? Think about what's available and reliable, not what should exist on paper.</div>
+            <div class="options grid-2" id="data-opts"></div>
+          </div>
+          <div class="step-block">
+            <div class="step-heading serif">Time to first useful result</div>
+            <div class="step-prompt">How soon do you need something useful — not perfect, just useful?</div>
+            <div class="options grid-2" id="time-opts"></div>
+          </div>
+          <div class="step-block">
+            <div class="step-heading serif">Theory of change</div>
+            <div class="step-prompt">A theory of change is a clear statement of how and why your work is expected to lead to the changes you want. Some M&amp;E methods work best when you have one to test against.</div>
+            <div class="options grid-2" id="toc-opts"></div>
+          </div>
         </div>
-        <div class="step-block">
-          <div class="step-heading serif">Step 4 · Data readiness</div>
-          <div class="step-prompt">What national data can you actually use? Think about what's available and reliable, not what should exist on paper.</div>
-          <div class="options grid-2" id="data-opts"></div>
-        </div>
-        <div class="step-block">
-          <div class="step-heading serif">Step 5 · Time to first useful result</div>
-          <div class="step-prompt">How soon do you need something useful — not perfect, just useful?</div>
-          <div class="options grid-2" id="time-opts"></div>
-        </div>
-        <div class="step-block">
-          <div class="step-heading serif">Step 6 · Theory of change</div>
-          <div class="step-prompt">A theory of change is a clear statement of how and why your work is expected to lead to the changes you want. Some M&amp;E methods work best when you have one to test against.</div>
-          <div class="options grid-2" id="toc-opts"></div>
-        </div>
-        ` : ''}
       </div>
     </div>
-    ${navFooter({ canBack: true, stage: 3 })}
+    ${navFooter({ canBack: true, canNext: !!state.answers.scale && !!state.answers.capacity, stage: 3 })}
   `;
 
   wireSingleSelect("scale-opts", OPT_SCALE, "scale");
   wireSingleSelect("capacity-opts", OPT_CAPACITY, "capacity");
-  if (showOpt) {
+
+  if (refineIsOpen) {
     wireSingleSelect("approach-opts", OPT_APPROACH, "approach");
     wireSingleSelect("data-opts", OPT_DATA, "data");
     wireSingleSelect("time-opts", OPT_TIME, "time");
     wireSingleSelect("toc-opts", OPT_TOC, "toc");
   }
 
-  document.getElementById("toggle-optional").addEventListener("click", () => {
-    state.showOptional = !state.showOptional;
+  document.getElementById("refine-toggle-btn").addEventListener("click", () => {
+    state.refineOpen = !refineIsOpen;
     render();
   });
 
   attachNav();
 }
 
-// ----- STAGE 4 -----
+// ----- STAGE 4 — RESULTS -----
 function labelFor(options, id) {
   if (!id) return null;
   const found = options.find(o => o.id === id);
@@ -2439,32 +2797,37 @@ function renderStage4(c) {
   const bands = { strong: [], possible: [], weak: [] };
   ranked.forEach(t => bands[fitBand(t._score)].push(t));
 
-  // Cap strong band — but only when required stages complete, so we don't
-  // inflate "strong" for users who've barely answered.
+  // Cap strong band at 8 — but only when all required stages are complete.
+  // Before that, the rankings are too noisy to cap meaningfully.
   const STRONG_CAP = 8;
-  if (requiredStagesDone() && bands.strong.length > STRONG_CAP) {
+  if (allRequiredComplete() && bands.strong.length > STRONG_CAP) {
     const overflow = bands.strong.slice(STRONG_CAP);
     bands.strong = bands.strong.slice(0, STRONG_CAP);
     bands.possible = [...overflow, ...bands.possible];
     bands.possible.sort((a, b) => b._score - a._score);
   }
 
-  const incomplete = !requiredStagesDone();
-  const missingStages = [
-    stageComplete(1) ? null : { n: 1, name: "Stage 1 (purpose)" },
-    stageComplete(2) ? null : { n: 2, name: "Stage 2 (scope)" },
-    stageComplete(3) ? null : { n: 3, name: "Stage 3 (scale & capacity)" }
-  ].filter(Boolean);
+  const incomplete = !allRequiredComplete();
+  const missingStageNums = [
+    stageComplete(1) ? null : 1,
+    stageComplete(2) ? null : 2,
+    stageComplete(3) ? null : 3
+  ].filter(x => x !== null);
+  const missingStageLabels = missingStageNums.map(n => {
+    if (n === 1) return "Stage 1 (purpose)";
+    if (n === 2) return "Stage 2 (scope)";
+    if (n === 3) return "Stage 3 (scale &amp; capacity)";
+  });
 
   const strongDesc = incomplete
-    ? "Tools that match what you've told us so far. Answer the missing questions for a sharper list."
+    ? "Tools matching what you've told us so far. Answer more questions to sharpen the list."
     : "Tools that fit the system you're describing. Treat as a starting shortlist, not a prescription — the right choice depends on your team, your data, and your country's existing systems.";
   const possibleDesc = incomplete
-    ? "Tools that partially match what you've told us."
+    ? "Tools that partly match. The ranking will improve once required stages are complete."
     : "Tools that partly fit. Often useful as complements — a participatory method alongside an indicator framework, or a global dataset to cross-check national data.";
   const weakDesc = incomplete
     ? "Not enough information yet to rank these. Answer the earlier questions."
-    : "Tools included so you can see everything available. These usually serve a different purpose or scale than yours.";
+    : "Shown for completeness. These usually serve a different purpose or scale than yours.";
 
   c.innerHTML = `
     <div class="stage-page" data-stage="4">
@@ -2479,12 +2842,12 @@ function renderStage4(c) {
           <button class="share-btn" id="btn-print-summary" title="Open a clean printable view — use Save as PDF in your browser's print dialog">
             <span class="share-btn-icon">⎙</span> Save as PDF
           </button>
-          <button class="share-btn" id="btn-save-offline" title="Download a copy of this tool that works without internet">
+          <button class="share-btn" id="btn-save-offline" title="Download a copy that works without internet">
             <span class="share-btn-icon">↓</span> Save for offline use
           </button>
         </div>
 
-        ${incomplete ? `<div class="incomplete-notice"><strong>The list is still rough.</strong> You haven't answered: ${missingStages.map(s => s.name).join(", ")}. Every tool appears below, but the order will improve as you answer more questions. <button class="answers-summary-edit" data-goto="${missingStages[0].n}">Go to ${missingStages[0].name} →</button></div>` : ''}
+        ${incomplete ? `<div class="incomplete-notice"><strong>The list is still rough.</strong> You haven't answered: ${missingStageLabels.join(", ")}. Every tool appears below, but the order will improve as you answer more questions. <button class="answers-summary-edit" data-goto="${missingStageNums[0]}">Answer the first missing question →</button></div>` : ''}
 
         <div class="answers-summary">
           <div class="answers-summary-item">
@@ -2542,7 +2905,7 @@ function renderStage4(c) {
         ${state.showWeak ? renderBand("Weaker fit", "weak", bands.weak, weakDesc) : ''}
       </div>
     </div>
-    ${navFooter({ canBack: true, stage: 4 })}
+    ${navFooter({ canBack: true, canNext: false, stage: 4 })}
   `;
 
   c.querySelectorAll(".answers-summary-edit").forEach(btn => {
@@ -2555,6 +2918,7 @@ function renderStage4(c) {
   const wt = document.getElementById("toggle-weak");
   if (wt) wt.addEventListener("click", () => { state.showWeak = !state.showWeak; render(); });
 
+  // Share buttons
   const copyBtn = document.getElementById("btn-copy-summary");
   if (copyBtn) copyBtn.addEventListener("click", async () => {
     const text = buildPlainSummary();
@@ -2650,9 +3014,9 @@ function buildPlainSummary() {
   }
 
   L.push("---");
-  L.push("Generated by the Climate M&E Navigator " + VERSION + ".");
-  L.push("Rankings reflect the answers above. The right M&E system is the one your");
-  L.push("country can own, run, and learn from — tools support that, they do not define it.");
+  L.push("Generated by the Climate M&E Navigator, a working-draft tool selector.");
+  L.push("Rankings reflect the answers above. The right M&E system is the one your country");
+  L.push("can own, run, and learn from — tools support that, they do not define it.");
   return L.join("\n");
 }
 
@@ -2665,7 +3029,7 @@ function renderBand(heading, cls, tools, desc) {
         <span class="results-band-desc">${desc}</span>
       </div>
       <div style="padding:20px; color:var(--ink-muted); font-style:italic; font-size:13px; border:1px dashed var(--rule); border-radius:var(--radius);">
-        No tools in this band given your answers.
+        No tools in this band given your answers. ${cls === "strong" ? "Consider broadening scope or capacity tier." : ""}
       </div>
     </div>`;
   }
@@ -2682,24 +3046,25 @@ function renderBand(heading, cls, tools, desc) {
 }
 
 function toolCardHTML(t, cls) {
+  const max = maxPossibleScore();
+  const pct = max > 0 ? Math.round((Math.max(0, t._score) / max) * 100) : 0;
   const breakdown = t._breakdown.map(b => `<li class="${b.kind}">${b.text}</li>`).join("");
   const positives = t._breakdown.filter(b => b.kind === "pos");
-  const pct = fitPercent(t._score);
   let why = "";
   if (positives.length > 0) {
-    why = `<div class="tool-card-why"><strong>Why this fits:</strong> ${positives.slice(0, 3).map(p => p.text.replace(/\s*\([+−]?\d+\)/, '')).join("; ")}.</div>`;
+    why = `<div class="tool-card-why"><strong>Why this fits:</strong> ${positives.slice(0, 3).map(p => p.text.replace(/\s*\(\+\d+\)/, '')).join("; ")}.</div>`;
   } else if (cls === "weak") {
     const negatives = t._breakdown.filter(b => b.kind === "neg");
     if (negatives.length) {
-      why = `<div class="tool-card-why"><strong>Why it ranks weak:</strong> ${negatives.slice(0, 2).map(p => p.text.replace(/\s*\([+−−]?\d+\)/, '')).join("; ")}.</div>`;
+      why = `<div class="tool-card-why"><strong>Why it ranks weak:</strong> ${negatives.slice(0, 2).map(p => p.text.replace(/\s*\(-?\d+\)/, '').replace(/\s*\(0\)/, '')).join("; ")}.</div>`;
     }
   }
-  const bandLabel = cls === "strong" ? "Strong" : (cls === "possible" ? "Possible" : "Weak");
+  const bandLabel = cls === "strong" ? "Strong" : (cls === "possible" ? "Possible" : "Weaker");
   return `<article class="tool-card ${cls}">
-    <div class="tool-card-fit-band" tabindex="0">
-      ${bandLabel} · ${pct}%
+    <div class="tool-card-fit" tabindex="0">
+      ${bandLabel}${max > 0 ? ` · ${pct}%` : ''}
       <div class="fit-tooltip">
-        <div class="fit-tooltip-header">Why this score (${t._score} of ${maxPossibleScore()} possible)</div>
+        <div class="fit-tooltip-header">Fit breakdown · score ${t._score}${max > 0 ? ` / ${max}` : ''}</div>
         <ul>${breakdown || '<li class="zero">Answer the questions to see how this ranks.</li>'}</ul>
       </div>
     </div>
@@ -2717,15 +3082,15 @@ function toolCardHTML(t, cls) {
 }
 
 // ============================================================
-// GLOSSARY
+// HELP & GLOSSARY
 // ============================================================
 const GLOSSARY = [
   { term: "Biennial Transparency Report", acronym: "BTR", def: "The main reporting document countries submit to the UNFCCC under the Paris Agreement, every two years. Covers GHG emissions, progress on NDC targets, climate impacts and adaptation, and finance received or provided. First BTRs were due by end of 2024." },
   { term: "Nationally Determined Contribution", acronym: "NDC", def: "A country's pledge under the Paris Agreement covering what it will do to reduce emissions and (often) how it will adapt. Updated every five years, with each update expected to be more ambitious than the last." },
-  { term: "National Adaptation Plan", acronym: "NAP", def: "A country's medium-to-long-term strategy for adapting to climate change — identifying vulnerabilities, prioritising actions, and laying out implementation arrangements." },
+  { term: "National Adaptation Plan", acronym: "NAP", def: "A country's medium-to-long-term strategy for adapting to climate change — identifying vulnerabilities, prioritising actions, and laying out implementation arrangements. Many developing countries are now turning their NAPs into actual delivery plans, which is what M&E systems track." },
   { term: "National Biodiversity Strategy and Action Plan", acronym: "NBSAP", def: "The country-level instrument for delivering on the UN Convention on Biological Diversity. Currently being updated to align with the Kunming-Montreal Global Biodiversity Framework adopted in 2022." },
-  { term: "Country Climate and Development Report", acronym: "CCDR", def: "World Bank country-level diagnostic integrating climate action with development priorities. Typically 100-200 pages covering emissions pathways, climate risks, fiscal implications, and policy options. Useful as context for designing an M&E system, not as the M&E system itself." },
-  { term: "Capacity-building Initiative for Transparency", acronym: "CBIT", def: "GEF funding mechanism designed to help developing countries build the institutional and technical capacity to meet Paris Agreement transparency requirements — including BTR-ready M&E systems. Often the funding source that lets countries take ownership of their reporting." },
+  { term: "Country Climate and Development Report", acronym: "CCDR", def: "World Bank diagnostic integrating climate action with country development priorities — covering emissions pathways, climate risks, fiscal implications, and sectoral policy options. Available for most client countries; useful for situating M&E systems within national development trajectories." },
+  { term: "Capacity-building Initiative for Transparency", acronym: "CBIT", def: "GEF funding window specifically designed to help developing countries build the institutional and technical capacity to meet Enhanced Transparency Framework requirements — including national MRV and M&E systems." },
   { term: "Measurement, Reporting and Verification", acronym: "MRV", def: "The standard process for tracking GHG emissions and reductions in a way that is credible to the UNFCCC and to funders. Measurement is collecting the data, reporting is putting it into the right format, and verification is independent checking that the numbers hold up." },
   { term: "Enhanced Transparency Framework", acronym: "ETF", def: "The Paris Agreement's reporting regime — the system that BTRs feed into. Replaced the older two-track system that gave developing countries lighter requirements; now everyone reports against the same template, with flexibility on detail for those that need it." },
   { term: "GHG inventory", acronym: "", def: "A systematic accounting of a country's (or city's, or company's) greenhouse gas emissions, broken down by sector and gas. The starting point for almost any mitigation work. Built using IPCC methodologies." },
@@ -2735,13 +3100,17 @@ const GLOSSARY = [
   { term: "Theory of change", acronym: "ToC", def: "A clear statement of how and why your activities are expected to lead to the outcomes you want — including the assumptions and intermediate steps along the way. Useful for M&E because it tells you what to measure and where to look for problems if things are not working." },
   { term: "Transformational change", acronym: "", def: "Systemic shifts in how a sector or society works — going beyond incremental improvement. Examples: shifting energy systems to renewables, reorganising land use, changing institutions and norms. Hard to measure with traditional logframes, which is why methods like Outcome Harvesting and Contribution Analysis appear in the toolkit." },
   { term: "Locally-led adaptation", acronym: "LLA", def: "An approach where decisions about adaptation are made by people most affected, with resources flowing to local institutions. Defined by eight principles agreed in 2021. Implies M&E approaches that capture local definitions of success, not just donor-set indicators." },
-  { term: "National Implementing Entity", acronym: "NIE", def: "An in-country organisation accredited to receive climate finance directly (mainly under the Adaptation Fund and GCF), without going through a multilateral intermediary. Direct access matters for country ownership but comes with full reporting obligations." },
+  { term: "National Implementing Entity", acronym: "NIE", def: "An in-country organisation accredited to receive climate finance directly (mainly under the Adaptation Fund and GCF), without going through a multilateral intermediary. Direct access matters for country ownership but comes with full reporting obligations — which is where many of the project-level M&E tools come in." },
   { term: "AFOLU", acronym: "", def: "Agriculture, Forestry and Other Land Use — the IPCC's combined category for emissions and removals from land-based activities. Often the trickiest part of a national inventory, especially for forest-rich countries where REDD+ work overlaps." },
   { term: "Results framework", acronym: "", def: "A structured table laying out what a project or programme aims to achieve — typically with goals, outcomes, outputs, indicators, baselines, and targets. Most major climate funds (GCF, GEF, AF) have mandatory results frameworks projects must use." },
   { term: "Indicator", acronym: "", def: "A specific, measurable thing that tells you whether something is happening — like hectares of forest under improved management, or number of households with climate-resilient water supply. Good indicators are specific, relevant, and feasible to measure regularly." },
   { term: "Baseline", acronym: "", def: "The starting state against which change will be measured. Without a credible baseline, you cannot claim a project caused improvement — you do not know what was happening before. Establishing baselines is often half the work of designing M&E." },
   { term: "MEL", acronym: "", def: "Monitoring, Evaluation and Learning. The L matters: it is what distinguishes M&E that just produces reports from M&E that actually changes how a programme is run. Most modern frameworks emphasise MEL rather than M&E alone." },
-  { term: "Loss and damage", acronym: "L&D", def: "The harms from climate change that go beyond what adaptation can prevent — including economic losses (damaged infrastructure, lost crops) and non-economic ones (cultural loss, displacement, ecosystem damage). A formal track under the UNFCCC since 2013, with the Loss and Damage Fund agreed at COP28." }
+  { term: "Loss and damage", acronym: "L&D", def: "The harms from climate change that go beyond what adaptation can prevent — including economic losses (damaged infrastructure, lost crops) and non-economic ones (cultural loss, displacement, ecosystem damage). A formal track under the UNFCCC since 2013, with the Loss and Damage Fund agreed at COP28." },
+  { term: "Least Developed Countries", acronym: "LDC", def: "A UN-designated category of around 45 countries with the lowest indicators of socioeconomic development. Highly vulnerable to climate impacts and granted specific flexibilities in UNFCCC reporting — including under the Enhanced Transparency Framework. The LDC Group is also a negotiating bloc." },
+  { term: "Small Island Developing States", acronym: "SIDS", def: "A group of around 40 island and coastal countries facing shared vulnerabilities — sea-level rise, limited freshwater, narrow economic bases, exposure to tropical storms. Like LDCs, they get reporting flexibilities and have a coordinated negotiating voice (AOSIS)." },
+  { term: "South-South cooperation", acronym: "", def: "Exchange of resources, technology, knowledge and experience between developing countries — increasingly important in climate M&E as countries learn from peers facing similar challenges rather than only from OECD models. Often more contextually relevant than North-South technical assistance." },
+  { term: "Means of implementation", acronym: "MoI", def: "UNFCCC shorthand for the finance, technology transfer, and capacity-building needed to deliver climate action. NDCs and BTRs increasingly distinguish between unconditional commitments and those conditional on MoI from developed countries. M&E systems that track MoI received are part of the Enhanced Transparency Framework." }
 ];
 
 function openHelpDialog() {
@@ -2752,18 +3121,11 @@ function openHelpDialog() {
   dialog.id = "help-dialog";
   dialog.className = "feedback-dialog-backdrop";
 
-  const glossaryHTML = GLOSSARY
-    .slice()
-    .sort((a, b) => a.term.localeCompare(b.term))
-    .map(g => `
-      <div class="glossary-item">
-        <div class="glossary-term">
-          ${g.term}
-          ${g.acronym ? `<span class="glossary-term-acronym">${g.acronym}</span>` : ''}
-        </div>
-        <div class="glossary-def">${g.def}</div>
-      </div>
-    `).join("");
+  const glossaryHTML = GLOSSARY.slice().sort((a, b) => a.term.localeCompare(b.term)).map(g => `
+    <div class="glossary-item">
+      <div class="glossary-term">${g.term}${g.acronym ? `<span class="glossary-term-acronym">${g.acronym}</span>` : ''}</div>
+      <div class="glossary-def">${g.def}</div>
+    </div>`).join("");
 
   dialog.innerHTML = `
     <div class="feedback-dialog-panel wide">
@@ -2772,25 +3134,24 @@ function openHelpDialog() {
 
       <div class="help-dialog-section">
         <h4>How to use this</h4>
-        <p>Five stages, about three minutes if you skip the optional bits. <strong>Stage 0</strong> is grounding — country diagnostics worth reading before picking any tools. <strong>Stage 1</strong> asks why you need M&amp;E. <strong>Stage 2</strong> asks what you are measuring. <strong>Stage 3</strong> asks where you work and what resources you have. <strong>Stage 4</strong> shows a ranked shortlist of tools that fit your answers.</p>
+        <p>Five stages, about three minutes. <strong>Stage 0</strong> (optional) lists country-level reference documents worth reading before picking tools. <strong>Stage 1</strong> asks why you need M&amp;E. <strong>Stage 2</strong> asks what you are measuring. <strong>Stage 3</strong> asks where you work and what resources you have (with optional refinements). <strong>Stage 4</strong> shows you a ranked shortlist of tools that fit your answers.</p>
         <p>You can <strong>jump between stages</strong> at any time using the bar at the top — your answers are kept. Required questions are marked, optional ones are clearly labelled. The more you answer, the sharper the shortlist gets.</p>
-        <p>Stage 0 is fully skippable. Stages 1, 2, and 3 (required questions only) take about two minutes.</p>
+        <p>At Stage 4 you can <strong>copy the shortlist</strong>, <strong>save it as PDF</strong>, or <strong>save the whole tool with your answers for offline use</strong> — useful for sharing a scenario with a colleague or for working without internet.</p>
+        <p>Your answers are saved locally in this browser, so a refresh or accidentally closing the tab won't lose them. To start over with fresh answers, go to Stage 0 and use the "Clear answers &amp; start over" button. Nothing is sent anywhere unless you explicitly use the "Send feedback" button.</p>
       </div>
 
       <div class="help-dialog-section">
         <h4>What the rankings mean</h4>
-        <p><strong>Strong fit</strong> are tools whose tagged purpose, scope, scale, and capacity overlap most with your answers. Start here — but do not treat them as a recommendation. Your context (country, donor, team, existing systems) matters more than the ranking.</p>
-        <p><strong>Possible fit</strong> tools partly overlap. Often useful as complements to a strong-fit choice — for example, a participatory method paired with an indicator framework.</p>
-        <p><strong>Weaker fit</strong> tools usually serve a different purpose or scale. Shown so you can see the full inventory; mostly safe to skip.</p>
-        <p>Hover the "Strong / Possible / Weak" badge on any tool card to see exactly which of your answers pushed its score up or down, and the raw score versus what was possible. This is deliberately transparent — the logic can be debated and improved.</p>
+        <p>Each tool is given a fit score based on how its tags align with your answers. The percentage shown is that score relative to the maximum possible given the questions you answered — so the same tool can show a different percentage in different scenarios.</p>
+        <p><strong>Strong fit</strong> tools match your answers well. <strong>Possible fit</strong> tools partly overlap and are often useful as complements. <strong>Weaker fit</strong> tools usually serve a different purpose or scale.</p>
+        <p>Hover the small label on any tool card to see exactly which of your answers pushed its score up or down. The logic is deliberately transparent — it can be debated and improved.</p>
+        <p>Crucially: this is a starting shortlist, not a recommendation. The right M&amp;E system depends on your team, your country's existing systems, your political space, and how you intend to use what you learn. Tools support those things; they do not define them.</p>
       </div>
 
       <div class="help-dialog-section">
         <h4>Glossary of climate M&amp;E terms</h4>
         <p style="margin-bottom: 14px;">Brief plain-language definitions. Not exhaustive — just the terms you are most likely to bump into in tool descriptions and option labels.</p>
-        <div class="glossary-list">
-          ${glossaryHTML}
-        </div>
+        <div class="glossary-list">${glossaryHTML}</div>
       </div>
     </div>
   `;
@@ -2816,7 +3177,13 @@ function wireHelpButton() {
 function wireFeedbackButton() {
   const btn = document.getElementById("feedback-btn");
   if (!btn) return;
-  btn.addEventListener("click", openFeedbackDialog);
+  btn.addEventListener("click", () => {
+    if (FEEDBACK_EMAIL === "YOUR-EMAIL@example.com") {
+      alert("Feedback email is not yet configured.");
+      return;
+    }
+    openFeedbackDialog();
+  });
 }
 
 function openFeedbackDialog() {
@@ -2845,14 +3212,12 @@ function openFeedbackDialog() {
   lines.push("");
   lines.push("What did not work / felt wrong:");
   lines.push("");
-  lines.push("Tools or methods that should be added or removed:");
-  lines.push("");
-  lines.push("Grounding documents I would add to Stage 0:");
+  lines.push("Tools, methods, or grounding documents that should be added or removed:");
   lines.push("");
   lines.push("Anything else:");
   lines.push("");
 
-  const subject = "Feedback on Climate M&E Navigator (" + VERSION + ")";
+  const subject = "Feedback on Climate M&E Navigator (v0.8)";
   const body = lines.join("\n");
   const mailtoUrl = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(FEEDBACK_EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -2917,11 +3282,14 @@ function openFeedbackDialog() {
 
   dialog.querySelectorAll(".feedback-dialog-copy-btn").forEach(b => {
     b.addEventListener("click", async () => {
-      const targetId = b.dataset.copy;
-      const field = document.getElementById(targetId);
+      const field = document.getElementById(b.dataset.copy);
       const text = field.value;
-      try { await navigator.clipboard.writeText(text); }
-      catch { field.select(); try { document.execCommand("copy"); } catch (e) {} }
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        field.select();
+        try { document.execCommand("copy"); } catch (e) {}
+      }
       const original = b.textContent;
       b.textContent = "Copied ✓";
       b.classList.add("confirmed");
@@ -2933,15 +3301,33 @@ function openFeedbackDialog() {
 // ============================================================
 // INIT
 // ============================================================
+// Hydration order:
+// 1. data-saved-state on body — set by the offline-save feature, wins.
+// 2. localStorage nav_state_v8 — set on every render, restores after refresh.
+// 3. Fresh defaults.
 const savedState = document.body.getAttribute("data-saved-state");
 if (savedState) {
   try {
     const parsed = JSON.parse(savedState);
     if (parsed && parsed.answers) {
       Object.assign(state, parsed);
+      if (!state.groundingRead) state.groundingRead = {};
+      if (!state.groundingExpanded) state.groundingExpanded = {};
       document.body.removeAttribute("data-saved-state");
     }
-  } catch (e) { /* malformed — start fresh */ }
+  } catch (e) { /* fall through */ }
+} else {
+  try {
+    const localSaved = localStorage.getItem("nav_state_v8");
+    if (localSaved) {
+      const parsed = JSON.parse(localSaved);
+      if (parsed && parsed.answers) {
+        Object.assign(state, parsed);
+        if (!state.groundingRead) state.groundingRead = {};
+        if (!state.groundingExpanded) state.groundingExpanded = {};
+      }
+    }
+  } catch (e) { /* fall through */ }
 }
 render();
 wireFeedbackButton();
