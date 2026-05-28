@@ -3310,6 +3310,7 @@ if (savedState) {
   try {
     const parsed = JSON.parse(savedState);
     if (parsed && parsed.answers) {
+      delete parsed.stage;
       Object.assign(state, parsed);
       if (!state.groundingRead) state.groundingRead = {};
       if (!state.groundingExpanded) state.groundingExpanded = {};
@@ -3322,6 +3323,10 @@ if (savedState) {
     if (localSaved) {
       const parsed = JSON.parse(localSaved);
       if (parsed && parsed.answers) {
+        // Don't restore the persisted stage — otherwise a reload reopens on
+        // the terminal Stage 4 results screen, which has no "Continue" button,
+        // and the page appears permanently stuck. Keep the answers, drop the stage.
+        delete parsed.stage;
         Object.assign(state, parsed);
         if (!state.groundingRead) state.groundingRead = {};
         if (!state.groundingExpanded) state.groundingExpanded = {};
