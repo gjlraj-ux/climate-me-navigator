@@ -1332,6 +1332,122 @@ button:focus-visible, a:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+/* ========== MODE BAR (Navigator / Course) ========== */
+.mode-bar { background: var(--paper); border-bottom: 1px solid var(--rule); }
+.mode-bar-inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 40px;
+  display: flex; gap: 4px;
+}
+.mode-tab {
+  background: none; border: none; cursor: pointer; font-family: inherit;
+  padding: 12px 18px 11px; color: var(--ink-muted);
+  display: flex; flex-direction: column; gap: 2px; text-align: left;
+  border-bottom: 2px solid transparent; transition: all 0.15s;
+}
+.mode-tab:hover { color: var(--ink); background: var(--paper-warm); }
+.mode-tab.active { color: var(--ink); border-bottom-color: var(--accent); }
+.mode-tab .mode-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-ghost); }
+.mode-tab.active .mode-eyebrow { color: var(--accent); }
+.mode-tab .mode-label { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 500; letter-spacing: -0.005em; }
+.mode-tab .mode-state { font-size: 11px; font-style: italic; color: var(--ink-ghost); }
+.mode-tab.course-done .mode-state { color: var(--strong); font-style: normal; }
+
+/* ========== COURSE VIEW ========== */
+#course-view { display: none; }
+#course-view.visible { display: block; }
+.crs-page { max-width: var(--max-w); margin: 0 auto; padding: 40px 40px 72px; }
+.crs-intro { max-width: 760px; margin-bottom: 36px; }
+.crs-kicker { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+.crs-intro h1 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 38px; letter-spacing: -0.02em; line-height: 1.08; margin-bottom: 14px; }
+.crs-intro .crs-lede { font-size: 16px; color: var(--ink-soft); line-height: 1.6; }
+.crs-meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.crs-chip { font-family: 'JetBrains Mono', monospace; font-size: 11px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper); padding: 5px 12px; color: var(--ink-muted); }
+
+/* results chain */
+.crs-chain-wrap { margin: 8px 0 40px; }
+.crs-chain-label { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 10px; }
+.crs-chain { display: flex; flex-wrap: wrap; align-items: stretch; }
+.crs-chain button {
+  appearance: none; cursor: pointer; background: var(--paper); color: var(--ink);
+  border: 1px solid var(--rule); padding: 11px 16px; font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.04em; transition: all 0.15s;
+}
+.crs-chain button + button { margin-left: -1px; }
+.crs-chain button:hover { background: var(--accent-wash); border-color: var(--accent); position: relative; z-index: 1; }
+.crs-chain button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); position: relative; z-index: 1; }
+.crs-chain button .tag { display: block; font-size: 9px; font-weight: 400; letter-spacing: 0.08em; opacity: 0.65; }
+.crs-chain .crs-arrow { align-self: center; padding: 0 7px; font-family: 'JetBrains Mono', monospace; color: var(--ink-ghost); }
+.crs-chain-detail { border: 1px solid var(--rule); border-top: none; background: var(--paper-warm); padding: 16px 20px; max-width: 760px; font-size: 14.5px; line-height: 1.6; }
+.crs-chain-detail strong { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-deep); display: block; margin-bottom: 5px; }
+@media (max-width: 680px) { .crs-chain { flex-direction: column; } .crs-chain button + button { margin-left: 0; margin-top: -1px; } .crs-chain .crs-arrow { display: none; } }
+
+/* module index */
+.crs-index { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-bottom: 48px; }
+.crs-index a {
+  display: flex; flex-direction: column; gap: 2px; text-decoration: none;
+  border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper);
+  padding: 10px 12px; color: var(--ink); transition: all 0.15s;
+}
+.crs-index a:hover { border-color: var(--accent); background: var(--accent-wash); }
+.crs-index a .mono { font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); }
+.crs-index a .serif { font-size: 13.5px; font-weight: 500; }
+.crs-index a.done .mono { color: var(--strong); }
+.crs-index a.done .mono::before { content: "● "; }
+
+/* module sections */
+.crs-module { padding: 44px 0; border-top: 1px solid var(--rule); scroll-margin-top: 80px; }
+.crs-mod-code { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+#course-view h2 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 27px; letter-spacing: -0.015em; line-height: 1.15; margin-bottom: 6px; }
+#course-view h3 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 18.5px; margin: 28px 0 8px; }
+#course-view p { margin-bottom: 12px; max-width: 72ch; font-size: 15px; color: var(--ink-soft); }
+#course-view p strong, #course-view li strong { color: var(--ink); }
+#course-view ul.crs-plain, #course-view ol.crs-plain { margin: 0 0 12px 20px; max-width: 70ch; font-size: 15px; color: var(--ink-soft); }
+#course-view ul.crs-plain li, #course-view ol.crs-plain li { margin-bottom: 6px; }
+
+.crs-objectives { background: var(--grounding-wash); border: 1px solid var(--rule); border-left: 3px solid var(--grounding); border-radius: var(--radius); padding: 14px 18px; margin: 18px 0; font-size: 14.5px; max-width: 760px; }
+.crs-objectives .crs-box-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--grounding); margin-bottom: 7px; }
+.crs-objectives ul { margin-left: 18px; color: var(--ink-soft); }
+
+#course-view table { border-collapse: collapse; width: 100%; max-width: 920px; margin: 14px 0 20px; background: var(--paper); font-size: 13.5px; }
+#course-view caption { text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); padding-bottom: 7px; }
+#course-view th { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; text-align: left; background: var(--paper-shade); color: var(--ink); border: 1px solid var(--rule); padding: 8px 12px; }
+#course-view td { border: 1px solid var(--rule-soft); padding: 8px 12px; vertical-align: top; color: var(--ink-soft); }
+#course-view tr:nth-child(even) td { background: var(--paper-warm); }
+
+.crs-field-note { background: var(--weak-wash); border: 1px solid var(--rule); border-radius: var(--radius); padding: 15px 18px; margin: 18px 0; max-width: 760px; font-size: 14.5px; color: var(--ink-soft); }
+.crs-field-note .crs-box-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; margin-bottom: 7px; color: var(--weak); }
+.crs-pitfall { background: var(--accent-wash); border: 1px solid var(--rule); border-radius: var(--radius); padding: 15px 18px; margin: 18px 0; max-width: 760px; font-size: 14.5px; color: var(--ink-soft); }
+.crs-pitfall .crs-box-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; margin-bottom: 7px; color: var(--accent-deep); }
+.crs-exercise { border: 1px dashed var(--ink-muted); border-radius: var(--radius); padding: 16px 20px; margin: 22px 0; max-width: 760px; background: var(--paper); font-size: 14.5px; color: var(--ink-soft); }
+.crs-exercise .crs-box-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; margin-bottom: 7px; color: var(--ink); }
+
+details.crs-quiz { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper); margin: 8px 0; max-width: 760px; }
+details.crs-quiz summary { cursor: pointer; padding: 12px 16px; font-weight: 500; font-size: 14.5px; list-style: none; display: flex; gap: 10px; align-items: baseline; color: var(--ink); }
+details.crs-quiz summary::-webkit-details-marker { display: none; }
+details.crs-quiz summary::before { content: "Q"; font-family: 'JetBrains Mono', monospace; font-size: 11px; background: var(--ink); color: var(--paper); padding: 1px 7px; border-radius: 3px; flex-shrink: 0; }
+details.crs-quiz[open] summary { border-bottom: 1px solid var(--rule-soft); }
+details.crs-quiz .crs-answer { padding: 12px 16px; font-size: 14px; background: var(--strong-wash); color: var(--ink-soft); }
+details.crs-quiz .crs-answer::before { content: "A — "; font-family: 'JetBrains Mono', monospace; color: var(--strong); font-weight: 500; }
+
+.crs-complete-row { margin-top: 26px; }
+.crs-complete-btn {
+  font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 500; cursor: pointer;
+  padding: 8px 16px; border: 1px solid var(--rule); border-radius: var(--radius);
+  background: var(--paper); color: var(--ink-soft); transition: all 0.15s;
+}
+.crs-complete-btn:hover { border-color: var(--strong); color: var(--strong); }
+.crs-complete-btn.done { background: var(--strong-wash); border-color: var(--strong); color: var(--strong); }
+.crs-complete-btn.done::before { content: "● "; }
+
+.crs-glossary dt { font-weight: 600; margin-top: 12px; color: var(--ink); font-size: 14.5px; }
+.crs-glossary dd { margin-left: 0; max-width: 70ch; font-size: 14.5px; color: var(--ink-soft); }
+@media (max-width: 760px) {
+  .mode-bar-inner, .crs-page { padding-left: 20px; padding-right: 20px; }
+  .crs-intro h1 { font-size: 30px; }
+}
+@media print { .mode-bar { display: none; } }
+
 </style>
 </head>
 <body>
@@ -1357,9 +1473,474 @@ button:focus-visible, a:focus-visible {
   </div>
 </header>
 
+
+<div class="mode-bar">
+  <div class="mode-bar-inner" role="tablist" aria-label="Site sections">
+    <button class="mode-tab active" data-mode="navigator" role="tab">
+      <span class="mode-eyebrow">Tool</span>
+      <span class="mode-label">Navigator</span>
+      <span class="mode-state">design your M&E system</span>
+    </button>
+    <button class="mode-tab" data-mode="course" role="tab">
+      <span class="mode-eyebrow">Learn</span>
+      <span class="mode-label">M&E basics</span>
+      <span class="mode-state">start here if new to M&E</span>
+    </button>
+  </div>
+</div>
+
 <nav class="stage-nav" id="stage-nav"></nav>
 
 <main id="stage-container"></main>
+
+<div id="course-view">
+<div class="crs-page">
+
+  <div class="crs-intro">
+    <div class="crs-kicker">A short primer · 6 sections · read at your own pace</div>
+    <h1>The basics beneath the Navigator</h1>
+    <p class="crs-lede">A practical grounding in monitoring &amp; evaluation for program staff — theory of change, indicators, data collection, evaluation criteria, and using data. New to M&amp;E? Start here before working through the Navigator's stages; the concepts below are the ones its questions assume.</p>
+    <div class="crs-meta-row">
+      <span class="crs-chip">AUDIENCE · Program &amp; field staff</span>
+      <span class="crs-chip">LEVEL · Beginner</span>
+      <span class="crs-chip">FORMAT · Read + practice + self-check</span>
+    </div>
+  </div>
+
+  <div class="crs-chain-wrap">
+    <div class="crs-chain-label">Tap each stage — the results chain is the backbone of everything that follows</div>
+    <div class="crs-chain" id="crs-chain" role="group" aria-label="Results chain">
+      <button data-k="inputs" aria-pressed="true">INPUTS<span class="tag">what we use</span></button><span class="crs-arrow">→</span>
+      <button data-k="activities" aria-pressed="false">ACTIVITIES<span class="tag">what we do</span></button><span class="crs-arrow">→</span>
+      <button data-k="outputs" aria-pressed="false">OUTPUTS<span class="tag">what we deliver</span></button><span class="crs-arrow">→</span>
+      <button data-k="outcomes" aria-pressed="false">OUTCOMES<span class="tag">what changes</span></button><span class="crs-arrow">→</span>
+      <button data-k="impact" aria-pressed="false">IMPACT<span class="tag">why it matters</span></button>
+    </div>
+    <div class="crs-chain-detail" id="crs-chain-detail" aria-live="polite">
+      <strong>Inputs</strong>
+      The resources a program uses: funding, staff time, equipment, training materials, partnerships. Example: $80,000 grant, 3 community health workers, 500 water filters.
+    </div>
+  </div>
+
+  <div class="crs-index" id="crs-index">
+    <a href="#crs-m1" data-mod="m1"><span class="mono">Section 1</span><span class="serif">Why M&amp;E exists</span></a>
+    <a href="#crs-m2" data-mod="m2"><span class="mono">Section 2</span><span class="serif">Theory of change &amp; logframes</span></a>
+    <a href="#crs-m3" data-mod="m3"><span class="mono">Section 3</span><span class="serif">Indicators &amp; baselines</span></a>
+    <a href="#crs-m4" data-mod="m4"><span class="mono">Section 4</span><span class="serif">Collecting data</span></a>
+    <a href="#crs-m5" data-mod="m5"><span class="mono">Section 5</span><span class="serif">Evaluation essentials</span></a>
+    <a href="#crs-m6" data-mod="m6"><span class="mono">Section 6</span><span class="serif">Using data &amp; the M&amp;E plan</span></a>
+  </div>
+
+  <!-- ============ MODULE 1 ============ -->
+  <section class="crs-module" id="crs-m1">
+    <div class="crs-mod-code">Section 1 · 20 min</div>
+    <h2>Why M&amp;E exists (and what it actually is)</h2>
+
+    <div class="crs-objectives">
+      <div class="crs-box-title">By the end of this section you can</div>
+      <ul>
+        <li>Define monitoring and evaluation and explain how they differ</li>
+        <li>Name the three core purposes of M&amp;E: accountability, learning, decision-making</li>
+        <li>Describe the M&amp;E cycle and where your role fits in it</li>
+      </ul>
+    </div>
+
+    <h3>1.1 Two words, two different jobs</h3>
+    <p><strong>Monitoring</strong> is the routine, continuous tracking of what a program is doing and delivering. It answers: <em>Are we doing what we said we would, on time and on budget?</em> Think of it as the program's dashboard — you check it constantly while driving.</p>
+    <p><strong>Evaluation</strong> is a periodic, structured assessment of whether the program is working — whether it is relevant, effective, and creating the change it promised. It answers: <em>Are we doing the right things, and are they making a difference?</em> Think of it as the mechanic's full inspection: less frequent, deeper, asking harder questions.</p>
+
+    <table>
+      <caption>Monitoring vs. evaluation at a glance</caption>
+      <tr><th></th><th>Monitoring</th><th>Evaluation</th></tr>
+      <tr><td><strong>Timing</strong></td><td>Continuous, throughout implementation</td><td>Periodic — midterm, endline, or after closure</td></tr>
+      <tr><td><strong>Core question</strong></td><td>Are we on track?</td><td>Did it work? Why or why not?</td></tr>
+      <tr><td><strong>Focus</strong></td><td>Inputs, activities, outputs</td><td>Outcomes, impact, relevance, sustainability</td></tr>
+      <tr><td><strong>Who does it</strong></td><td>Usually internal program staff</td><td>Often external or independent evaluators</td></tr>
+      <tr><td><strong>Used for</strong></td><td>Course corrections, progress reports</td><td>Strategic decisions, scale-up/redesign, accountability</td></tr>
+    </table>
+
+    <h3>1.2 The three purposes</h3>
+    <ul class="crs-plain">
+      <li><strong>Accountability</strong> — to donors who fund the work, and just as importantly to the communities the program serves. M&amp;E is how you demonstrate that resources became results.</li>
+      <li><strong>Learning</strong> — finding out what works, what doesn't, and why, so the next phase (or the next program) is better.</li>
+      <li><strong>Decision-making</strong> — giving managers timely evidence to adapt: reallocate budget, retrain staff, change an approach mid-stream.</li>
+    </ul>
+
+    <div class="crs-field-note">
+      <div class="crs-box-title">Field note</div>
+      A common trap: treating M&amp;E as something done <em>for the donor</em>. Strong programs treat the donor report as a by-product. The real client of M&amp;E is the program team itself — and the community whose lives the data describes.
+    </div>
+
+    <h3>1.3 The M&amp;E cycle</h3>
+    <ol class="crs-plain">
+      <li><strong>Plan</strong> — define the theory of change, indicators, and M&amp;E plan during program design (not after launch).</li>
+      <li><strong>Collect</strong> — gather baseline data, then routine monitoring data.</li>
+      <li><strong>Analyze</strong> — compare actuals against targets; look for patterns and surprises.</li>
+      <li><strong>Use</strong> — report, reflect, and adapt the program.</li>
+      <li><strong>Evaluate</strong> — at key milestones, step back to assess outcomes and impact, feeding lessons into the next planning cycle.</li>
+    </ol>
+
+    <div class="crs-exercise">
+      <div class="crs-box-title">Field practice 1</div>
+      Think of a program you know well. Write one <em>monitoring</em> question (about delivery) and one <em>evaluation</em> question (about change) for it. Example — school feeding program: <em>Monitoring: how many meals were served per school per week? Evaluation: did attendance and concentration improve among participating children?</em>
+    </div>
+
+    <details class="crs-quiz">
+      <summary>"We surveyed farmers 18 months after training to see if yields rose." Monitoring or evaluation?</summary>
+      <div class="crs-answer">Evaluation. It looks at outcomes (yield change) after a period of time, not routine delivery tracking.</div>
+    </details>
+    <details class="crs-quiz">
+      <summary>"We log attendance at every weekly session." Monitoring or evaluation?</summary>
+      <div class="crs-answer">Monitoring — continuous tracking of an output (participation in sessions).</div>
+    </details>
+
+    <div class="crs-complete-row"><button class="crs-complete-btn" data-mod="m1">Mark section as read</button></div>
+  </section>
+
+  <!-- ============ MODULE 2 ============ -->
+  <section class="crs-module" id="crs-m2">
+    <div class="crs-mod-code">Section 2 · 30 min</div>
+    <h2>Theory of change &amp; the logframe</h2>
+
+    <div class="crs-objectives">
+      <div class="crs-box-title">By the end of this section you can</div>
+      <ul>
+        <li>Explain a results chain from inputs to impact</li>
+        <li>Articulate a simple theory of change with assumptions</li>
+        <li>Read and contribute to a logical framework (logframe)</li>
+      </ul>
+    </div>
+
+    <h3>2.1 The results chain</h3>
+    <p>Every program is a bet: <em>if we use these resources to do these things, this change will follow.</em> The results chain (the interactive bar at the top of this page) makes that bet explicit. The crucial line is between <strong>outputs</strong> and <strong>outcomes</strong> — everything up to outputs is within your control; outcomes depend on people and systems responding. That's where programs succeed or fail, and where M&amp;E earns its keep.</p>
+
+    <table>
+      <caption>Worked example — community handwashing program</caption>
+      <tr><th>Level</th><th>Example</th><th>Key question</th></tr>
+      <tr><td>Inputs</td><td>$50k, 2 staff, soap supplies, IEC materials</td><td>What do we use?</td></tr>
+      <tr><td>Activities</td><td>Run hygiene sessions in 20 villages; install handwashing stations</td><td>What do we do?</td></tr>
+      <tr><td>Outputs</td><td>1,200 people trained; 40 stations installed</td><td>What do we deliver?</td></tr>
+      <tr><td>Outcomes</td><td>% of households practicing handwashing at key times rises from 22% to 60%</td><td>What changes in behavior/condition?</td></tr>
+      <tr><td>Impact</td><td>Reduced incidence of diarrheal disease in children under 5</td><td>What long-term difference results?</td></tr>
+    </table>
+
+    <h3>2.2 Theory of change: the "why" between the boxes</h3>
+    <p>A theory of change (ToC) is the results chain plus the reasoning and <strong>assumptions</strong> that connect each step. Assumptions are conditions outside your control that must hold for the chain to work — and they are where programs quietly break.</p>
+    <p>In the handwashing example: trained people will only change behavior <em>if</em> soap remains affordable, <em>if</em> water is available, and <em>if</em> social norms don't penalize the new practice. A good ToC names these out loud so monitoring can watch them.</p>
+
+    <div class="crs-pitfall">
+      <div class="crs-box-title">Common pitfall</div>
+      The "miracle in the middle": a beautifully detailed activity plan, a bold impact statement, and a hand-wave in between. If you can't explain <em>why</em> an output should produce an outcome, you don't yet have a theory of change — you have a to-do list and a wish.
+    </div>
+
+    <h3>2.3 The logframe</h3>
+    <p>The logical framework is the standard 4×4 planning table donors expect. Rows are the results levels (often labeled Goal / Outcome / Outputs / Activities); columns are:</p>
+    <ol class="crs-plain">
+      <li><strong>Narrative summary</strong> — what you intend to achieve at each level</li>
+      <li><strong>Indicators</strong> — how you'll measure it (Section 3)</li>
+      <li><strong>Means of verification (MoV)</strong> — where the data comes from (registers, surveys, records)</li>
+      <li><strong>Assumptions</strong> — external conditions that must hold to move up to the next level</li>
+    </ol>
+    <p>Read a logframe diagonally, bottom-up: <em>if</em> activities are done <em>and</em> assumptions hold, outputs result; <em>if</em> outputs are delivered <em>and</em> assumptions hold, the outcome follows — and so on to the goal.</p>
+
+    <div class="crs-exercise">
+      <div class="crs-box-title">Field practice 2</div>
+      Sketch a one-line results chain for your own program (one item per level). Then write the single assumption you are most worried about between outputs and outcome. That assumption belongs on your monitoring radar.
+    </div>
+
+    <details class="crs-quiz">
+      <summary>"40 latrines constructed" — which level of the results chain?</summary>
+      <div class="crs-answer">Output. It's a deliverable fully within the program's control. "% of households using latrines" would be the outcome.</div>
+    </details>
+    <details class="crs-quiz">
+      <summary>Where do assumptions sit in a logframe, and why do they matter?</summary>
+      <div class="crs-answer">In the fourth column, linking each level to the next. They are the conditions outside your control on which your logic depends — if they fail, delivery can be perfect and results can still not happen.</div>
+    </details>
+
+    <div class="crs-complete-row"><button class="crs-complete-btn" data-mod="m2">Mark section as read</button></div>
+  </section>
+
+  <!-- ============ MODULE 3 ============ -->
+  <section class="crs-module" id="crs-m3">
+    <div class="crs-mod-code">Section 3 · 30 min</div>
+    <h2>Indicators, baselines &amp; targets</h2>
+
+    <div class="crs-objectives">
+      <div class="crs-box-title">By the end of this section you can</div>
+      <ul>
+        <li>Write a SMART indicator and pair it with a means of verification</li>
+        <li>Distinguish quantitative from qualitative indicators and when each is needed</li>
+        <li>Explain why baselines and targets make data meaningful</li>
+      </ul>
+    </div>
+
+    <h3>3.1 What an indicator is</h3>
+    <p>An indicator is an agreed, observable signal that something in your results chain is (or isn't) happening. It doesn't prove change by itself — it <em>indicates</em> it. "Number of women completing vocational training" tells you about an output; "% of graduates earning income from the trade 6 months later" tells you about the outcome.</p>
+
+    <h3>3.2 SMART, applied honestly</h3>
+    <table>
+      <caption>From vague intention to SMART indicator</caption>
+      <tr><th>Letter</th><th>Means</th><th>Weak</th><th>Better</th></tr>
+      <tr><td><strong>S</strong>pecific</td><td>One thing, clearly defined</td><td>"Improved livelihoods"</td><td>"Household monthly income from farming"</td></tr>
+      <tr><td><strong>M</strong>easurable</td><td>Countable or verifiably observable</td><td>"Community is empowered"</td><td>"% of village committees with women in leadership roles"</td></tr>
+      <tr><td><strong>A</strong>chievable</td><td>Realistic with your resources &amp; timeframe</td><td>"Eliminate child malnutrition"</td><td>"Reduce moderate acute malnutrition among enrolled children by 30%"</td></tr>
+      <tr><td><strong>R</strong>elevant</td><td>Actually tied to your results chain</td><td>Counting meetings held when the outcome is income</td><td>Measure the change the program logic predicts</td></tr>
+      <tr><td><strong>T</strong>ime-bound</td><td>Has a deadline</td><td>"Eventually"</td><td>"…by end of Year 2"</td></tr>
+    </table>
+
+    <h3>3.3 Quantitative and qualitative — you need both</h3>
+    <p><strong>Quantitative</strong> indicators count: numbers, percentages, rates. They tell you <em>how much</em> changed and let you compare across time and sites. <strong>Qualitative</strong> indicators capture experience, perception, and process — <em>why</em> and <em>how</em> change happened (or didn't), in people's own words. A program that only counts will know it's off-track but not why; a program that only narrates can't show scale. The strongest M&amp;E systems triangulate both.</p>
+
+    <h3>3.4 Baselines and targets</h3>
+    <p>A number without a comparison point is noise. <strong>Baseline</strong>: the value before (or at the very start of) the intervention. <strong>Target</strong>: the value you commit to reaching by a date. "60% of households practice handwashing" means nothing until you know it started at 22% and the Year-2 target is 55%. Rule of thumb: <em>no baseline, no claim of change</em>. Collect baselines before activities begin — reconstructing them later is expensive and unconvincing.</p>
+
+    <div class="crs-pitfall">
+      <div class="crs-box-title">Common pitfall</div>
+      Indicator overload. Ten well-chosen indicators that are actually collected, checked, and used beat forty that exist only in the proposal. Every indicator you add is a recurring cost in staff time and data quality risk. Be ruthless.
+    </div>
+
+    <div class="crs-field-note">
+      <div class="crs-box-title">Field note · Disaggregation</div>
+      Always plan to break data down — at minimum by sex and age, and where relevant by disability, location, or wealth group. An average can hide the fact that a program works well for men and not at all for women. Donors increasingly require it; good practice demands it.
+    </div>
+
+    <div class="crs-exercise">
+      <div class="crs-box-title">Field practice 3</div>
+      Take the outcome you wrote in Field practice 2. Draft one quantitative indicator (with baseline + target + date) and one qualitative indicator for it. Then name the means of verification for each — the actual register, survey, or record where the data will live.
+    </div>
+
+    <details class="crs-quiz">
+      <summary>What's wrong with the indicator "Communities are more resilient"?</summary>
+      <div class="crs-answer">It isn't specific or measurable — "resilient" is undefined, there's no unit, no baseline, no timeframe. Translate it into observable signals, e.g. "% of households with at least one alternative income source by end of Year 2."</div>
+    </details>
+    <details class="crs-quiz">
+      <summary>Your endline shows 65% of farmers use improved seed. Can you report success?</summary>
+      <div class="crs-answer">Not yet. Compared to what? Without a baseline (and a target), 65% could be an improvement, no change, or even a decline. This is why baselines come first.</div>
+    </details>
+
+    <div class="crs-complete-row"><button class="crs-complete-btn" data-mod="m3">Mark section as read</button></div>
+  </section>
+
+  <!-- ============ MODULE 4 ============ -->
+  <section class="crs-module" id="crs-m4">
+    <div class="crs-mod-code">Section 4 · 35 min</div>
+    <h2>Collecting data people can trust</h2>
+
+    <div class="crs-objectives">
+      <div class="crs-box-title">By the end of this section you can</div>
+      <ul>
+        <li>Match common collection methods to the questions they answer best</li>
+        <li>Explain basic sampling logic and the five dimensions of data quality</li>
+        <li>Apply core ethical standards: consent, do-no-harm, data protection</li>
+      </ul>
+    </div>
+
+    <h3>4.1 Choosing a method</h3>
+    <table>
+      <caption>The everyday M&amp;E toolkit</caption>
+      <tr><th>Method</th><th>Best for</th><th>Watch out for</th></tr>
+      <tr><td><strong>Routine records</strong> (registers, attendance logs, distribution lists)</td><td>Outputs; cheap, continuous monitoring</td><td>Gaps and over-reporting; verify periodically</td></tr>
+      <tr><td><strong>Surveys / questionnaires</strong></td><td>Quantifying outcomes across many people; baseline–endline comparison</td><td>Leading questions; survey fatigue; needs decent sampling</td></tr>
+      <tr><td><strong>Key informant interviews (KIIs)</strong></td><td>Depth from people with special knowledge (leaders, officials, staff)</td><td>One person's view ≠ the community's view</td></tr>
+      <tr><td><strong>Focus group discussions (FGDs)</strong></td><td>Norms, perceptions, the "why" behind survey numbers</td><td>Dominant voices; group composition shapes what's sayable</td></tr>
+      <tr><td><strong>Direct observation</strong></td><td>Verifying that things exist and are used (stations built, practices followed)</td><td>People behave differently when watched</td></tr>
+      <tr><td><strong>Secondary data</strong> (government stats, clinic records)</td><td>Context, impact-level trends, saving money</td><td>Different definitions, coverage, and quality than yours</td></tr>
+    </table>
+    <p>The principle behind all of it: <strong>triangulate</strong>. No single method is reliable alone; confidence comes from independent sources pointing the same way.</p>
+
+    <h3>4.2 Sampling in one paragraph</h3>
+    <p>You rarely need to ask everyone. A <strong>sample</strong> is a subset chosen to stand in for the whole. If it's selected randomly (every person/household has a known chance of selection), you can generalize from it; if it's selected for convenience — whoever was near the road, whoever came to the meeting — you cannot, because the people you reached differ systematically from those you didn't. For beginner purposes, remember three things: random beats convenient; bigger samples narrow uncertainty but with diminishing returns; and the people you <em>miss</em> (the absent, the remote, the marginalized) are often exactly the ones the program most needs to hear.</p>
+
+    <h3>4.3 Five dimensions of data quality</h3>
+    <ul class="crs-plain">
+      <li><strong>Validity</strong> — does it measure what it claims to measure?</li>
+      <li><strong>Reliability</strong> — would a repeat collection, or a different enumerator, get the same result?</li>
+      <li><strong>Timeliness</strong> — is it recent enough to act on?</li>
+      <li><strong>Precision</strong> — is the detail sufficient for the decision at hand?</li>
+      <li><strong>Integrity</strong> — is it protected from error and manipulation along the way?</li>
+    </ul>
+
+    <h3>4.4 Ethics is not optional</h3>
+    <ul class="crs-plain">
+      <li><strong>Informed consent</strong> — people understand who you are, why you're asking, that participation is voluntary, and that refusing carries no penalty (especially no loss of assistance).</li>
+      <li><strong>Do no harm</strong> — asking about sensitive topics (violence, income, status) can expose people to risk. Design questions, settings, and interviewer selection accordingly.</li>
+      <li><strong>Confidentiality &amp; data protection</strong> — collect the minimum personal data needed, store it securely, restrict access, and never publish anything that lets individuals be identified.</li>
+      <li><strong>Feedback</strong> — communities give you their time and their stories; share findings back in a form they can use.</li>
+    </ul>
+
+    <div class="crs-exercise">
+      <div class="crs-box-title">Field practice 4</div>
+      Your survey says 90% of beneficiaries are satisfied — but the survey was run by the same staff who deliver the program, at a distribution site, with names recorded. List three reasons this number might be inflated, and one change to the method for each.
+    </div>
+
+    <details class="crs-quiz">
+      <summary>You interview only farmers who attend the weekly market. What's the problem?</summary>
+      <div class="crs-answer">Selection bias — a convenience sample. Market-goers likely differ from non-attenders (mobility, wealth, proximity), so results can't be generalized to all farmers.</div>
+    </details>
+    <details class="crs-quiz">
+      <summary>Name two ways to triangulate "40 handwashing stations installed and in use."</summary>
+      <div class="crs-answer">Cross-check installation records with direct observation spot-checks, and add FGD or survey questions on actual use — records prove existence; observation and self-report speak to use.</div>
+    </details>
+
+    <div class="crs-complete-row"><button class="crs-complete-btn" data-mod="m4">Mark section as read</button></div>
+  </section>
+
+  <!-- ============ MODULE 5 ============ -->
+  <section class="crs-module" id="crs-m5">
+    <div class="crs-mod-code">Section 5 · 30 min</div>
+    <h2>Evaluation essentials</h2>
+
+    <div class="crs-objectives">
+      <div class="crs-box-title">By the end of this section you can</div>
+      <ul>
+        <li>Distinguish the main evaluation types and when each is used</li>
+        <li>Apply the six OECD-DAC criteria as evaluation questions</li>
+        <li>Explain attribution vs. contribution and why baselines/comparisons matter</li>
+      </ul>
+    </div>
+
+    <h3>5.1 Types of evaluation</h3>
+    <table>
+      <caption>What kind of evaluation, when</caption>
+      <tr><th>Type</th><th>When</th><th>Core question</th></tr>
+      <tr><td><strong>Formative / midterm</strong></td><td>During implementation</td><td>What should we adjust while there's still time?</td></tr>
+      <tr><td><strong>Process evaluation</strong></td><td>During or after</td><td>Was it implemented as designed, and why/why not?</td></tr>
+      <tr><td><strong>Summative / final (endline)</strong></td><td>At or after closure</td><td>Did we achieve the intended outcomes?</td></tr>
+      <tr><td><strong>Impact evaluation</strong></td><td>After sufficient time, with a comparison design</td><td>What change is attributable to the program itself?</td></tr>
+    </table>
+
+    <h3>5.2 The OECD-DAC criteria — the evaluator's compass</h3>
+    <p>Most NGO evaluations are framed around six internationally agreed criteria. Knowing them lets you read any evaluation report — and brief any evaluator.</p>
+    <ul class="crs-plain">
+      <li><strong>Relevance</strong> — is the program doing the right things for these people, in this context?</li>
+      <li><strong>Coherence</strong> — does it fit with what others (government, other agencies, your own organization) are doing?</li>
+      <li><strong>Effectiveness</strong> — is it achieving its objectives?</li>
+      <li><strong>Efficiency</strong> — are results being delivered economically and on time?</li>
+      <li><strong>Impact</strong> — what higher-level difference is it making, intended or not, positive or negative?</li>
+      <li><strong>Sustainability</strong> — will the benefits last after the program (and its funding) ends?</li>
+    </ul>
+
+    <h3>5.3 Attribution vs. contribution</h3>
+    <p>If incomes rose in your project area, was it your program — or the new road, good rains, and remittances? <strong>Attribution</strong> means demonstrating the change was caused by your program, which requires a counterfactual: a credible picture of what would have happened without it (e.g., a comparison group). <strong>Contribution</strong> is the more modest, often more honest claim: evidence that your program plausibly played a part in the change, alongside other factors. For most NGO programs, a rigorous contribution story — strong baseline–endline data, a clear theory of change, triangulated evidence, alternative explanations examined — is both achievable and respectable. Don't claim attribution your design can't support.</p>
+
+    <div class="crs-field-note">
+      <div class="crs-box-title">Field note · Being evaluated</div>
+      Program staff often experience evaluation as an audit. Reframe it: the evaluator's report is only as good as the records, monitoring data, and candor you provide. Negative findings documented honestly are more valuable to your organization — and more credible to donors — than glowing findings nobody believes.
+    </div>
+
+    <div class="crs-exercise">
+      <div class="crs-box-title">Field practice 5</div>
+      Write one evaluation question for your program under each of three DAC criteria: relevance, effectiveness, sustainability. Make each question answerable with evidence, not opinion.
+    </div>
+
+    <details class="crs-quiz">
+      <summary>"The training was completed on budget, but graduates can't find jobs because there's no local demand for the trade." Which DAC criteria are in tension?</summary>
+      <div class="crs-answer">Efficiency was fine (delivered economically), but relevance failed (wrong intervention for the context) — and therefore effectiveness and sustainability suffer. Efficient delivery of the wrong thing is still failure.</div>
+    </details>
+    <details class="crs-quiz">
+      <summary>Yields rose 20% in your area and 18% in neighboring non-program districts. What does this suggest?</summary>
+      <div class="crs-answer">Most of the change likely came from external factors (e.g., rainfall, prices) affecting everyone. The comparison suggests your program's net effect may be small — exactly why counterfactual thinking matters before claiming credit.</div>
+    </details>
+
+    <div class="crs-complete-row"><button class="crs-complete-btn" data-mod="m5">Mark section as read</button></div>
+  </section>
+
+  <!-- ============ MODULE 6 ============ -->
+  <section class="crs-module" id="crs-m6">
+    <div class="crs-mod-code">Section 6 · 25 min</div>
+    <h2>Using data: learning, reporting &amp; the M&amp;E plan</h2>
+
+    <div class="crs-objectives">
+      <div class="crs-box-title">By the end of this section you can</div>
+      <ul>
+        <li>List the components of a practical M&amp;E plan</li>
+        <li>Run a simple data-review rhythm that leads to decisions</li>
+        <li>Report results honestly, including what didn't work</li>
+      </ul>
+    </div>
+
+    <h3>6.1 Data that is never used is a cost, not an asset</h3>
+    <p>The most common M&amp;E failure isn't bad data — it's unused data: forms filled, databases populated, reports filed, nothing changed. Close the loop with a regular rhythm:</p>
+    <ol class="crs-plain">
+      <li><strong>Monthly</strong> — team reviews output data against workplan; flags slippage.</li>
+      <li><strong>Quarterly</strong> — compare indicator actuals vs. targets; discuss the assumptions you flagged in Section 2; record explicit decisions ("we will…") with owners and deadlines.</li>
+      <li><strong>Annually / at evaluation points</strong> — step back to outcomes: is the theory of change holding? What do we change in next year's plan?</li>
+    </ol>
+    <p>This habit has a name — <strong>adaptive management</strong>: using evidence to adjust course deliberately rather than rigidly executing a plan written before reality had a vote.</p>
+
+    <h3>6.2 The M&amp;E plan — your system on paper</h3>
+    <p>An M&amp;E plan turns intentions into an operating system. At minimum it contains:</p>
+    <ul class="crs-plain">
+      <li>The <strong>logframe / results framework</strong> with final indicators</li>
+      <li>An <strong>indicator reference sheet</strong> for each indicator: precise definition, unit, disaggregation, baseline, targets, method, frequency, responsible person</li>
+      <li><strong>Data flow</strong> — who collects, who checks, who enters, who analyzes, who sees it, by when</li>
+      <li><strong>Data quality and ethics procedures</strong> — spot-checks, consent scripts, storage rules</li>
+      <li><strong>Use &amp; reporting calendar</strong> — review meetings, donor reports, community feedback sessions</li>
+      <li><strong>Budget</strong> — a working rule of thumb is roughly 5–10% of program budget for M&amp;E</li>
+    </ul>
+
+    <h3>6.3 Honest reporting</h3>
+    <p>Report against targets, not just activity ("we trained 1,150 of a planned 1,200 — 96%"), explain variances, disaggregate, and include negative results and unintended effects with what you're doing about them. A report that contains only good news is read as marketing; a report that shows learning is read as competence.</p>
+
+    <div class="crs-pitfall">
+      <div class="crs-box-title">Common pitfall</div>
+      Goodhart's law: when a measure becomes a target, it gets gamed. If field teams are judged solely on "number trained," expect shorter trainings and padded registers. Pair output targets with quality and outcome measures, and make it safe to report bad news.
+    </div>
+
+    <div class="crs-exercise">
+      <div class="crs-box-title">Field practice 6 · Capstone</div>
+      Using your answers from practices 2–5, assemble a one-page mini M&amp;E plan: results chain (5 lines), 3 indicators with baseline/target/MoV, your riskiest assumption, your data collection methods, and the date of your first quarterly data review. Then take that page into the Navigator — its stages will help you choose tools to support it.
+    </div>
+
+    <div class="crs-complete-row"><button class="crs-complete-btn" data-mod="m6">Mark section as read</button></div>
+  </section>
+
+  <!-- ============ FINAL CHECK ============ -->
+  <section class="crs-module" id="crs-final">
+    <div class="crs-mod-code">Final knowledge check</div>
+    <h2>Ten questions before you go</h2>
+    <details class="crs-quiz"><summary>1 · What's the key difference between monitoring and evaluation?</summary><div class="crs-answer">Monitoring is continuous tracking of delivery (are we on track?); evaluation is periodic assessment of merit and results (did it work, and why?).</div></details>
+    <details class="crs-quiz"><summary>2 · Order the results chain.</summary><div class="crs-answer">Inputs → Activities → Outputs → Outcomes → Impact.</div></details>
+    <details class="crs-quiz"><summary>3 · What separates outputs from outcomes?</summary><div class="crs-answer">Control. Outputs are deliverables within the program's control; outcomes are changes in people's behavior or conditions that the program can influence but not guarantee.</div></details>
+    <details class="crs-quiz"><summary>4 · What is an assumption in a logframe?</summary><div class="crs-answer">An external condition outside program control that must hold for one results level to lead to the next.</div></details>
+    <details class="crs-quiz"><summary>5 · What does SMART stand for?</summary><div class="crs-answer">Specific, Measurable, Achievable, Relevant, Time-bound.</div></details>
+    <details class="crs-quiz"><summary>6 · Why is a baseline indispensable?</summary><div class="crs-answer">Change can only be demonstrated against a starting point; without a baseline, an endline value is uninterpretable.</div></details>
+    <details class="crs-quiz"><summary>7 · Name the six OECD-DAC criteria.</summary><div class="crs-answer">Relevance, coherence, effectiveness, efficiency, impact, sustainability.</div></details>
+    <details class="crs-quiz"><summary>8 · Attribution or contribution: which claim needs a counterfactual?</summary><div class="crs-answer">Attribution — you must show what would have happened without the program (e.g., via a comparison group).</div></details>
+    <details class="crs-quiz"><summary>9 · Give two ethical requirements for data collection.</summary><div class="crs-answer">Any two of: informed and voluntary consent; do-no-harm design; confidentiality and secure data handling; collecting only necessary personal data; sharing findings back with communities.</div></details>
+    <details class="crs-quiz"><summary>10 · What is adaptive management?</summary><div class="crs-answer">Using monitoring evidence in a regular review rhythm to deliberately adjust program decisions, rather than rigidly executing the original plan.</div></details>
+  </section>
+
+  <!-- ============ GLOSSARY ============ -->
+  <section class="crs-module" id="crs-glossary">
+    <div class="crs-mod-code">Reference</div>
+    <h2>Glossary &amp; further reading</h2>
+    <dl class="crs-glossary">
+      <dt>Baseline</dt><dd>The value of an indicator before or at the start of an intervention; the comparison point for all later measurement.</dd>
+      <dt>Counterfactual</dt><dd>An estimate of what would have happened without the program; the basis for attribution claims.</dd>
+      <dt>Disaggregation</dt><dd>Breaking data down by sub-groups (sex, age, disability, location) to reveal differences hidden in averages.</dd>
+      <dt>Indicator</dt><dd>An agreed, observable measure used to signal whether a result is occurring.</dd>
+      <dt>Logframe</dt><dd>Logical framework: a matrix linking results levels to indicators, means of verification, and assumptions.</dd>
+      <dt>Means of verification (MoV)</dt><dd>The concrete data source for an indicator — a register, survey, record, or observation protocol.</dd>
+      <dt>Outcome</dt><dd>A change in the behavior, knowledge, or condition of people or institutions resulting from program outputs.</dd>
+      <dt>Results chain</dt><dd>The causal sequence inputs → activities → outputs → outcomes → impact.</dd>
+      <dt>Theory of change</dt><dd>The explicit logic and assumptions explaining how and why an intervention is expected to produce its results.</dd>
+      <dt>Triangulation</dt><dd>Using multiple independent methods or sources to confirm a finding.</dd>
+    </dl>
+
+    <h3>Where to go next</h3>
+    <ul class="crs-plain">
+      <li><strong>BetterEvaluation</strong> (betterevaluation.org) — the most comprehensive free library of M&amp;E methods and guidance.</li>
+      <li><strong>OECD-DAC evaluation criteria</strong> — the official definitions and guidance on applying the six criteria.</li>
+      <li><strong>UNDP / UNICEF / USAID M&amp;E handbooks</strong> — free, practical agency guidance including indicator reference sheet templates.</li>
+      <li><strong>IFRC M&amp;E Guide</strong> — a clear, field-oriented manual widely used across the humanitarian sector.</li>
+      <li>And for climate-specific framing — the <strong>Grounding documents in Stage 00</strong> of the Navigator tab.</li>
+    </ul>
+  </section>
+
+</div>
+</div>
+
 
 <footer class="pagefoot">
   <div class="pagefoot-inner">
@@ -3337,6 +3918,103 @@ if (savedState) {
 render();
 wireFeedbackButton();
 wireHelpButton();
+
+// ============================================================
+// COURSE MODE — M&E 101 tab
+// ============================================================
+(function () {
+  const COURSE_KEY = "course_done_v1";
+  const MODE_KEY = "nav_mode_v1";
+  const MODULES = ["m1", "m2", "m3", "m4", "m5", "m6"];
+
+  function loadDone() {
+    try { return JSON.parse(localStorage.getItem(COURSE_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveDone(d) {
+    try { localStorage.setItem(COURSE_KEY, JSON.stringify(d)); } catch (e) {}
+  }
+
+  let done = loadDone();
+  let mode = "navigator";
+  try { mode = localStorage.getItem(MODE_KEY) || "navigator"; } catch (e) {}
+
+  const courseView = document.getElementById("course-view");
+  const stageNav = document.getElementById("stage-nav");
+  const stageContainer = document.getElementById("stage-container");
+  const modeTabs = document.querySelectorAll(".mode-tab");
+
+  function doneCount() {
+    return MODULES.filter(m => done[m]).length;
+  }
+
+  function applyMode() {
+    const isCourse = mode === "course";
+    courseView.classList.toggle("visible", isCourse);
+    stageNav.style.display = isCourse ? "none" : "";
+    stageContainer.style.display = isCourse ? "none" : "";
+    modeTabs.forEach(t => t.classList.toggle("active", t.dataset.mode === mode));
+    updateTabState();
+    try { localStorage.setItem(MODE_KEY, mode); } catch (e) {}
+  }
+
+  function updateTabState() {
+    const tab = document.querySelector('.mode-tab[data-mode="course"]');
+    if (!tab) return;
+    const st = tab.querySelector(".mode-state");
+    const n = doneCount();
+    st.textContent = n === 0 ? "start here if new to M&E" : `${n} of ${MODULES.length} read`;
+    tab.classList.toggle("course-done", n === MODULES.length);
+    // reflect per-module state on buttons and index
+    document.querySelectorAll(".crs-complete-btn").forEach(b => {
+      const m = b.dataset.mod;
+      b.classList.toggle("done", !!done[m]);
+      b.textContent = done[m] ? "Read" : "Mark section as read";
+    });
+    document.querySelectorAll("#crs-index a").forEach(a => {
+      a.classList.toggle("done", !!done[a.dataset.mod]);
+    });
+  }
+
+  modeTabs.forEach(t => t.addEventListener("click", () => {
+    mode = t.dataset.mode;
+    applyMode();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }));
+
+  document.querySelectorAll(".crs-complete-btn").forEach(b => {
+    b.addEventListener("click", () => {
+      const m = b.dataset.mod;
+      done[m] = !done[m];
+      saveDone(done);
+      updateTabState();
+    });
+  });
+
+  // results chain interaction
+  const chainDetail = {
+    inputs: ["Inputs", "The resources a program uses: funding, staff time, equipment, training materials, partnerships. Example: $80,000 grant, 3 community health workers, 500 water filters."],
+    activities: ["Activities", "What the program does with its inputs: trainings delivered, items distributed, systems built, campaigns run. Example: run hygiene sessions in 20 villages."],
+    outputs: ["Outputs", "The direct, countable deliverables of activities — fully within the program's control. Example: 1,200 people trained; 40 handwashing stations installed."],
+    outcomes: ["Outcomes", "Changes in people's behavior, knowledge, or conditions that outputs are meant to produce. Influenced, not controlled. Example: household handwashing rises from 22% to 60%."],
+    impact: ["Impact", "The long-term, higher-level change the program contributes to, usually alongside many other actors. Example: reduced diarrheal disease in children under 5."]
+  };
+  const chain = document.getElementById("crs-chain");
+  const box = document.getElementById("crs-chain-detail");
+  if (chain && box) {
+    chain.addEventListener("click", e => {
+      const b = e.target.closest("button");
+      if (!b) return;
+      chain.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false"));
+      b.setAttribute("aria-pressed", "true");
+      const d = chainDetail[b.dataset.k];
+      box.innerHTML = "<strong>" + d[0] + "</strong>" + d[1];
+    });
+  }
+
+  applyMode();
+})();
+
 </script>
 
 </body>
