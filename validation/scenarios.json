@@ -1,0 +1,123 @@
+[
+  {
+    "id": "national-adaptation-coordination",
+    "stakeholder": "National climate coordination team",
+    "answers": {
+      "role": "national_coordination",
+      "purpose_primary": "national_policy",
+      "purpose_secondary": ["international_reporting"],
+      "scope": ["adaptation", "crosscutting"],
+      "evidence_scale": "subnational",
+      "decision_scale": "national",
+      "capacity": "medium",
+      "phase": "design",
+      "approach": "blended",
+      "data": "moderate",
+      "time": "months",
+      "toc": "have"
+    },
+    "expected_components": ["anchor_reporting", "system_design", "data_evidence", "capacity_enabling"],
+    "minimum_bundle_size": 4
+  },
+  {
+    "id": "community-led-adaptation",
+    "stakeholder": "Community or civil-society adaptation partnership",
+    "answers": {
+      "role": "community_cso",
+      "purpose_primary": "community_monitoring",
+      "purpose_secondary": ["learning_transformation"],
+      "scope": ["adaptation", "loss_damage"],
+      "evidence_scale": "community",
+      "decision_scale": "subnational",
+      "capacity": "low",
+      "phase": "operate",
+      "approach": "bottomup",
+      "data": "thin",
+      "time": "weeks",
+      "toc": "building"
+    },
+    "expected_components": ["collection_delivery", "evaluation_learning"],
+    "minimum_bundle_size": 2
+  },
+  {
+    "id": "btr-mitigation-reporting",
+    "stakeholder": "National transparency and inventory team",
+    "answers": {
+      "role": "national_coordination",
+      "purpose_primary": "international_reporting",
+      "purpose_secondary": [],
+      "scope": ["mitigation"],
+      "evidence_scale": "national",
+      "decision_scale": "international",
+      "capacity": "high",
+      "phase": "report",
+      "approach": "topdown",
+      "data": "rich",
+      "time": "months",
+      "toc": "none"
+    },
+    "expected_components": ["anchor_reporting", "data_evidence"],
+    "minimum_bundle_size": 2
+  },
+  {
+    "id": "climate-fund-programme-review",
+    "stakeholder": "Climate fund programme and evaluation team",
+    "answers": {
+      "role": "programme_funder",
+      "purpose_primary": "project_accountability",
+      "purpose_secondary": ["learning_transformation"],
+      "scope": ["adaptation", "biodiversity"],
+      "evidence_scale": "community",
+      "decision_scale": "national",
+      "capacity": "medium",
+      "phase": "evaluate",
+      "approach": "blended",
+      "data": "moderate",
+      "time": "months",
+      "toc": "have"
+    },
+    "expected_components": ["collection_delivery", "evaluation_learning"],
+    "minimum_bundle_size": 2
+  },
+  {
+    "id": "city-climate-operations",
+    "stakeholder": "Subnational climate and data team",
+    "answers": {
+      "role": "sector_local",
+      "purpose_primary": "national_policy",
+      "purpose_secondary": ["project_accountability"],
+      "scope": ["mitigation", "adaptation"],
+      "evidence_scale": "subnational",
+      "decision_scale": "subnational",
+      "capacity": "medium",
+      "phase": "operate",
+      "approach": "topdown",
+      "data": "moderate",
+      "time": "months",
+      "toc": "building"
+    },
+    "expected_components": ["anchor_reporting", "system_design", "data_evidence"],
+    "minimum_bundle_size": 3
+  },
+  {
+    "id": "climate-finance-tracking",
+    "stakeholder": "Finance ministry or public investment team",
+    "answers": {
+      "role": "private_finance",
+      "purpose_primary": "finance_tracking",
+      "purpose_secondary": ["national_policy"],
+      "scope": ["crosscutting"],
+      "evidence_scale": "national",
+      "decision_scale": "national",
+      "capacity": "medium",
+      "phase": "design",
+      "approach": "topdown",
+      "data": "moderate",
+      "time": "months",
+      "toc": "none"
+    },
+    "expected_components": ["system_design"],
+    "minimum_bundle_size": 1
+  }
+]
+
