@@ -1,0 +1,13 @@
+{
+  "name": "climate-me-navigator",
+  "version": "0.9.0",
+  "private": true,
+  "description": "Decision support for climate monitoring, evaluation, and learning system design",
+  "scripts": {
+    "test": "node scripts/validate.mjs",
+    "validate": "node scripts/validate.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
