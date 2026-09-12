@@ -73,6 +73,12 @@ if (api) {
     for (const component of scenario.expected_components) {
       check(present.has(component), `${scenario.id}: expected eligible ${component} component`);
     }
+    for (const id of scenario.excluded_tools || []) {
+      check(ranked.find(tool => tool.id === id)?._eligible === false, `${scenario.id}: expected ${id} to be excluded`);
+    }
+    for (const id of scenario.warned_tools || []) {
+      check(ranked.find(tool => tool.id === id)?._warnings.length > 0, `${scenario.id}: expected a visible warning for ${id}`);
+    }
     for (const tool of ranked.filter(item => !item._eligible)) {
       check(tool._blockers.length > 0, `${scenario.id}/${tool.id}: ineligible tool has no visible blocker`);
     }
@@ -80,7 +86,7 @@ if (api) {
 }
 
 const staticChecks = [
-  [source.includes("Working draft · v0.9"), "visible version is not v0.9"],
+  [source.includes("Working draft · v1.0"), "visible version is not v1.0"],
   [source.includes("function buildSystemBundle"), "system-bundle construction is missing"],
   [source.includes("CATALOGUE_SNAPSHOT"), "catalogue snapshot label is missing"],
   [source.includes('role="dialog" aria-modal="true"'), "modal semantics are missing"],
