@@ -5,8 +5,13 @@
     "answers": {
       "role": "national_coordination",
       "purpose_primary": "national_policy",
-      "purpose_secondary": ["international_reporting"],
-      "scope": ["adaptation", "crosscutting"],
+      "purpose_secondary": [
+        "international_reporting"
+      ],
+      "scope": [
+        "adaptation",
+        "crosscutting"
+      ],
       "evidence_scale": "subnational",
       "decision_scale": "national",
       "capacity": "medium",
@@ -16,7 +21,12 @@
       "time": "months",
       "toc": "have"
     },
-    "expected_components": ["anchor_reporting", "system_design", "data_evidence", "capacity_enabling"],
+    "expected_components": [
+      "anchor_reporting",
+      "system_design",
+      "data_evidence",
+      "capacity_enabling"
+    ],
     "minimum_bundle_size": 4
   },
   {
@@ -25,8 +35,13 @@
     "answers": {
       "role": "community_cso",
       "purpose_primary": "community_monitoring",
-      "purpose_secondary": ["learning_transformation"],
-      "scope": ["adaptation", "loss_damage"],
+      "purpose_secondary": [
+        "learning_transformation"
+      ],
+      "scope": [
+        "adaptation",
+        "loss_damage"
+      ],
       "evidence_scale": "community",
       "decision_scale": "subnational",
       "capacity": "low",
@@ -36,7 +51,10 @@
       "time": "weeks",
       "toc": "building"
     },
-    "expected_components": ["collection_delivery", "evaluation_learning"],
+    "expected_components": [
+      "collection_delivery",
+      "evaluation_learning"
+    ],
     "minimum_bundle_size": 2
   },
   {
@@ -46,7 +64,9 @@
       "role": "national_coordination",
       "purpose_primary": "international_reporting",
       "purpose_secondary": [],
-      "scope": ["mitigation"],
+      "scope": [
+        "mitigation"
+      ],
       "evidence_scale": "national",
       "decision_scale": "international",
       "capacity": "high",
@@ -56,7 +76,10 @@
       "time": "months",
       "toc": "none"
     },
-    "expected_components": ["anchor_reporting", "data_evidence"],
+    "expected_components": [
+      "anchor_reporting",
+      "data_evidence"
+    ],
     "minimum_bundle_size": 2
   },
   {
@@ -65,8 +88,13 @@
     "answers": {
       "role": "programme_funder",
       "purpose_primary": "project_accountability",
-      "purpose_secondary": ["learning_transformation"],
-      "scope": ["adaptation", "biodiversity"],
+      "purpose_secondary": [
+        "learning_transformation"
+      ],
+      "scope": [
+        "adaptation",
+        "biodiversity"
+      ],
       "evidence_scale": "community",
       "decision_scale": "national",
       "capacity": "medium",
@@ -76,7 +104,10 @@
       "time": "months",
       "toc": "have"
     },
-    "expected_components": ["collection_delivery", "evaluation_learning"],
+    "expected_components": [
+      "collection_delivery",
+      "evaluation_learning"
+    ],
     "minimum_bundle_size": 2
   },
   {
@@ -85,8 +116,13 @@
     "answers": {
       "role": "sector_local",
       "purpose_primary": "national_policy",
-      "purpose_secondary": ["project_accountability"],
-      "scope": ["mitigation", "adaptation"],
+      "purpose_secondary": [
+        "project_accountability"
+      ],
+      "scope": [
+        "mitigation",
+        "adaptation"
+      ],
       "evidence_scale": "subnational",
       "decision_scale": "subnational",
       "capacity": "medium",
@@ -96,7 +132,11 @@
       "time": "months",
       "toc": "building"
     },
-    "expected_components": ["anchor_reporting", "system_design", "data_evidence"],
+    "expected_components": [
+      "anchor_reporting",
+      "system_design",
+      "data_evidence"
+    ],
     "minimum_bundle_size": 3
   },
   {
@@ -105,8 +145,12 @@
     "answers": {
       "role": "private_finance",
       "purpose_primary": "finance_tracking",
-      "purpose_secondary": ["national_policy"],
-      "scope": ["crosscutting"],
+      "purpose_secondary": [
+        "national_policy"
+      ],
+      "scope": [
+        "crosscutting"
+      ],
       "evidence_scale": "national",
       "decision_scale": "national",
       "capacity": "medium",
@@ -116,8 +160,59 @@
       "time": "months",
       "toc": "none"
     },
-    "expected_components": ["system_design"],
+    "expected_components": [
+      "system_design"
+    ],
     "minimum_bundle_size": 1
+  },
+  {
+    "id": "district-heat-without-water",
+    "stakeholder": "District heat response team",
+    "answers": {
+      "role": "sector_local",
+      "purpose_primary": "learning_transformation",
+      "scope": [
+        "adaptation"
+      ],
+      "evidence_scale": "subnational",
+      "decision_scale": "subnational",
+      "capacity": "medium",
+      "water": "no",
+      "approach": "unsure"
+    },
+    "expected_components": [
+      "system_design",
+      "collection_delivery",
+      "evaluation_learning"
+    ],
+    "minimum_bundle_size": 3,
+    "excluded_tools": [
+      "aqueduct",
+      "aquastat"
+    ]
+  },
+  {
+    "id": "community-water-relevance-open",
+    "stakeholder": "Community adaptation team still defining its evidence needs",
+    "answers": {
+      "role": "community_cso",
+      "purpose_primary": "community_monitoring",
+      "scope": [
+        "adaptation"
+      ],
+      "evidence_scale": "community",
+      "decision_scale": "subnational",
+      "capacity": "low",
+      "water": "unsure"
+    },
+    "expected_components": [
+      "system_design",
+      "collection_delivery",
+      "evaluation_learning"
+    ],
+    "minimum_bundle_size": 3,
+    "warned_tools": [
+      "aqueduct"
+    ]
   }
 ]
-

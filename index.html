@@ -1560,9 +1560,158 @@ details.crs-quiz .crs-answer::before { content: "A — "; font-family: 'JetBrain
 }
 @media print { .mode-bar { display: none; } }
 
+/* v1.0: readable controls, stable focus, compact summaries and worksheets. */
+[hidden] { display: none !important; }
+body { font-size: 16px; }
+:where(button, a, input, textarea, select, summary):focus-visible { outline: 3px solid var(--grounding); outline-offset: 3px; }
+:where(h1, h2, h3, details) { scroll-margin-top: 120px; }
+button, input, select { min-height: 44px; }
+button, summary, a { touch-action: manipulation; }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.skip-link { position: fixed; left: 16px; top: -100px; z-index: 100; padding: 12px; background: var(--paper); }
+.skip-link:focus { top: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.project-bar { max-width: var(--max-w); margin: auto; padding: 12px 40px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.project-bar label { font-size: 13px; font-weight: 600; }
+.project-bar select { max-width: 290px; min-width: 130px; flex: 1; }
+.project-bar button { padding: 8px 12px; }
+.save-status { color: var(--ink-muted); font-size: 12px; margin-left: auto; }
+.save-status.error { color: #933510; font-weight: 600; }
+.welcome { max-width: var(--max-w); margin: auto; padding: 52px 40px; }
+.welcome h1 { max-width: 800px; font: 500 42px/1.12 'Fraunces', Georgia, serif; }
+.welcome .lede { max-width: 720px; font-size: 18px; margin: 20px 0; }
+.welcome-actions, .action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 18px 0; }
+.welcome-meta, .field-hint { font-size: 14px; color: var(--ink-muted); margin: 8px 0 16px; }
+.welcome-preview { margin-top: 36px; padding: 24px; background: var(--paper-warm); border: 1px solid var(--rule); }
+.welcome-preview h2 { font: 500 24px 'Fraunces', Georgia, serif; margin-bottom: 12px; }
+.preview-parts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 24px; margin: 16px 0; }
+.preview-parts span { padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.stage-chip .mono, .stage-chip .state, .stage-kicker, .mode-tab .mode-state { font-size: 12px; letter-spacing: .03em; }
+.stage-chip .serif { font-size: 16px; }
+.stage-page { grid-template-columns: 290px minmax(0, 1fr); gap: 40px; }
+.stage-body { min-width: 0; }
+.stage-intro-body, .step-prompt, .option-help { font-size: 15px; }
+.stage-intro-body p { margin-bottom: 12px; }
+.step-heading { font-size: 21px; }
+fieldset { min-width: 0; border: 0; }
+legend { padding: 0; }
+.options .option { display: flex; position: relative; gap: 12px; align-items: flex-start; text-align: left; }
+.option input { min-height: 0; width: 20px; height: 20px; flex: 0 0 20px; margin-top: 3px; accent-color: var(--accent); }
+.option input:focus-visible { outline-offset: 4px; }
+.option:has(input:checked) { background: var(--accent-wash); border-color: var(--accent); }
+.option-label { display: block; font-size: 16px; }
+.option-help { display: block; line-height: 1.5; }
+.field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 16px 0; }
+.field { display: flex; flex-direction: column; gap: 6px; font-size: 15px; font-weight: 500; }
+.field.wide { grid-column: 1/-1; }
+.field input, .field textarea, .field select, .project-bar select { width: 100%; background: var(--paper); border: 1px solid #8f8a7e; border-radius: 4px; padding: 10px 12px; font: 400 16px/1.5 'Inter', system-ui, sans-serif; color: var(--ink); }
+.field textarea { resize: vertical; min-height: 95px; }
+.field input { min-width: 0; }
+.optional-section, .context-help { margin: 16px 0; border: 1px solid var(--rule); background: var(--paper); border-radius: 4px; padding: 16px; }
+.optional-section > summary, .context-help > summary { cursor: pointer; font-weight: 500; min-height: 30px; }
+.optional-section > :not(summary), .context-help > :not(summary) { margin-top: 14px; }
+.context-help { background: var(--paper-warm); font-size: 15px; }
+.context-help ul, .example-card ul { margin: 12px 0 12px 20px; }
+.context-help a { display: inline-block; padding: 6px 0; }
+.example-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin: 24px 0; }
+.example-card { border: 1px solid var(--rule); padding: 22px; background: var(--paper); }
+.example-card h3 { font: 500 23px 'Fraunces', Georgia, serif; margin-bottom: 12px; }
+.example-card p, .example-card li { font-size: 15px; line-height: 1.6; }
+.example-card .btn { margin-top: 14px; }
+.example-banner, .readiness-note { background: var(--grounding-wash); border-left: 4px solid var(--grounding); padding: 16px 20px; margin: 16px 0; font-size: 15px; }
+.example-banner { max-width: 1140px; margin: 16px auto; }
+.answers-summary-label, .results-band-count { font-size: 12px; letter-spacing: .03em; }
+.answers-summary-value { font-size: 15px; overflow-wrap: anywhere; }
+.answers-summary-edit { font-size: 14px; min-width: 44px; padding: 6px; }
+.bundle-overview { display: grid; gap: 12px; margin: 20px 0; }
+.overview-row { display: grid; grid-template-columns: 200px minmax(0, 1fr) 120px; align-items: start; gap: 20px; border: 1px solid var(--rule); border-left: 3px solid var(--accent); background: var(--paper); padding: 20px; }
+.overview-row h3 { font: 500 19px 'Fraunces', Georgia, serif; }
+.overview-row .chosen-name { font-weight: 600; font-size: 17px; overflow-wrap: anywhere; }
+.overview-row p { margin-top: 7px; font-size: 15px; }
+.overview-row .watch { color: #72501e; }
+.component-detail { border: 1px solid var(--rule); padding: 20px; margin: 16px 0; background: var(--paper); }
+.component-detail > summary { cursor: pointer; font: 500 22px 'Fraunces', Georgia, serif; padding: 6px 0; }
+.component-detail .tool-card { margin-top: 18px; }
+.tool-card-fit { font-size: 14px; }
+.tool-card-name { font-size: 23px; }
+.tool-card-what, .tool-card-examples, .tool-card-operational p, .tool-card-issues li, .fit-details li, .fit-details p { font-size: 15px; }
+.tool-card-meta, .tool-card-cost, .tool-card-operational span, .tool-card-component, .tool-card-toc-badge { font-size: 12px; letter-spacing: .02em; }
+.fit-details summary, .tool-card-link { font-size: 15px; padding: 8px 0; }
+.compare-table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 14px; }
+.compare-table caption { text-align: left; margin-bottom: 12px; font-weight: 500; }
+.compare-table th, .compare-table td { padding: 14px 10px; vertical-align: top; text-align: left; border-bottom: 1px solid var(--rule); overflow-wrap: anywhere; }
+.compare-table th { background: var(--paper-warm); }
+.compare-table td p { margin-bottom: 8px; }
+.compare-table .current { background: var(--grounding-wash); }
+.local-editor, .worksheet { background: var(--paper-warm); padding: 20px; margin: 18px 0; border: 1px solid var(--rule); }
+.worksheet h3 { font: 500 22px 'Fraunces', Georgia, serif; }
+.worksheet > p { font-size: 15px; margin: 8px 0; }
+.worksheet details { margin: 12px 0; padding: 12px; background: var(--paper); border: 1px solid var(--rule); }
+.worksheet summary { cursor: pointer; font-weight: 500; }
+.export-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.project-notice { max-width: 1140px; margin: 10px auto; font-size: 14px; }
+.stage-footer { gap: 12px; }
+.course-return { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+@media (max-width: 960px) {
+  .stage-page { grid-template-columns: 1fr; gap: 24px; }
+  .stage-nav-inner { flex-wrap: nowrap; overflow-x: auto; }
+  .stage-chip { flex: 1 0 132px; }
+  .stage-box { display: none; }
+  .stage-intro-body { max-width: 65ch; }
+  .example-grid { grid-template-columns: 1fr; }
+  .overview-row { grid-template-columns: 160px minmax(0, 1fr); }
+  .overview-row > button { grid-column: 2; justify-self: start; }
+}
+@media (max-width: 600px) {
+  .masthead-inner, .project-bar, .stage-page, .welcome, .stage-footer { padding-left: 18px; padding-right: 18px; }
+  .masthead-inner { flex-direction: column; gap: 16px; }
+  .masthead-right { align-items: flex-start; }
+  .masthead-buttons { flex-wrap: wrap; }
+  .project-bar select { max-width: none; }
+  .save-status { width: 100%; margin: 0; }
+  .stage-nav-inner { padding: 8px; overflow-x: auto; }
+  .stage-chip { flex: 0 0 132px; padding: 8px; }
+  .stage-chip .serif { font-size: 15px; }
+  .welcome { padding-top: 30px; padding-bottom: 30px; }
+  .welcome h1 { font-size: 32px; }
+  .welcome .lede { font-size: 17px; }
+  .preview-parts, .field-grid { grid-template-columns: 1fr; }
+  .options.grid-2 { grid-template-columns: 1fr; }
+  .overview-row { grid-template-columns: 1fr; gap: 12px; padding: 16px; }
+  .overview-row > button { grid-column: auto; }
+  .component-detail, .worksheet, .local-editor { padding: 14px; }
+  .stage-footer { flex-wrap: wrap; }
+  .stage-footer-meta { width: 100%; order: -1; text-align: center; }
+  .compare-table, .compare-table tbody, .compare-table tr, .compare-table td { display: block; width: 100%; }
+  .compare-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .compare-table td::before { content: attr(data-label); display: block; font-weight: 600; margin-bottom: 8px; }
+  .compare-table tr { border: 1px solid var(--rule); margin-bottom: 18px; }
+  .example-banner { margin: 12px 18px; }
+  .tool-card-operational { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+@media print {
+  .project-bar, .action-row, .export-actions, .overview-row > button, .component-detail, .share-row, .stage-footer, .readiness-note button { display: none !important; }
+  .overview-row { break-inside: avoid; grid-template-columns: 180px 1fr; }
+  .worksheet, .worksheet details { background: white; padding: 8px; }
+  .worksheet .field-grid { display: none; }
+  .print-fields, .print-only { display: block !important; }
+  #excluded-options, #plan-context > button { display: none !important; }
+  .print-fields div { margin: 8px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .print-fields dt { font-weight: 600; }
+  .print-fields dd { margin-bottom: 8px; }
+  .worksheet details { break-inside: avoid; }
+  .answers-summary { break-inside: avoid; }
+}
+.print-fields, .print-only { display: none; }
+
 </style>
 </head>
 <body>
+<a class="skip-link" href="#stage-container">Skip to navigator</a>
 
 <header class="masthead">
   <div class="masthead-inner">
@@ -1601,12 +1750,16 @@ details.crs-quiz .crs-answer::before { content: "A — "; font-family: 'JetBrain
   </div>
 </div>
 
-<nav class="stage-nav" id="stage-nav"></nav>
+<div class="project-bar" id="project-bar" aria-label="Saved projects"></div>
+<div class="project-notice" id="live-status" role="status" aria-live="polite"></div>
+<nav class="stage-nav" id="stage-nav" aria-label="Design steps"></nav>
 
 <main id="stage-container" role="tabpanel" aria-labelledby="tab-navigator"></main>
 
 <div id="course-view" role="tabpanel" aria-labelledby="tab-course">
 <div class="crs-page">
+<div class="course-return"><button class="btn" id="course-return">← Return to your plan</button></div>
+<section class="optional-section" id="course-examples"><h2 class="serif">Explore a climate example</h2><p>Illustrative journeys with choices to inspect and change. Each opens as its own project.</p><div id="course-example-cards"></div></section>
 
   <div class="crs-intro">
     <div class="crs-kicker">A short primer · 6 sections · read at your own pace</div>
@@ -2046,7 +2199,7 @@ details.crs-quiz .crs-answer::before { content: "A — "; font-family: 'JetBrain
       <li><strong>OECD-DAC evaluation criteria</strong> — the official definitions and guidance on applying the six criteria.</li>
       <li><strong>UNDP / UNICEF / USAID M&amp;E handbooks</strong> — free, practical agency guidance including indicator reference sheet templates.</li>
       <li><strong>IFRC M&amp;E Guide</strong> — a clear, field-oriented manual widely used across the humanitarian sector.</li>
-      <li>And for climate-specific framing — the <strong>Grounding documents in Stage 00</strong> of the Navigator tab.</li>
+      <li>And for climate-specific framing — the <strong>Context checklist</strong> of the Navigator tab.</li>
     </ul>
   </section>
 
@@ -2056,7 +2209,7 @@ details.crs-quiz .crs-answer::before { content: "A — "; font-family: 'JetBrain
 
 <footer class="pagefoot">
   <div class="pagefoot-inner">
-    <p>Working draft · v0.9 — Lingaraj G Jayaprakash</p>
+    <p>Working draft · v1.0 — Lingaraj G Jayaprakash</p>
   </div>
 </footer>
 
@@ -2893,8 +3046,8 @@ const OPT_ROLE = [
 ];
 
 const OPT_PURPOSE = [
-  { id: "international_reporting", label: "Meet a reporting or disclosure requirement", help: "BTR, National Communication, CBD National Report, VNR, Sendai Framework Monitor" },
-  { id: "national_policy", label: "Steer policy, planning, and coordination", help: "NDC / NAP / NBSAP implementation, budgeting, cross-ministerial or multilevel decisions" },
+  { id: "international_reporting", label: "Meet a reporting or disclosure requirement", help: "Prepare a required climate, biodiversity, development or disaster-risk report" },
+  { id: "national_policy", label: "Steer policy, planning, and coordination", help: "Review plans, allocate budgets and coordinate institutions or levels of government" },
   { id: "project_accountability", label: "Manage and account for a programme", help: "Operational decisions, fund or donor results frameworks, project accountability" },
   { id: "learning_transformation", label: "Learn, adapt, or assess transformational change", help: "Course correction, policy influence, emergent outcomes, systemic change" },
   { id: "finance_tracking", label: "Track climate or biodiversity finance", help: "Budget tagging, expenditure review, investment and financial-flow analysis" },
@@ -2902,10 +3055,10 @@ const OPT_PURPOSE = [
 ];
 
 const OPT_SCOPE = [
-  { id: "mitigation", label: "Mitigation", help: "GHG inventory, MRV of reductions, energy / transport / industry / land-use" },
+  { id: "mitigation", label: "Mitigation", help: "Track greenhouse gas emissions and reductions across energy, transport, industry or land use" },
   { id: "adaptation", label: "Adaptation", help: "Vulnerability, resilience, adaptive capacity" },
   { id: "loss_damage", label: "Loss & damage", help: "Economic and non-economic losses from climate impacts" },
-  { id: "biodiversity", label: "Biodiversity / nature", help: "Species, ecosystems, protected areas, GBF targets" },
+  { id: "biodiversity", label: "Biodiversity / nature", help: "Species, ecosystems, protected areas and biodiversity targets" },
   { id: "crosscutting", label: "Cross-cutting / integrated", help: "Enabling environment, finance, governance, just transitions" }
 ];
 
@@ -2917,21 +3070,22 @@ const OPT_SCALE = [
 ];
 
 const OPT_CAPACITY = [
-  { id: "low", label: "Limited", help: "Small team, tight budget, little in-house technical expertise — typical for LDCs and SIDS" },
-  { id: "medium", label: "Moderate", help: "Working statistics office, some climate expertise on staff, donor support you can draw on" },
-  { id: "high", label: "Strong", help: "Established M&E systems, in-house analysts, multiple ongoing data streams" }
+  { id: "low", label: "Limited", help: "Little dedicated staff time or funding; specialist support is hard to access" },
+  { id: "medium", label: "Moderate", help: "Some staff time and funding; practical M&E skills and specialist support when needed" },
+  { id: "high", label: "Strong", help: "Sustained staff time and funding; established routines and specialist skills available" }
 ];
 
 const OPT_APPROACH = [
   { id: "topdown", label: "Data and expert analysis", help: "Indicators, statistics, and assessments by technical staff" },
   { id: "bottomup", label: "Community voices and stories", help: "Participatory methods where affected people describe what's changing" },
-  { id: "blended", label: "A mix of both, or not sure yet", help: "Pick this if you want to combine methods, or if you haven't decided" }
+  { id: "blended", label: "A mix of methods", help: "Combine quantitative analysis with participatory and qualitative evidence" },
+  { id: "unsure", label: "Not sure yet", help: "Leave the approach open; do not favour a particular method" }
 ];
 
 const OPT_DATA = [
-  { id: "thin", label: "Very little national data", help: "You will mostly rely on global datasets and satellite data" },
-  { id: "moderate", label: "Some national data available", help: "Government statistics cover the basics but have gaps" },
-  { id: "rich", label: "Strong national data systems", help: "Regular surveys, monitoring, and reliable administrative records" }
+  { id: "thin", label: "Limited or fragmented evidence", help: "Some local knowledge or records, but substantial gaps in access, coverage or reliability" },
+  { id: "moderate", label: "Some usable evidence", help: "Relevant community, service, survey or administrative records exist, with gaps" },
+  { id: "rich", label: "Established evidence systems", help: "Regular, accessible and documented evidence at the scale needed, with quality checks" }
 ];
 
 const OPT_TIME = [
@@ -2956,28 +3110,109 @@ const OPT_PHASE = [
 // ============================================================
 // STATE
 // ============================================================
-const state = {
-  stage: 0,
-  groundingRead: {},
-  groundingExpanded: {},
-  refineOpen: false,
-  answers: {
-    role: null,
-    purpose_primary: null,
-    purpose_secondary: [],
-    scope: [],
-    evidence_scale: null,
-    decision_scale: null,
-    capacity: null,
-    approach: null,
-    data: null,
-    time: null,
-    toc: null,
-    phase: null
-  },
-  showWeak: false,
-  showCompatible: false
-};
+// v1.0 project state. Context notes never silently change catalogue scores.
+function emptyAnswers() {
+  return { role: null, purpose_primary: null, purpose_secondary: [], scope: [], evidence_scale: null,
+    decision_scale: null, capacity: null, approach: null, data: null, time: null, toc: null, phase: null, water: null };
+}
+function freshState() {
+  return { stage: 0, started: false, groundingRead: {}, groundingExpanded: {}, refineOpen: false,
+    answers: emptyAnswers(), context: { name: '', decision: '', location: '', focus: '', institutions: '', evidence: '', resources: '' },
+    selections: {}, localDrafts: {}, worksheet: {}, exampleId: null, showWeak: false, showCompatible: false };
+}
+const state = freshState();
+const PROJECT_KEY = 'nav_projects_v10';
+const WATER_TOOLS = ['aqueduct', 'aquastat'];
+const OPT_WATER = [
+  { id: 'yes', label: 'Yes', help: 'Water availability, flooding or drought is relevant to this decision' },
+  { id: 'no', label: 'No', help: 'Water-specific sources would not address this task' },
+  { id: 'unsure', label: 'Not sure yet', help: 'Keep water sources visible with a relevance check' }
+];
+const WORK_FIELDS = [
+  ['owner', 'Responsible institution or team'], ['task', 'First task'], ['evidence', 'Existing evidence or process'],
+  ['people', 'People to involve'], ['deadline', 'Deadline or review date'], ['question', 'Unresolved question']
+];
+const EXAMPLES = [
+  { id: 'heat', name: 'District heat adaptation', intro: 'Decide how to improve a district heat response before the next hot season.',
+    context: { name: 'Example · District heat adaptation', decision: 'Which changes to the district heat response should be prioritised before the next hot season?', location: 'Illustrative district', focus: 'Extreme heat and public services', institutions: 'District administration, health services and worker representatives', evidence: 'Service records and accounts from people exposed to heat', resources: 'Small team with some analytical support' },
+    answers: { role: 'sector_local', purpose_primary: 'learning_transformation', scope: ['adaptation'], evidence_scale: 'subnational', decision_scale: 'subnational', capacity: 'medium', data: 'moderate', time: 'months', approach: 'blended', toc: 'building', phase: 'evaluate', water: 'no' },
+    why: ['Learning is the primary use because the team needs to revise its response.', 'Evidence and decisions are both at district level; neighbourhood differences still need attention.', 'Mixed evidence combines service records with lived experience. Water-specific sources are excluded for this illustrative task.'],
+    lesson: 'Compare delivery (for example, cooling spaces opened) with outcomes (who could use them and what changed). Record a plausible assumption to examine, such as whether opening hours suit outdoor workers.' },
+  { id: 'coastal', name: 'Community coastal adaptation', intro: 'Help a community review coastal flood preparedness and bring priorities to a district forum.',
+    context: { name: 'Example · Community coastal adaptation', decision: 'Which changes to coastal flood preparedness should the community take to the district review?', location: 'Illustrative coastal settlement', focus: 'Coastal flooding and access to essential services', institutions: 'Community organisations, local government and service providers', evidence: 'Community mapping, oral accounts and local incident records', resources: 'Small facilitation team and limited funding' },
+    answers: { role: 'community_cso', purpose_primary: 'community_monitoring', scope: ['adaptation'], evidence_scale: 'community', decision_scale: 'subnational', capacity: 'low', data: 'thin', time: 'months', approach: 'bottomup', toc: 'building', phase: 'operate', water: 'yes' },
+    why: ['Locally defined accountability keeps community priorities central.', 'The two scales differ: the plan must explain who carries evidence to the district and how decisions return to the community.', 'Limited resources and fragmented records make a small participatory pilot a starting point to discuss.'],
+    lesson: 'An output could be a completed preparedness exercise. An outcome question is whether people facing access barriers can act on warnings. Agree whose experience is missing and how findings will be returned.' },
+  { id: 'national', name: 'National adaptation reporting', intro: 'Bring evidence from districts together for a national adaptation progress report.',
+    context: { name: 'Example · National adaptation reporting', decision: 'What adaptation progress can the national report substantiate, and what evidence gaps need action?', location: 'Illustrative country', focus: 'Adaptation across sectors', institutions: 'National climate coordination team, sector ministries and district focal points', evidence: 'District monitoring records, sector reports and evaluation findings', resources: 'Coordination team with access to some analytical support' },
+    answers: { role: 'national_coordination', purpose_primary: 'international_reporting', purpose_secondary: ['national_policy'], scope: ['adaptation'], evidence_scale: 'subnational', decision_scale: 'national', capacity: 'medium', data: 'moderate', time: 'months', approach: 'blended', toc: 'have', phase: 'report', water: 'unsure' },
+    why: ['Reporting is primary, with policy learning as a secondary use.', 'District evidence feeds national reporting: definitions, aggregation and feedback need named owners.', 'Some data exist, but a reporting timetable does not establish their quality or comparability.'],
+    lesson: 'Distinguish a count of adaptation plans from evidence about their outcomes. Before aggregation, check definitions, timing, missing groups and whether observations support the claims being made.' }
+];
+
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+}
+function textValue(value, max = 4000) { return typeof value === 'string' ? value.slice(0, max) : ''; }
+function normalizeState(parsed) {
+  const next = freshState();
+  if (!parsed || typeof parsed !== 'object' || !parsed.answers || typeof parsed.answers !== 'object') return next;
+  const incoming = parsed.answers;
+  const optionMap = { role: OPT_ROLE, purpose_primary: OPT_PURPOSE, evidence_scale: OPT_SCALE, decision_scale: OPT_SCALE,
+    capacity: OPT_CAPACITY, approach: OPT_APPROACH, data: OPT_DATA, time: OPT_TIME, toc: OPT_TOC, phase: OPT_PHASE, water: OPT_WATER };
+  Object.entries(optionMap).forEach(([key, opts]) => {
+    const val = incoming[key] || ((key === 'evidence_scale' || key === 'decision_scale') ? incoming.scale : null);
+    next.answers[key] = opts.some(o => o.id === val) ? val : null;
+  });
+  for (const [key, opts] of [['scope', OPT_SCOPE], ['purpose_secondary', OPT_PURPOSE]]) {
+    next.answers[key] = Array.isArray(incoming[key]) ? [...new Set(incoming[key].filter(v => opts.some(o => o.id === v))) ] : [];
+  }
+  next.answers.purpose_secondary = next.answers.purpose_secondary.filter(v => v !== next.answers.purpose_primary);
+  Object.keys(next.context).forEach(key => { next.context[key] = textValue(parsed.context?.[key], key === 'name' ? 100 : 4000); });
+  for (const component of COMPONENTS) {
+    const draft = parsed.localDrafts?.[component.id];
+    if (draft?.kind === 'local') next.localDrafts[component.id] = { kind:'local', name:textValue(draft.name,200), note:textValue(draft.note) };
+    const sel = parsed.selections?.[component.id];
+    if (sel?.kind === 'local') next.selections[component.id] = { kind: 'local', name: textValue(sel.name, 200), note: textValue(sel.note) };
+    if (sel?.kind === 'tool' && TOOLS.some(t => t.id === sel.toolId && componentFor(t) === component.id)) {
+      next.selections[component.id] = { kind: 'tool', toolId: sel.toolId };
+    }
+    next.worksheet[component.id] = {};
+    for (const [key] of WORK_FIELDS) {
+      if (typeof parsed.worksheet?.[component.id]?.[key] === 'string') next.worksheet[component.id][key] = textValue(parsed.worksheet[component.id][key]);
+    }
+  }
+  for (const key of ['groundingRead', 'groundingExpanded']) {
+    for (const doc of GROUNDING_DOCS) if (parsed[key]?.[doc.id] === true) next[key][doc.id] = true;
+  }
+  next.stage = Number.isInteger(parsed.stage) && parsed.stage >= 0 && parsed.stage <= 4 ? parsed.stage : 0;
+  next.started = parsed.started === true || !!incoming.purpose_primary || !!incoming.capacity || next.answers.scope.length > 0;
+  for (const key of ['refineOpen', 'showWeak', 'showCompatible']) next[key] = parsed[key] === true;
+  next.exampleId = EXAMPLES.some(e => e.id === parsed.exampleId) ? parsed.exampleId : null;
+  return next;
+}
+function uncheckedItems() {
+  const missing = [];
+  if (!state.answers.data) missing.push('data availability');
+  if (!state.answers.time) missing.push('timing');
+  if (!state.answers.capacity) missing.push('team capacity');
+  missing.push('local applicability, costs and ownership');
+  return missing;
+}
+function resolveBundle(ranked = rankedTools()) {
+  const defaults = buildSystemBundle(ranked);
+  return COMPONENTS.map(component => {
+    const selection = state.selections[component.id];
+    const suggested = defaults.find(t => t._component === component.id) || null;
+    if (selection?.kind === 'local') return { component, selection, tool: null, suggested, invalid: false };
+    if (selection?.kind === 'tool') {
+      const tool = ranked.find(t => t.id === selection.toolId);
+      return { component, selection, tool: tool || null, suggested, invalid: !tool?._eligible };
+    }
+    return { component, selection: null, tool: suggested, suggested, invalid: false };
+  });
+}
+
 
 function stageComplete(n) {
   if (n === 0) return true;
@@ -3055,7 +3290,7 @@ function maxPossibleScore() {
   if (a.scope.length) max += 3;
   if (a.evidence_scale || a.decision_scale) max += 2;
   if (a.capacity) max += 2;
-  if (a.approach) max += 1;
+  if (a.approach && a.approach !== "unsure") max += 1;
   if (a.data) max += 1;
   if (a.time) max += 1;
   if (a.toc === "have" || a.toc === "building") max += 1;
@@ -3136,7 +3371,7 @@ function assessTool(tool) {
     }
   }
 
-  if (a.approach) {
+  if (a.approach && a.approach !== "unsure") {
     if (tool.approach.includes(a.approach)) {
       score += 1;
       breakdown.push({ kind: "pos", text: "evidence approach matches (+1)" });
@@ -3167,6 +3402,15 @@ function assessTool(tool) {
   if (a.phase && phaseFits(component, a.phase)) {
     score += 1;
     breakdown.push({ kind: "pos", text: "useful in the current decision phase (+1)" });
+  }
+
+  if (WATER_TOOLS.includes(tool.id)) {
+    if (a.water === 'no') {
+      blockers.push('Water-specific source; water is not relevant to the selected task.');
+      breakdown.push({ kind: 'neg', text: 'water relevance does not match' });
+    } else if (a.water !== 'yes') {
+      warnings.push('Water-specific source: confirm that water availability, flooding or drought is relevant.');
+    }
   }
 
   const max = maxPossibleScore();
@@ -3210,8 +3454,8 @@ function buildSystemBundle(ranked = rankedTools()) {
 
 function confidenceFor(tool) {
   if (!tool._eligible) return "Not suitable now";
-  if (tool._primary && tool._pct >= 75 && tool._warnings.length === 0) return "High fit";
-  if (tool._pct >= 55) return "Moderate fit";
+  if (tool._primary && tool._pct >= 75 && tool._warnings.length === 0) return "Matches your stated needs";
+  if (tool._pct >= 55) return "Potential fit — review checks";
   return "Supporting option";
 }
 
@@ -3222,90 +3466,6 @@ function allRequiredComplete() {
 // ============================================================
 // RENDERING
 // ============================================================
-function render() {
-  renderNav();
-  renderStage();
-  // Persist to localStorage so refresh doesn't lose progress.
-  // Wrapped in try/catch — fails silently in private browsing or quota cases.
-  try {
-    localStorage.setItem("nav_state_v9", JSON.stringify(state));
-  } catch (e) { /* ignore */ }
-}
-
-function resetState() {
-  state.stage = 0;
-  state.groundingRead = {};
-  state.groundingExpanded = {};
-  state.refineOpen = false;
-  state.answers = {
-    role: null,
-    purpose_primary: null,
-    purpose_secondary: [],
-    scope: [],
-    evidence_scale: null,
-    decision_scale: null,
-    capacity: null,
-    approach: null,
-    data: null,
-    time: null,
-    toc: null,
-    phase: null
-  };
-  state.showWeak = false;
-  state.showCompatible = false;
-  try {
-    localStorage.removeItem("nav_state_v9");
-    localStorage.removeItem("nav_state_v8");
-  } catch (e) {}
-  render();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function renderNav() {
-  const nav = document.getElementById("stage-nav");
-  const stages = [
-    { n: 0, title: "Grounding", sub: "Reference documents" },
-    { n: 1, title: "Decision", sub: "Who and what for" },
-    { n: 2, title: "Scope", sub: "What you're measuring" },
-    { n: 3, title: "Scales & feasibility", sub: "Where, with what" },
-    { n: 4, title: "System bundle", sub: "Components and next steps" }
-  ];
-  nav.innerHTML = `<div class="stage-nav-inner">${stages.map(s => {
-    const isActive = state.stage === s.n;
-    const isDone = stageComplete(s.n) && s.n !== 4 && s.n !== 0;
-    const isStarted = stageStarted(s.n);
-    let stateLabel = "not started";
-    if (s.n === 0) {
-      const readCount = Object.values(state.groundingRead).filter(Boolean).length;
-      stateLabel = readCount > 0 ? `${readCount} read` : "optional";
-    } else if (isDone) stateLabel = "answered";
-    else if (isStarted && !isDone) stateLabel = "in progress";
-    else if (s.n === 4) stateLabel = allRequiredComplete() ? "ready" : "partial";
-    return `<button type="button" class="stage-chip ${isActive ? 'active' : ''} ${isDone ? 'complete' : ''}" data-stage="${s.n}" ${isActive ? 'aria-current="step"' : ''}>
-      <span class="mono">Stage ${String(s.n).padStart(2,'0')}</span>
-      <span class="serif">${s.title}</span>
-      <span class="state">${stateLabel}</span>
-    </button>`;
-  }).join("")}</div>`;
-  nav.querySelectorAll(".stage-chip").forEach(chip => {
-    chip.addEventListener("click", () => {
-      state.stage = parseInt(chip.dataset.stage);
-      render();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-  });
-}
-
-function renderStage() {
-  const c = document.getElementById("stage-container");
-  if (state.stage === 0) renderStage0(c);
-  else if (state.stage === 1) renderStage1(c);
-  else if (state.stage === 2) renderStage2(c);
-  else if (state.stage === 3) renderStage3(c);
-  else if (state.stage === 4) renderStage4(c);
-}
-
-// ----- shared helpers -----
 function stageBox({ stageN, stageTitle, steps, currentStep }) {
   return `<div class="stage-box">
     <div class="stage-box-header"><span>Stage</span><span>Steps</span></div>
@@ -3314,34 +3474,13 @@ function stageBox({ stageN, stageTitle, steps, currentStep }) {
   </div>`;
 }
 
-function navFooter({ canBack, canNext, stage, nextLabel }) {
-  const label = nextLabel || (stage < 4 ? 'Continue →' : 'Refresh results');
-  return `<div class="stage-footer">
-    <button type="button" class="btn" id="btn-back" ${canBack ? '' : 'disabled'}>← Back</button>
-    <div class="stage-footer-meta">Stage ${stage} of 4</div>
-    <button type="button" class="btn primary" id="btn-next">${label}</button>
-  </div>`;
-}
-
-function attachNav() {
-  const back = document.getElementById("btn-back");
-  const next = document.getElementById("btn-next");
-  if (back) back.addEventListener("click", () => {
-    if (state.stage > 0) { state.stage--; render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
-  });
-  if (next) next.addEventListener("click", () => {
-    if (state.stage < 4) { state.stage++; render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
-    else render();
-  });
-}
-
 // ----- STAGE 0 — GROUNDING -----
 function renderStage0(c) {
   const cards = GROUNDING_DOCS.map(d => {
     const isRead = !!state.groundingRead[d.id];
     const isOpen = !!state.groundingExpanded[d.id];
     return `<article class="grounding-card ${isOpen ? 'open' : 'collapsed'}">
-      <button type="button" class="grounding-card-toggle" data-toggle="${d.id}" aria-expanded="${isOpen}">
+      <button type="button" class="grounding-card-toggle" id="grounding-toggle-${d.id}" data-toggle="${d.id}" aria-expanded="${isOpen}">
         <div class="grounding-card-toggle-text">
           <div class="grounding-card-name serif">${d.name}${d.acronym ? ` <span style="color:var(--ink-muted);font-size:14px;font-weight:400;">(${d.acronym})</span>` : ''}</div>
           <div class="grounding-card-meta">${d.type}<span class="sep">·</span>${d.provider}</div>
@@ -3369,34 +3508,16 @@ function renderStage0(c) {
           ${d.link
             ? `<a class="grounding-card-link" href="${d.link}" target="_blank" rel="noopener">Open source →</a>`
             : `<span class="grounding-card-find"><strong>Find it:</strong> ${d.find}</span>`}
-          <button class="grounding-toggle ${isRead ? 'read' : ''}" data-doc="${d.id}">${isRead ? 'Read' : 'Mark as read'}</button>
+          <button class="grounding-toggle ${isRead ? 'read' : ''}" id="grounding-read-${d.id}" data-doc="${d.id}" aria-pressed="${isRead}">${isRead ? 'Read' : 'Mark as read'}</button>
         </div>
       </div>
     </article>`;
   }).join("");
 
-  // Show "start over" only if there's something to start over from
-  const hasProgress = stageStarted(0) || stageStarted(1) || stageStarted(2) || stageStarted(3);
-
   c.innerHTML = `
-    <section class="orientation-banner">
-      <div class="orientation-inner">
-        <div class="orientation-text">
-          <h2 class="orientation-heading serif">Design a climate M&amp;E system that can support real decisions.</h2>
-          <p>This navigator assembles a practical bundle of policy anchors, design methods, evidence sources, participatory approaches, evaluation methods, and capacity support. It starts with the decision and the institutions that must use the evidence—not with a generic league table of tools.</p>
-          <p>Five short stages, about five minutes. You'll be asked who will use the system, what decision it must support, what it covers, where evidence is generated, where decisions are made, and what resources are realistic. Stage 0 is optional and helps you ground the design in national and local institutions before selecting components.</p>
-          <p class="orientation-fine">No data leaves your browser. Answers are saved locally so a refresh won't lose them. The <strong>Help &amp; glossary</strong> button at the top right explains every term.</p>
-        </div>
-        <div class="orientation-cta">
-          <button class="btn skip" id="btn-skip-grounding-top">Skip to Stage 1 — Decision →</button>
-          ${hasProgress ? `<button class="orientation-reset" id="btn-reset-state" title="Clear all answers and start fresh">Clear answers &amp; start over</button>` : ''}
-        </div>
-      </div>
-    </section>
-
     <div class="stage-page" data-stage="0">
       <div class="stage-intro">
-        <div class="stage-kicker mono">Stage 00 · Optional</div>
+        <div class="stage-kicker mono">Optional reference</div>
         <h1 class="stage-heading serif">Start from <em>context</em></h1>
         <div class="stage-intro-body">
           <p>Country ownership begins with the plans, budgets, institutions, data systems, laws, evaluations, and local knowledge that already shape decisions. External diagnostics are useful checks, but they should not silently become the system's mandate.</p>
@@ -3419,12 +3540,12 @@ function renderStage0(c) {
           ${cards}
         </div>
         <div class="grounding-skip-row">
-          <div class="grounding-skip-text">You can come back to Stage 0 at any time using the tabs above.</div>
-          <button class="btn skip" id="btn-skip-grounding">Skip to Stage 1 — Decision →</button>
+          <div class="grounding-skip-text">Return to this checklist at any time. Record the relevant institutions and evidence in your project context.</div>
+          <button class="btn skip" id="btn-skip-grounding">Go to your decision →</button>
         </div>
       </div>
     </div>
-    ${navFooter({ canBack: false, canNext: true, stage: 0, nextLabel: 'Continue to Stage 1 →' })}
+    ${navFooter({ canBack: false, canNext: true, stage: 0, nextLabel: 'Go to your decision →' })}
   `;
 
   c.querySelectorAll(".grounding-card-toggle").forEach(btn => {
@@ -3455,271 +3576,10 @@ function renderStage0(c) {
     });
   }
 
-  const skipToStage1 = () => {
-    state.stage = 1;
-    render();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const skipToStage1 = () => goStage(1);
   document.getElementById("btn-skip-grounding").addEventListener("click", skipToStage1);
   const skipTop = document.getElementById("btn-skip-grounding-top");
   if (skipTop) skipTop.addEventListener("click", skipToStage1);
-
-  const resetBtn = document.getElementById("btn-reset-state");
-  if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
-      if (confirm("Clear all answers and start over? This cannot be undone.")) {
-        resetState();
-      }
-    });
-  }
-
-  attachNav();
-}
-
-// ----- STAGE 1 -----
-function renderStage1(c) {
-  c.innerHTML = `
-    <div class="stage-page" data-stage="1">
-      <div class="stage-intro">
-        <div class="stage-kicker mono">Stage 01</div>
-        <h1 class="stage-heading serif">What decision must the system <em>support</em>?</h1>
-        <div class="stage-intro-body">
-          <p>Useful M&amp;E starts with a decision and its users. A system for international reporting is different from one for community accountability or real-time programme learning—even where they share data.</p>
-          <p>Name the primary decision first. Role is optional because people often wear several hats; it is used to tailor the implementation prompts, not to stereotype what you need.</p>
-        </div>
-        ${stageBox({
-          stageN: 1, stageTitle: "Decision and users",
-          steps: ["Identify the user context (optional)", "Pick the primary decision", "Add secondary decisions"],
-          currentStep: state.answers.purpose_primary ? 3 : (state.answers.role ? 2 : 1)
-        })}
-      </div>
-      <div class="stage-body">
-        <div class="step-block">
-          <div class="step-heading serif">Step 1 · Which perspective is closest to yours? <span class="optional-label">(optional)</span></div>
-          <div class="step-prompt">Choose the perspective that will use the output first. You can still design a multistakeholder system.</div>
-          <div class="options grid-2" id="role-opts" role="radiogroup" aria-label="User perspective"></div>
-        </div>
-        <div class="step-block">
-          <div class="step-heading serif">Step 2 · What is the primary decision?</div>
-          <div class="step-prompt">Pick the most important use of evidence. This becomes a must-have in the system bundle.</div>
-          <div class="options" id="purpose-primary-opts" role="radiogroup" aria-label="Primary decision"></div>
-        </div>
-        <div class="step-block" style="${state.answers.purpose_primary ? '' : 'opacity:0.5;pointer-events:none;'}">
-          <div class="step-heading serif">Step 3 · What else must the same system support? <span class="optional-label">(choose any)</span></div>
-          <div class="step-prompt">Secondary decisions influence the bundle, but they do not outweigh the primary one.</div>
-          <div class="options grid-2" id="purpose-secondary-opts" role="group" aria-label="Secondary decisions"></div>
-        </div>
-      </div>
-    </div>
-    ${navFooter({ canBack: true, canNext: !!state.answers.purpose_primary, stage: 1 })}
-  `;
-
-  wireSingleSelect("role-opts", OPT_ROLE, "role");
-
-  const primaryC = document.getElementById("purpose-primary-opts");
-  OPT_PURPOSE.forEach(opt => {
-    const selected = state.answers.purpose_primary === opt.id;
-    const el = document.createElement("button");
-    el.type = "button";
-    el.className = "option" + (selected ? " selected" : "");
-    el.setAttribute("aria-pressed", String(selected));
-    el.innerHTML = `<div class="option-marker" aria-hidden="true"></div><div class="option-body"><div class="option-label">${opt.label}</div><div class="option-help">${opt.help}</div></div>`;
-    el.addEventListener("click", () => {
-      state.answers.purpose_primary = opt.id;
-      state.answers.purpose_secondary = state.answers.purpose_secondary.filter(x => x !== opt.id);
-      render();
-    });
-    primaryC.appendChild(el);
-  });
-
-  const secC = document.getElementById("purpose-secondary-opts");
-  OPT_PURPOSE.forEach(opt => {
-    if (opt.id === state.answers.purpose_primary) return;
-    const isSel = state.answers.purpose_secondary.includes(opt.id);
-    const el = document.createElement("button");
-    el.type = "button";
-    el.setAttribute("data-kind", "check");
-    el.setAttribute("aria-pressed", String(isSel));
-    el.className = "option" + (isSel ? " selected" : "");
-    el.innerHTML = `<div class="option-marker" aria-hidden="true"></div><div class="option-body"><div class="option-label">${opt.label}</div><div class="option-help">${opt.help}</div></div>`;
-    el.addEventListener("click", () => {
-      if (isSel) state.answers.purpose_secondary = state.answers.purpose_secondary.filter(x => x !== opt.id);
-      else state.answers.purpose_secondary.push(opt.id);
-      render();
-    });
-    secC.appendChild(el);
-  });
-
-  attachNav();
-}
-
-
-// ----- STAGE 2 -----
-function renderStage2(c) {
-  c.innerHTML = `
-    <div class="stage-page" data-stage="2">
-      <div class="stage-intro">
-        <div class="stage-kicker mono">Stage 02</div>
-        <h1 class="stage-heading serif">Defining the <em>scope</em></h1>
-        <div class="stage-intro-body">
-          <p>What subject areas does your M&amp;E work cover?</p>
-          <p>Select every theme the system must genuinely cover. Matching is assessed once per criterion, so choosing several themes does not artificially reward broadly tagged tools.</p>
-        </div>
-        ${stageBox({
-          stageN: 2, stageTitle: "Defining the scope",
-          steps: ["Pick one or more scopes"],
-          currentStep: 1
-        })}
-      </div>
-      <div class="stage-body">
-        <div class="step-block">
-          <div class="step-heading serif">Step 1 · Which scopes apply?</div>
-          <div class="step-prompt">Tick every area your M&amp;E work covers. Pick one if your work is narrow, or several if it spans multiple areas.</div>
-          <div class="options grid-2" id="scope-opts" role="group" aria-label="Thematic scopes"></div>
-        </div>
-      </div>
-    </div>
-    ${navFooter({ canBack: true, canNext: state.answers.scope.length > 0, stage: 2 })}
-  `;
-
-  const opts = document.getElementById("scope-opts");
-  OPT_SCOPE.forEach(opt => {
-    const el = document.createElement("button");
-    el.type = "button";
-    el.setAttribute("data-kind", "check");
-    const isSel = state.answers.scope.includes(opt.id);
-    el.setAttribute("aria-pressed", String(isSel));
-    el.className = "option" + (isSel ? " selected" : "");
-    el.innerHTML = `<div class="option-marker" aria-hidden="true"></div><div class="option-body"><div class="option-label">${opt.label}</div><div class="option-help">${opt.help}</div></div>`;
-    el.addEventListener("click", () => {
-      if (isSel) state.answers.scope = state.answers.scope.filter(x => x !== opt.id);
-      else state.answers.scope.push(opt.id);
-      render();
-    });
-    opts.appendChild(el);
-  });
-
-  attachNav();
-}
-
-// Helper used by both required and optional stage-3 question blocks
-function wireSingleSelect(containerId, options, key) {
-  const cEl = document.getElementById(containerId);
-  if (!cEl) return;
-  options.forEach(opt => {
-    const el = document.createElement("button");
-    const selected = state.answers[key] === opt.id;
-    el.type = "button";
-    el.className = "option" + (selected ? " selected" : "");
-    el.setAttribute("aria-pressed", String(selected));
-    el.innerHTML = `<div class="option-marker" aria-hidden="true"></div><div class="option-body"><div class="option-label">${opt.label}</div><div class="option-help">${opt.help}</div></div>`;
-    el.addEventListener("click", () => {
-      state.answers[key] = state.answers[key] === opt.id ? null : opt.id;
-      render();
-    });
-    cEl.appendChild(el);
-  });
-}
-
-// ----- STAGE 3 -----
-function renderStage3(c) {
-  // Count how many optional questions have been answered, for the toggle label
-  const optionalAnswered = [state.answers.phase, state.answers.approach, state.answers.data, state.answers.time, state.answers.toc].filter(Boolean).length;
-  // Auto-open the refine block if any optional question has been answered
-  const refineIsOpen = state.refineOpen || optionalAnswered > 0;
-
-  c.innerHTML = `
-    <div class="stage-page" data-stage="3">
-      <div class="stage-intro">
-        <div class="stage-kicker mono">Stage 03</div>
-        <h1 class="stage-heading serif">Scales &amp; <em>feasibility</em></h1>
-        <div class="stage-intro-body">
-          <p>Climate evidence is often generated locally but used for national or international decisions. Treating those as one scale hides the aggregation, governance, and feedback work between them.</p>
-          <p>Answer three required questions, then add optional detail if it will materially change the design.</p>
-        </div>
-        ${stageBox({
-          stageN: 3, stageTitle: "Scales & feasibility",
-          steps: ["Evidence scale (required)", "Decision scale (required)", "Capacity (required)", "Optional refinements"],
-          currentStep: state.answers.evidence_scale && state.answers.decision_scale && state.answers.capacity ? 4 :
-            (state.answers.evidence_scale && state.answers.decision_scale ? 3 : (state.answers.evidence_scale ? 2 : 1))
-        })}
-      </div>
-      <div class="stage-body">
-        <div class="step-block">
-          <div class="step-heading serif">Step 1 · Where is evidence generated?</div>
-          <div class="step-prompt">Choose the level where observations, records, measurements, or lived experience are primarily produced.</div>
-          <div class="options grid-2" id="evidence-scale-opts" role="radiogroup" aria-label="Evidence generation scale"></div>
-        </div>
-        <div class="step-block">
-          <div class="step-heading serif">Step 2 · Where must decisions or reporting happen?</div>
-          <div class="step-prompt">Choose the level that will use, govern, aggregate, or report the evidence. It can differ from the evidence scale.</div>
-          <div class="options grid-2" id="decision-scale-opts" role="radiogroup" aria-label="Decision and reporting scale"></div>
-        </div>
-        <div class="step-block">
-          <div class="step-heading serif">Step 3 · What's the realistic capacity?</div>
-          <div class="step-prompt">How much staff time, money, and technical skill do you have for M&amp;E? Answer honestly — overstating this leads to recommendations you can't use.</div>
-          <div class="options grid-2" id="capacity-opts" role="radiogroup" aria-label="Current M&E capacity"></div>
-        </div>
-
-        <button type="button" class="refine-toggle ${refineIsOpen ? 'open' : ''}" id="refine-toggle-btn" aria-expanded="${refineIsOpen}" aria-controls="refine-block">
-          <span>
-            Refine the shortlist further
-            <span style="display:block;font-size:12px;font-weight:400;color:var(--ink-muted);margin-top:2px;">Five optional questions — phase, approach, data, time, theory of change</span>
-          </span>
-          <span style="display:flex;align-items:center;gap:14px;">
-            <span class="refine-toggle-meta">${optionalAnswered ? `${optionalAnswered} of 5 answered` : 'optional'}</span>
-            <span class="refine-toggle-arrow" aria-hidden="true">▶</span>
-          </span>
-        </button>
-
-        <div class="refine-block ${refineIsOpen ? 'open' : ''}" id="refine-block">
-          <div class="step-block">
-            <div class="step-heading serif">Current phase</div>
-            <div class="step-prompt">What must happen next? This helps distinguish design, operations, evaluation, and reporting tools.</div>
-            <div class="options grid-2" id="phase-opts" role="radiogroup" aria-label="Current phase"></div>
-          </div>
-          <div class="step-block">
-            <div class="step-heading serif">Approach preference</div>
-            <div class="step-prompt">Different methods lean on different kinds of evidence. If you already know your preference, say so. Otherwise pick the last option.</div>
-            <div class="options grid-2" id="approach-opts" role="radiogroup" aria-label="Approach preference"></div>
-          </div>
-          <div class="step-block">
-            <div class="step-heading serif">Data readiness</div>
-            <div class="step-prompt">What national data can you actually use? Think about what's available and reliable, not what should exist on paper.</div>
-            <div class="options grid-2" id="data-opts" role="radiogroup" aria-label="Data readiness"></div>
-          </div>
-          <div class="step-block">
-            <div class="step-heading serif">Time to first useful result</div>
-            <div class="step-prompt">How soon do you need something useful — not perfect, just useful?</div>
-            <div class="options grid-2" id="time-opts" role="radiogroup" aria-label="Time to first useful result"></div>
-          </div>
-          <div class="step-block">
-            <div class="step-heading serif">Theory of change</div>
-            <div class="step-prompt">A theory of change is a clear statement of how and why your work is expected to lead to the changes you want. Some M&amp;E methods work best when you have one to test against.</div>
-            <div class="options grid-2" id="toc-opts" role="radiogroup" aria-label="Theory of change readiness"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    ${navFooter({ canBack: true, canNext: !!state.answers.evidence_scale && !!state.answers.decision_scale && !!state.answers.capacity, stage: 3 })}
-  `;
-
-  wireSingleSelect("evidence-scale-opts", OPT_SCALE, "evidence_scale");
-  wireSingleSelect("decision-scale-opts", OPT_SCALE, "decision_scale");
-  wireSingleSelect("capacity-opts", OPT_CAPACITY, "capacity");
-
-  if (refineIsOpen) {
-    wireSingleSelect("phase-opts", OPT_PHASE, "phase");
-    wireSingleSelect("approach-opts", OPT_APPROACH, "approach");
-    wireSingleSelect("data-opts", OPT_DATA, "data");
-    wireSingleSelect("time-opts", OPT_TIME, "time");
-    wireSingleSelect("toc-opts", OPT_TOC, "toc");
-  }
-
-  document.getElementById("refine-toggle-btn").addEventListener("click", () => {
-    state.refineOpen = !refineIsOpen;
-    render();
-  });
 
   attachNav();
 }
@@ -3732,257 +3592,6 @@ function labelFor(options, id) {
 }
 function labelsFor(options, ids) {
   return (ids || []).map(id => labelFor(options, id)).filter(Boolean);
-}
-
-function renderStage4(c) {
-  const ranked = rankedTools();
-  const bundle = buildSystemBundle(ranked);
-  const bundleIds = new Set(bundle.map(t => t.id));
-  const compatible = ranked.filter(t => t._eligible && !bundleIds.has(t.id));
-  const notSuitable = ranked.filter(t => !t._eligible);
-
-  const incomplete = !allRequiredComplete();
-  const missingStageNums = [
-    stageComplete(1) ? null : 1,
-    stageComplete(2) ? null : 2,
-    stageComplete(3) ? null : 3
-  ].filter(x => x !== null);
-  const missingStageLabels = missingStageNums.map(n => {
-    if (n === 1) return "Stage 1 (decision)";
-    if (n === 2) return "Stage 2 (scope)";
-    if (n === 3) return "Stage 3 (scales &amp; feasibility)";
-  });
-
-  c.innerHTML = `
-    <div class="stage-page" data-stage="4">
-      <div class="constellation-header">
-        <div class="stage-kicker mono">Stage 04</div>
-        <h1 class="stage-heading serif">Your climate M&amp;E <em>system bundle</em></h1>
-        <div class="bundle-intro">
-          <p>This is a functional starting architecture, not a shopping list or automated prescription. Each slot answers a different system need: an anchor, a design method, evidence, collection, learning, and enabling support.</p>
-          <p><strong>Start with the decision and country system.</strong> Confirm mandates, owners, existing indicators, data flows, review rhythms, and public accountability before adopting any external tool.</p>
-        </div>
-
-        <div class="share-row">
-          <button class="share-btn" id="btn-copy-summary" title="Copy a plain-text summary of your answers and system bundle">
-            <span class="share-btn-icon">⧉</span> Copy summary
-          </button>
-          <button class="share-btn" id="btn-print-summary" title="Open a clean printable view — use Save as PDF in your browser's print dialog">
-            <span class="share-btn-icon">⎙</span> Save as PDF
-          </button>
-          <button class="share-btn" id="btn-save-offline" title="Download a copy that works without internet">
-            <span class="share-btn-icon">↓</span> Save for offline use
-          </button>
-        </div>
-
-        ${incomplete ? `<div class="incomplete-notice"><strong>This bundle is provisional.</strong> You have not answered: ${missingStageLabels.join(", ")}. Unanswered constraints are not treated as blockers, so complete them before acting on the result. <button type="button" class="answers-summary-edit" data-goto="${missingStageNums[0]}">Answer the first missing question →</button></div>` : ''}
-
-        <div class="answers-summary">
-          ${state.answers.role ? `<div class="answers-summary-item">
-            <span class="answers-summary-label">Perspective</span>
-            <span class="answers-summary-value">${labelFor(OPT_ROLE, state.answers.role)}</span>
-          </div>` : ''}
-          <div class="answers-summary-item">
-            <span class="answers-summary-label">Primary decision</span>
-            <span class="answers-summary-value ${state.answers.purpose_primary ? '' : 'empty'}">${labelFor(OPT_PURPOSE, state.answers.purpose_primary) || 'not answered'}<button type="button" class="answers-summary-edit" data-goto="1">edit</button></span>
-          </div>
-          ${state.answers.purpose_secondary.length ? `<div class="answers-summary-item">
-            <span class="answers-summary-label">Also supports</span>
-            <span class="answers-summary-value">${labelsFor(OPT_PURPOSE, state.answers.purpose_secondary).join(", ")}</span>
-          </div>` : ''}
-          <div class="answers-summary-item">
-            <span class="answers-summary-label">Scope</span>
-            <span class="answers-summary-value ${state.answers.scope.length ? '' : 'empty'}">${labelsFor(OPT_SCOPE, state.answers.scope).join(", ") || 'not answered'}<button type="button" class="answers-summary-edit" data-goto="2">edit</button></span>
-          </div>
-          <div class="answers-summary-item">
-            <span class="answers-summary-label">Evidence scale</span>
-            <span class="answers-summary-value ${state.answers.evidence_scale ? '' : 'empty'}">${labelFor(OPT_SCALE, state.answers.evidence_scale) || 'not answered'}<button type="button" class="answers-summary-edit" data-goto="3">edit</button></span>
-          </div>
-          <div class="answers-summary-item">
-            <span class="answers-summary-label">Decision / reporting scale</span>
-            <span class="answers-summary-value ${state.answers.decision_scale ? '' : 'empty'}">${labelFor(OPT_SCALE, state.answers.decision_scale) || 'not answered'}</span>
-          </div>
-          <div class="answers-summary-item">
-            <span class="answers-summary-label">Capacity</span>
-            <span class="answers-summary-value ${state.answers.capacity ? '' : 'empty'}">${labelFor(OPT_CAPACITY, state.answers.capacity) || 'not answered'}</span>
-          </div>
-          ${state.answers.approach ? `<div class="answers-summary-item">
-            <span class="answers-summary-label">Approach</span>
-            <span class="answers-summary-value">${labelFor(OPT_APPROACH, state.answers.approach)}</span>
-          </div>` : ''}
-          ${state.answers.phase ? `<div class="answers-summary-item">
-            <span class="answers-summary-label">Current phase</span>
-            <span class="answers-summary-value">${labelFor(OPT_PHASE, state.answers.phase)}</span>
-          </div>` : ''}
-          ${state.answers.data ? `<div class="answers-summary-item">
-            <span class="answers-summary-label">Data</span>
-            <span class="answers-summary-value">${labelFor(OPT_DATA, state.answers.data)}</span>
-          </div>` : ''}
-          ${state.answers.time ? `<div class="answers-summary-item">
-            <span class="answers-summary-label">Time</span>
-            <span class="answers-summary-value">${labelFor(OPT_TIME, state.answers.time)}</span>
-          </div>` : ''}
-          ${state.answers.toc ? `<div class="answers-summary-item">
-            <span class="answers-summary-label">Theory of change</span>
-            <span class="answers-summary-value">${labelFor(OPT_TOC, state.answers.toc)}</span>
-          </div>` : ''}
-        </div>
-
-        ${state.answers.toc === "building" ? `<div class="toc-resources">
-          <h4>Resources for building a theory of change</h4>
-          <p>You said you'd like help articulating a theory of change. These are starting points many practitioners use:</p>
-          <ul>
-            <li><a href="https://napglobalnetwork.org/resource/toolkit-for-a-gender-responsive-process-to-formulate-and-implement-national-adaptation-plans-naps/" target="_blank" rel="noopener">NAP Global Network — theory of change guidance (in the NAP M&amp;E toolkit)</a></li>
-            <li><a href="https://www.betterevaluation.org/methods-approaches/approaches/theory-change" target="_blank" rel="noopener">BetterEvaluation — theory of change methods and examples</a></li>
-            <li><a href="https://www.hivos.org/assets/2020/03/Theory-of-Change-Thinking-in-Practice.pdf" target="_blank" rel="noopener">Hivos — Theory of Change Thinking in Practice (PDF)</a></li>
-          </ul>
-          <p style="margin-top: 10px;">Once you have a draft, the methods below marked <strong>◆ Works with theory of change</strong> will help you test and refine it.</p>
-        </div>` : ''}
-
-        ${renderSystemBundle(bundle)}
-        ${renderNinetyDayPlan(bundle)}
-
-        ${compatible.length ? `<button type="button" class="collapse-toggle" id="toggle-compatible" aria-expanded="${state.showCompatible}" aria-controls="compatible-tools">${state.showCompatible ? 'Hide' : 'Show'} other compatible options · ${compatible.length}</button>` : ''}
-        ${state.showCompatible ? renderToolCollection("Other compatible options", "compatible", compatible, "Eligible alternatives and complements. Compare their purpose, operational burden, and evidence basis with the component already selected.", "compatible-tools") : ''}
-
-        ${notSuitable.length ? `<button type="button" class="collapse-toggle" id="toggle-weak" aria-expanded="${state.showWeak}" aria-controls="not-suitable-tools">${state.showWeak ? 'Hide' : 'Show'} not suitable now · ${notSuitable.length}</button>` : ''}
-        ${state.showWeak ? renderToolCollection("Not suitable now", "blocked", notSuitable, "These fail at least one feasibility safeguard under the current answers. The specific blockers are shown on every card.", "not-suitable-tools") : ''}
-      </div>
-    </div>
-    ${navFooter({ canBack: true, canNext: false, stage: 4 })}
-  `;
-
-  c.querySelectorAll(".answers-summary-edit").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const n = parseInt(btn.dataset.goto);
-      if (!isNaN(n)) { state.stage = n; render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
-    });
-  });
-  const ct = document.getElementById("toggle-compatible");
-  if (ct) ct.addEventListener("click", () => { state.showCompatible = !state.showCompatible; render(); });
-  const wt = document.getElementById("toggle-weak");
-  if (wt) wt.addEventListener("click", () => { state.showWeak = !state.showWeak; render(); });
-
-  // Share buttons
-  const copyBtn = document.getElementById("btn-copy-summary");
-  if (copyBtn) copyBtn.addEventListener("click", async () => {
-    const text = buildPlainSummary();
-    try {
-      await navigator.clipboard.writeText(text);
-      copyBtn.classList.add("confirmed");
-      const original = copyBtn.innerHTML;
-      copyBtn.innerHTML = '<span class="share-btn-icon">✓</span> Copied — paste anywhere';
-      setTimeout(() => { copyBtn.classList.remove("confirmed"); copyBtn.innerHTML = original; }, 2800);
-    } catch (err) {
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      ta.style.position = "fixed"; ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand("copy"); copyBtn.innerHTML = '<span class="share-btn-icon">✓</span> Copied'; }
-      catch (e2) { alert("Couldn't copy automatically."); }
-      document.body.removeChild(ta);
-    }
-  });
-
-  const printBtn = document.getElementById("btn-print-summary");
-  if (printBtn) printBtn.addEventListener("click", () => window.print());
-
-  const offlineBtn = document.getElementById("btn-save-offline");
-  if (offlineBtn) offlineBtn.addEventListener("click", () => {
-    const stateJson = JSON.stringify(state).replace(/</g, "\\u003c");
-    document.body.setAttribute("data-saved-state", stateJson);
-    const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-    document.body.removeAttribute("data-saved-state");
-    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "climate-me-navigator.html";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    offlineBtn.classList.add("confirmed");
-    const original = offlineBtn.innerHTML;
-    offlineBtn.innerHTML = '<span class="share-btn-icon">✓</span> Saved — open anytime, no internet needed';
-    setTimeout(() => { offlineBtn.classList.remove("confirmed"); offlineBtn.innerHTML = original; }, 4000);
-  });
-
-  attachNav();
-}
-
-function buildPlainSummary() {
-  const a = state.answers;
-  const ranked = rankedTools();
-  const bundle = buildSystemBundle(ranked);
-
-  const L = [];
-  L.push("CLIMATE M&E NAVIGATOR — SYSTEM BUNDLE (v0.9)");
-  L.push("Generated " + new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }));
-  L.push("");
-  L.push("DECISION CONTEXT");
-  if (a.role) L.push("Perspective:              " + labelFor(OPT_ROLE, a.role));
-  L.push("Primary decision:         " + (labelFor(OPT_PURPOSE, a.purpose_primary) || "not answered"));
-  if (a.purpose_secondary.length) L.push("Also supports:            " + labelsFor(OPT_PURPOSE, a.purpose_secondary).join(", "));
-  L.push("Scope:                    " + (a.scope.length ? labelsFor(OPT_SCOPE, a.scope).join(", ") : "not answered"));
-  L.push("Evidence scale:           " + (labelFor(OPT_SCALE, a.evidence_scale) || "not answered"));
-  L.push("Decision/reporting scale: " + (labelFor(OPT_SCALE, a.decision_scale) || "not answered"));
-  L.push("Capacity:                 " + (labelFor(OPT_CAPACITY, a.capacity) || "not answered"));
-  if (a.phase) L.push("Current phase:            " + labelFor(OPT_PHASE, a.phase));
-  if (a.approach) L.push("Approach:                 " + labelFor(OPT_APPROACH, a.approach));
-  if (a.data) L.push("Data readiness:           " + labelFor(OPT_DATA, a.data));
-  if (a.time) L.push("Time horizon:             " + labelFor(OPT_TIME, a.time));
-  if (a.toc) L.push("Theory of change:         " + labelFor(OPT_TOC, a.toc));
-  L.push("");
-
-  L.push("SYSTEM COMPONENT BUNDLE");
-  COMPONENTS.forEach((component, i) => {
-    const t = bundle.find(x => x._component === component.id);
-    L.push(`${i + 1}. ${component.label}`);
-    if (!t) {
-      L.push("   No current tool passes all feasibility safeguards.");
-    } else {
-      L.push(`   ${t.name} — ${t.provider}`);
-      L.push(`   Fit: ${confidenceFor(t)} (${t._pct}%)`);
-      L.push(`   Contribution: ${component.output}`);
-      L.push(`   First step: ${component.first}`);
-      if (t._warnings.length) L.push(`   Watch: ${t._warnings.join(" ")}`);
-      L.push(`   Source: ${t.link}`);
-    }
-    L.push("");
-  });
-
-  L.push("90-DAY START");
-  L.push("Days 0–30: confirm decision users, mandate, institutional owners, existing plans/indicators, and country data assets.");
-  L.push("Days 31–60: pilot the smallest useful evidence-to-decision flow with affected users; document definitions, consent, quality, and workload.");
-  L.push("Days 61–90: review what was used, agree data flows and a review rhythm, assign improvements, and publish an accountable next step.");
-  L.push("");
-
-  L.push("---");
-  L.push("Working-draft decision support. Eligibility and fit reflect the answers above and the catalogue metadata snapshot from " + CATALOGUE_SNAPSHOT + ".");
-  L.push("Validate links, country applicability, costs, safeguards, and institutional ownership before adoption.");
-  return L.join("\n");
-}
-
-function renderSystemBundle(bundle) {
-  return `<section class="bundle-section" aria-labelledby="bundle-heading">
-    <div class="results-band-header">
-      <h2 class="results-band-heading serif" id="bundle-heading">Six functional components</h2>
-      <span class="results-band-count mono">${bundle.length} of ${COMPONENTS.length} matched</span>
-      <span class="results-band-desc">One eligible starting option per role. A component can be filled by an existing country process instead.</span>
-    </div>
-    <div class="bundle-grid">
-      ${COMPONENTS.map((component, index) => {
-        const tool = bundle.find(t => t._component === component.id);
-        return `<div class="bundle-slot">
-          <div class="bundle-component"><span class="mono">${String(index + 1).padStart(2, "0")}</span><strong>${component.label}</strong><span>${component.output}</span></div>
-          ${tool ? toolCardHTML(tool, "bundle") : `<div class="bundle-gap"><strong>No eligible current match</strong><span>Keep this system role visible, then fill it with an existing country process or revisit the feasibility answers.</span></div>`}
-        </div>`;
-      }).join("")}
-    </div>
-  </section>`;
 }
 
 function renderNinetyDayPlan() {
@@ -3999,31 +3608,6 @@ function renderNinetyDayPlan() {
   </section>`;
 }
 
-function renderToolCollection(heading, cls, tools, desc, id) {
-  if (tools.length === 0) {
-    return `<section class="results-band" id="${id}">
-      <div class="results-band-header">
-        <h2 class="results-band-heading serif">${heading}</h2>
-        <span class="results-band-count mono">0 tools</span>
-        <span class="results-band-desc">${desc}</span>
-      </div>
-      <div style="padding:20px; color:var(--ink-muted); font-style:italic; font-size:13px; border:1px dashed var(--rule); border-radius:var(--radius);">
-        No tools in this group under the current answers.
-      </div>
-    </section>`;
-  }
-  return `<section class="results-band" id="${id}">
-    <div class="results-band-header">
-      <h2 class="results-band-heading serif">${heading}</h2>
-      <span class="results-band-count mono">${tools.length} tool${tools.length === 1 ? '' : 's'}</span>
-      <span class="results-band-desc">${desc}</span>
-    </div>
-    <div class="results-grid">
-      ${tools.map(t => toolCardHTML(t, cls)).join("")}
-    </div>
-  </section>`;
-}
-
 function toolCardHTML(t, cls) {
   const breakdown = t._breakdown.map(b => `<li class="${b.kind}">${b.text}</li>`).join("");
   const component = componentMeta(t._component);
@@ -4034,7 +3618,7 @@ function toolCardHTML(t, cls) {
     ...t._warnings.map(x => `<li class="warning"><strong>Watch:</strong> ${x}</li>`)
   ].join("");
   return `<article class="tool-card ${stateClass}">
-    <div class="tool-card-fit">${confidence}${t._max > 0 ? ` · ${t._pct}%` : ''}</div>
+    <div class="tool-card-fit">${confidence}</div>
     <div class="tool-card-component mono">${component.short} component</div>
     <div class="tool-card-name serif">${t.name}</div>
     <div class="tool-card-meta mono">${t.type}<span class="sep">·</span>${t.provider}</div>
@@ -4047,8 +3631,10 @@ function toolCardHTML(t, cls) {
       <div><span>Feasibility snapshot</span><p>${t.cost} · ${t.capacity.map(x => labelFor(OPT_CAPACITY, x)).join(" / ")} capacity · ${t.time.map(x => labelFor(OPT_TIME, x)).join(" / ")}</p></div>
     </div>
     ${issueHTML ? `<ul class="tool-card-issues">${issueHTML}</ul>` : ''}
+    <p class="field-hint"><strong>Still to check:</strong> ${escapeHTML(uncheckedItems().join("; "))}.</p>
     <details class="fit-details">
       <summary>Why this fit</summary>
+      <p>Criteria match: ${t._pct}% (${t._score}/${t._max} available points). Based only on answered questions; not a probability or an effectiveness rating.</p>
       <ul>${breakdown || '<li class="zero">Complete the earlier stages to calculate fit.</li>'}</ul>
       <p>Catalogue metadata snapshot: ${CATALOGUE_SNAPSHOT}. Fit is decision support, not independent validation; verify the current primary source.</p>
     </details>
@@ -4062,6 +3648,380 @@ function toolCardHTML(t, cls) {
 // ============================================================
 // HELP & GLOSSARY
 // ============================================================
+// Project storage and rendering helpers.
+let workspace = { activeId: '', projects: [] };
+let renderedStage = -1;
+let saveFailed = false;
+let projectBarSignature = '';
+function projectId() { return 'p-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
+function clone(value) { return JSON.parse(JSON.stringify(value)); }
+function projectName() { return state.context.name.trim() || 'Untitled project'; }
+function announce(message) { document.getElementById('live-status').textContent = message; }
+function persistState() {
+  let project = workspace.projects.find(p => p.id === workspace.activeId);
+  if (!project) {
+    project = { id: projectId(), state: null, updatedAt: '' };
+    workspace.projects.push(project); workspace.activeId = project.id;
+  }
+  project.state = clone(state); project.updatedAt = new Date().toISOString();
+  try { localStorage.setItem(PROJECT_KEY, JSON.stringify(workspace)); saveFailed = false; }
+  catch (e) { saveFailed = true; }
+  const status = document.getElementById('save-status');
+  if (status) {
+    const message = saveFailed ? 'Saving unavailable — export your project to keep it' : 'Saved on this browser';
+    if (status.textContent !== message) status.textContent = message;
+    status.classList.toggle('error', saveFailed);
+  }
+  const currentOption = document.querySelector('#project-select option:checked');
+  if (currentOption) currentOption.textContent = projectName();
+}
+function renderProjectBar() {
+  const bar = document.getElementById('project-bar');
+  const signature = workspace.activeId + ':' + workspace.projects.map(p => p.id).join(',');
+  if (projectBarSignature === signature && bar.childElementCount) return;
+  projectBarSignature = signature;
+  bar.innerHTML = `<label for="project-select">Project</label><select id="project-select">${workspace.projects.map(p => `<option value="${escapeHTML(p.id)}" ${p.id === workspace.activeId ? 'selected' : ''}>${escapeHTML(p.state?.context?.name?.trim() || 'Untitled project')}</option>`).join('')}</select>
+    <button class="btn" id="project-new">New project</button><button class="btn" id="project-duplicate">Duplicate</button><button class="btn" id="project-export">Export project</button>
+    <button class="btn" id="project-import">Import project</button><input type="file" id="project-file" accept=".json,application/json" hidden>
+    <span class="save-status" id="save-status" role="status"></span>`;
+  document.getElementById('project-select').addEventListener('change', e => {
+    const id = e.target.value; persistState();
+    const project = workspace.projects.find(p => p.id === id);
+    if (project) { workspace.activeId = id; Object.assign(state, normalizeState(project.state)); renderedStage = -1; render(); focusHeading(); announce('Opened ' + projectName()); }
+  });
+  document.getElementById('project-new').addEventListener('click', () => createProject(freshState()));
+  document.getElementById('project-duplicate').addEventListener('click', () => {
+    const copy = clone(state); copy.context.name = (projectName() + ' — copy').slice(0, 100); createProject(copy);
+  });
+  document.getElementById('project-export').addEventListener('click', exportProject);
+  document.getElementById('project-import').addEventListener('click', () => document.getElementById('project-file').click());
+  document.getElementById('project-file').addEventListener('change', async e => {
+    const file = e.target.files[0]; if (!file) return;
+    try {
+      if (file.size > 1000000) throw Error('This file is too large. Choose a Navigator project JSON file under 1 MB.');
+      const parsed = JSON.parse(await file.text());
+      if (parsed.format !== 'climate-me-navigator-project' || parsed.version !== 1 || !parsed.state?.answers) throw Error('Choose a project JSON exported by this Navigator.');
+      createProject(normalizeState(parsed.state)); announce('Project imported. Your other projects are unchanged.');
+    } catch (error) { announce(error instanceof SyntaxError ? 'That file is not valid JSON. Choose an exported Navigator project.' : error.message); }
+  });
+}
+function createProject(next) {
+  persistState();
+  workspace.activeId = projectId();
+  Object.assign(state, normalizeState(next));
+  if (!state.context.name.trim()) state.context.name = 'Untitled project ' + (workspace.projects.length + 1);
+  workspace.projects.push({ id: workspace.activeId, state: clone(state), updatedAt: new Date().toISOString() });
+  renderedStage = -1; render(); focusHeading(); announce('Opened ' + projectName());
+}
+function loadExample(id) {
+  const example = EXAMPLES.find(e => e.id === id); if (!example) return;
+  const next = freshState();
+  next.context = { ...next.context, ...example.context }; next.answers = { ...emptyAnswers(), ...example.answers };
+  next.exampleId = id; next.started = true; next.stage = 1; next.refineOpen = true;
+  createProject(next);
+}
+function downloadText(filename, value, type) {
+  const url = URL.createObjectURL(new Blob([value], { type }));
+  const a = document.createElement('a'); a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function fileStem() { return projectName().replace(/[^a-z0-9_-]+/gi, '-').replace(/^-|-$/g, '').slice(0, 70) || 'climate-me-project'; }
+function exportProject() {
+  persistState();
+  downloadText(fileStem() + '.json', JSON.stringify({ format: 'climate-me-navigator-project', version: 1, exportedAt: new Date().toISOString(), state }, null, 2), 'application/json');
+  announce('Project exported. Import this file to continue on another browser.');
+}
+function render() {
+  const activeId = document.activeElement?.id;
+  const sameStage = renderedStage === state.stage;
+  const openDetails = sameStage ? [...document.querySelectorAll('#stage-container details[id]')].map(d => [d.id, d.open]) : [];
+  renderProjectBar(); renderNav(); renderStage();
+  for (const [id, open] of openDetails) { const d = document.getElementById(id); if (d) d.open = open; }
+  if (sameStage && activeId) document.getElementById(activeId)?.focus({ preventScroll: true });
+  renderedStage = state.stage;
+  persistState();
+}
+function focusHeading() {
+  const heading = document.querySelector('#stage-container h1');
+  if (heading) { heading.tabIndex = -1; heading.focus({ preventScroll: true }); }
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+function goStage(stage) {
+  state.stage = stage; state.started = true; render();
+  document.getElementById('stage-nav-' + stage)?.scrollIntoView({ block:'nearest', inline:'nearest', behavior:'instant' });
+  focusHeading();
+}
+function renderNav() {
+  const nav = document.getElementById('stage-nav');
+  if (!state.started && state.stage === 0) { nav.innerHTML = ''; return; }
+  const stages = [{ n: 1, title: 'Decision' }, { n: 2, title: 'Scope' }, { n: 3, title: 'Scales & resources' }, { n: 4, title: 'Your plan' }, { n: 0, title: 'Context checklist' }];
+  nav.innerHTML = `<div class="stage-nav-inner">${stages.map(s => {
+    const active = state.stage === s.n;
+    const status = s.n === 0 ? 'optional reference' : s.n === 4 ? (allRequiredComplete() ? 'ready to review' : 'preview') : stageComplete(s.n) ? 'answered' : stageStarted(s.n) ? 'in progress' : 'not started';
+    return `<button type="button" id="stage-nav-${s.n}" class="stage-chip ${active ? 'active' : ''} ${s.n > 0 && s.n < 4 && stageComplete(s.n) ? 'complete' : ''}" data-stage="${s.n}" ${active ? 'aria-current="step"' : ''}><span class="mono">${s.n === 0 ? 'Reference' : 'Step ' + s.n + ' of 4'}</span><span class="serif">${s.title}</span><span class="state">${status}</span></button>`;
+  }).join('')}</div>`;
+  nav.querySelectorAll('[data-stage]').forEach(b => b.addEventListener('click', () => goStage(Number(b.dataset.stage))));
+}
+function renderStage() {
+  const c = document.getElementById('stage-container');
+  if (state.stage === 0 && !state.started) { renderWelcome(c); return; }
+  [renderStage0, renderStage1, renderStage2, renderStage3, renderStage4][state.stage](c);
+  const example = EXAMPLES.find(e => e.id === state.exampleId);
+  if (example) c.insertAdjacentHTML('afterbegin', `<aside class="example-banner"><strong>Illustrative example: ${example.name}.</strong> These are teaching assumptions, not findings from a real project. Edit any answer to explore your own setting.</aside>`);
+}
+function exampleCards() {
+  return `<div class="example-grid">${EXAMPLES.map(e => `<article class="example-card"><h3>${e.name}</h3><p>${e.intro}</p><details><summary>Why these choices?</summary><ul>${e.why.map(x => `<li>${x}</li>`).join('')}</ul><p>${e.lesson}</p></details><button class="btn" data-example="${e.id}">Explore ${e.name.toLowerCase()}</button></article>`).join('')}</div>`;
+}
+function wireExamples(container) { container.querySelectorAll('[data-example]').forEach(b => b.addEventListener('click', () => loadExample(b.dataset.example))); }
+function renderWelcome(c) {
+  c.innerHTML = `<section class="welcome"><p class="stage-kicker">From a decision to a practical plan</p><h1>Design a climate M&amp;E system for your setting.</h1>
+    <p class="lede">Describe the decision you need to make. Explore a starting set of methods, connect them to local institutions, and leave with an editable implementation worksheet.</p>
+    <div class="welcome-actions"><button class="btn primary" id="start-design">Start designing your system →</button><button class="btn" id="explore-examples">Explore worked examples</button></div>
+    <p class="welcome-meta">Three sets of questions, then your plan. Context notes and deeper questions are optional. You can return to any step.</p>
+    <p class="welcome-meta">Your project is saved on this browser. Export a project file to keep a copy or continue elsewhere.</p>
+    <section class="welcome-preview"><h2>What you will build</h2><p>Six complementary parts, with room for the systems and processes you already use.</p><div class="preview-parts">${COMPONENTS.map(x => `<span>${x.label}</span>`).join('')}</div><p>An editable worksheet records who will do what, with which evidence, and by when.</p></section>
+    <details class="optional-section" id="welcome-examples"><summary>Three climate examples to explore</summary><p>Illustrative journeys with prefilled answers and explanations. Each opens as a separate project.</p>${exampleCards()}</details>
+    <div class="action-row"><button class="btn" id="welcome-grounding">Open the context checklist</button><button class="btn" id="welcome-learn">Learn M&amp;E basics</button></div></section>`;
+  document.getElementById('start-design').addEventListener('click', () => goStage(1));
+  document.getElementById('welcome-grounding').addEventListener('click', () => goStage(0));
+  document.getElementById('welcome-learn').addEventListener('click', () => document.getElementById('tab-course').click());
+  document.getElementById('explore-examples').addEventListener('click', () => {
+    const d = document.getElementById('welcome-examples'); d.open = true; d.querySelector('summary').focus(); d.scrollIntoView({ block: 'start' });
+  });
+  wireExamples(c);
+}
+function navFooter({ canBack, canNext, stage, nextLabel }) {
+  const missing = stage === 1 ? 'Choose a primary decision to continue.' : stage === 2 ? 'Choose at least one theme to continue.' : 'Answer the two scale questions and the capacity question to continue.';
+  return `<div class="stage-footer"><button type="button" class="btn" id="btn-back" ${canBack ? '' : 'disabled'}>← Back</button>
+    <div class="stage-footer-meta">${stage === 0 ? 'Optional context checklist' : 'Step ' + stage + ' of 4'}${!canNext && stage > 0 && stage < 4 ? `<p id="next-hint">${missing}</p>` : ''}</div>
+    ${stage < 4 ? `<button type="button" class="btn primary" id="btn-next" ${!canNext ? 'disabled aria-describedby="next-hint"' : ''}>${nextLabel || (stage === 3 ? 'Build my plan →' : 'Continue →')}</button>` : '<button type="button" class="btn" id="btn-review-inputs">Edit answers</button>'}</div>`;
+}
+function attachNav() {
+  document.getElementById('btn-back')?.addEventListener('click', () => goStage(state.stage > 1 ? state.stage - 1 : 0));
+  document.getElementById('btn-next')?.addEventListener('click', () => { if (state.stage === 0 || stageComplete(state.stage)) goStage(state.stage + 1); });
+  document.getElementById('btn-review-inputs')?.addEventListener('click', () => goStage(1));
+}
+function fieldHTML(id, label, value, attrs = '', multiline = false, wide = false) {
+  return `<label class="field ${wide ? 'wide' : ''}" for="${id}"><span>${label}</span>${multiline ? `<textarea id="${id}" rows="3" maxlength="4000" ${attrs}>${escapeHTML(value)}</textarea>` : `<input id="${id}" type="text" value="${escapeHTML(value)}" maxlength="${id === 'context-name' ? 100 : 4000}" ${attrs}>`}</label>`;
+}
+function contextField(key, label, multiline = false, wide = false) { return fieldHTML('context-' + key, label, state.context[key], `data-context="${key}"`, multiline, wide); }
+function wireContext(c) {
+  c.querySelectorAll('[data-context]').forEach(el => el.addEventListener('input', () => { state.context[el.dataset.context] = el.value; persistState(); }));
+}
+function inlineHelp(id, title, text, lesson) {
+  return `<details class="context-help" id="help-${id}"><summary>${title}</summary><p>${text}</p>${lesson ? `<button type="button" class="btn" data-lesson="${lesson}" data-return="help-${id}">Read the related lesson</button>` : ''}</details>`;
+}
+function wireLessons(c) {
+  c.querySelectorAll('[data-lesson]').forEach(b => b.addEventListener('click', () => {
+    document.getElementById('course-return').dataset.returnId = b.dataset.return;
+    document.getElementById('tab-course').click();
+    const lesson = document.getElementById('crs-' + b.dataset.lesson);
+    if (lesson) { lesson.tabIndex = -1; lesson.focus({ preventScroll: true }); lesson.scrollIntoView({ block: 'start' }); }
+  }));
+}
+function renderStage1(c) {
+  c.innerHTML = `<div class="stage-page" data-stage="1"><div class="stage-intro"><p class="stage-kicker">Step 1 · Decision</p><h1 class="stage-heading serif">What decision must the system <em>support</em>?</h1><p>Choose the main use of your evidence. Add a few notes to make the resulting plan useful to your team.</p>
+    ${inlineHelp('decision', 'What counts as a decision?', 'For example: Which heat-response measures should the district revise before next summer? Name the choice and who will make it. A reporting deadline may be the primary use, with learning as a secondary use.', 'm1')}</div>
+    <div class="stage-body"><fieldset class="step-block"><legend class="step-heading serif">What is the primary decision? <span class="optional-label">Required</span></legend><p class="step-prompt">Choose one main use. You can add other uses below.</p><div class="options" id="purpose-primary-opts"></div></fieldset>
+    <details class="optional-section" id="context-notes" open><summary>Project context <span class="optional-label">Optional notes</span></summary><p class="field-hint">These notes travel with your worksheet. They do not automatically change tool rankings.</p><div class="field-grid">${contextField('name', 'Project name')}${contextField('location', 'Location or area')}${contextField('decision', 'The actual decision, in one sentence', true, true)}${contextField('focus', 'Sector, hazard or issue', false, true)}${contextField('institutions', 'Institutions and processes already involved', true)}${contextField('evidence', 'Evidence already available, including local knowledge', true)}</div></details>
+    <details class="optional-section" id="decision-refinements"><summary>Who will use this, and what else must it support? <span class="optional-label">Optional</span></summary><fieldset><legend class="step-heading serif">User perspective</legend><p class="step-prompt">Choose the first user of this plan. You can still involve several groups.</p><div class="options grid-2" id="role-opts"></div></fieldset><fieldset><legend class="step-heading serif">Secondary decisions</legend><p class="step-prompt">Select any additional uses of the same evidence.</p><div class="options grid-2" id="purpose-secondary-opts"></div></fieldset></details></div></div>${navFooter({ canBack: true, canNext: stageComplete(1), stage: 1 })}`;
+  wireSingleSelect('purpose-primary-opts', OPT_PURPOSE, 'purpose_primary'); wireSingleSelect('role-opts', OPT_ROLE, 'role');
+  wireMultiSelect('purpose-secondary-opts', OPT_PURPOSE.filter(o => o.id !== state.answers.purpose_primary), 'purpose_secondary');
+  wireContext(c); wireLessons(c); attachNav();
+}
+function renderStage2(c) {
+  c.innerHTML = `<div class="stage-page" data-stage="2"><div class="stage-intro"><p class="stage-kicker">Step 2 · Scope</p><h1 class="stage-heading serif">What does your work <em>cover</em>?</h1><p>Select the themes your system needs to address.</p>${inlineHelp('scope', 'Can I choose several themes?', 'Yes. For example, coastal restoration may concern both adaptation and biodiversity. Choose only themes your decision needs evidence about; a broader scope does not mean every method will cover every theme.', null)}</div>
+    <div class="stage-body"><fieldset class="step-block"><legend class="step-heading serif">Thematic scope <span class="optional-label">Required · choose any</span></legend><div class="options grid-2" id="scope-opts"></div></fieldset>
+    <details class="optional-section" id="water-context" ${state.answers.water ? 'open' : ''}><summary>Check the relevance of water sources <span class="optional-label">Optional</span></summary><fieldset><legend class="step-heading serif">Is water availability, flooding or drought relevant?</legend><p class="step-prompt">This helps you decide whether to include water-specific evidence sources.</p><div class="options" id="water-opts"></div></fieldset></details>
+    <p class="field-hint">Add your particular hazard or sector in the project context on Step 1.</p></div></div>${navFooter({ canBack: true, canNext: stageComplete(2), stage: 2 })}`;
+  wireMultiSelect('scope-opts', OPT_SCOPE, 'scope'); wireSingleSelect('water-opts', OPT_WATER, 'water'); attachNav();
+}
+function wireSingleSelect(containerId, options, key) {
+  const container = document.getElementById(containerId); if (!container) return;
+  container.innerHTML = options.map(opt => `<label class="option ${state.answers[key] === opt.id ? 'selected' : ''}" for="answer-${key}-${opt.id}"><input type="radio" id="answer-${key}-${opt.id}" name="${key}" value="${opt.id}" ${state.answers[key] === opt.id ? 'checked' : ''}><span class="option-body"><span class="option-label">${escapeHTML(opt.label)}</span><span class="option-help">${escapeHTML(opt.help)}</span></span></label>`).join('');
+  container.querySelectorAll('input').forEach(input => input.addEventListener('change', () => {
+    state.answers[key] = input.value;
+    if (key === 'purpose_primary') state.answers.purpose_secondary = state.answers.purpose_secondary.filter(v => v !== input.value);
+    render();
+  }));
+}
+function wireMultiSelect(containerId, options, key) {
+  const container = document.getElementById(containerId); if (!container) return;
+  container.innerHTML = options.map(opt => `<label class="option ${state.answers[key].includes(opt.id) ? 'selected' : ''}" for="answer-${key}-${opt.id}"><input type="checkbox" id="answer-${key}-${opt.id}" name="${key}" value="${opt.id}" ${state.answers[key].includes(opt.id) ? 'checked' : ''}><span class="option-body"><span class="option-label">${escapeHTML(opt.label)}</span><span class="option-help">${escapeHTML(opt.help)}</span></span></label>`).join('');
+  container.querySelectorAll('input').forEach(input => input.addEventListener('change', () => {
+    state.answers[key] = input.checked ? [...state.answers[key], input.value] : state.answers[key].filter(v => v !== input.value); render();
+  }));
+}
+function questionBlock(key, title, prompt, id, options) {
+  return `<fieldset class="step-block"><legend class="step-heading serif">${title}</legend><p class="step-prompt">${prompt}</p><div class="options grid-2" id="${id}"></div></fieldset>`;
+}
+function renderStage3(c) {
+  c.innerHTML = `<div class="stage-page" data-stage="3"><div class="stage-intro"><p class="stage-kicker">Step 3 · Scales &amp; resources</p><h1 class="stage-heading serif">Where, and with what <em>resources</em>?</h1><p>Evidence may be gathered in one place and used to make decisions elsewhere. Choose each scale separately.</p>
+    ${inlineHelp('scales', 'An example of two different scales', 'Residents record coastal flood impacts in a settlement: evidence scale is community. A district forum decides which services to improve: decision scale is subnational. Your worksheet can name who carries evidence between the two and brings decisions back.', 'm6')}
+    ${inlineHelp('capacity', 'How should I judge capacity?', 'Think about this task: the staff time, funding and skills you can actually count on. A small organisation may have strong specialist capacity; a large institution may have little available for this particular work.', 'm4')}</div><div class="stage-body">
+    ${questionBlock('evidence_scale', 'Where is evidence generated? · Required', 'Where are observations, records, measurements or lived experience primarily produced?', 'evidence-scale-opts')}
+    ${questionBlock('decision_scale', 'Where must decisions or reporting happen? · Required', 'Which level will use, govern, aggregate or report that evidence?', 'decision-scale-opts')}
+    ${questionBlock('capacity', 'What capacity is available for this task? · Required', 'Consider staff time, budget and practical skills together. Use the tier your team can sustain.', 'capacity-opts')}
+    <details class="optional-section" id="resource-notes"><summary>Describe your actual resources <span class="optional-label">Optional</span></summary><div class="field-grid">${contextField('resources', 'Staff time, budget, skills and support available', true, true)}</div></details>
+    <details class="optional-section" id="refine-block" ${state.refineOpen ? 'open' : ''}><summary>Refine the plan <span class="optional-label">Five optional questions</span></summary>
+    ${questionBlock('data', 'What evidence can your team actually use?', 'Include community records and knowledge, service records, surveys and other sources at the relevant scale. Think about access and reliability.', 'data-opts')}
+    ${questionBlock('time', 'When do you need a first useful result?', 'Choose the deadline for evidence that helps the decision, even if the full system will take longer.', 'time-opts')}
+    ${questionBlock('phase', 'What must happen next?', 'Choose the next task in the life of your system.', 'phase-opts')}
+    ${questionBlock('approach', 'What approach do you want to use?', 'A mixed approach is a preference. Not sure yet leaves this criterion open.', 'approach-opts')}
+    ${questionBlock('toc', 'Do you have a theory of change?', 'A theory of change explains how activities may lead to outcomes and which assumptions need testing.', 'toc-opts')}
+    ${inlineHelp('toc', 'Show a climate example', 'Opening cooling spaces is an output. Whether people most exposed to heat can use them is an outcome question. A theory of change would examine assumptions about access, opening hours, trust and other factors.', 'm2')}
+    <button class="btn" id="clear-refinements">Clear these five optional answers</button></details></div></div>${navFooter({ canBack: true, canNext: stageComplete(3), stage: 3 })}`;
+  for (const [id, options, key] of [['evidence-scale-opts',OPT_SCALE,'evidence_scale'],['decision-scale-opts',OPT_SCALE,'decision_scale'],['capacity-opts',OPT_CAPACITY,'capacity'],['phase-opts',OPT_PHASE,'phase'],['approach-opts',OPT_APPROACH,'approach'],['data-opts',OPT_DATA,'data'],['time-opts',OPT_TIME,'time'],['toc-opts',OPT_TOC,'toc']]) wireSingleSelect(id, options, key);
+  document.getElementById('refine-block').addEventListener('toggle', e => { if (e.target.isConnected) { state.refineOpen = e.target.open; persistState(); } });
+  document.getElementById('clear-refinements').addEventListener('click', () => { for (const key of ['data','time','phase','approach','toc']) state.answers[key] = null; render(); announce('Optional answers cleared.'); });
+  wireContext(c); wireLessons(c); attachNav();
+}
+
+function selectionName(entry) { return entry.selection?.kind === 'local' ? entry.selection.name.trim() || 'Local process — name needed' : entry.tool?.name || 'No eligible catalogue match'; }
+function entryStatus(entry) {
+  if (entry.selection?.kind === 'local') return entry.selection.name.trim() ? 'Your local process · review with its owners' : 'Name the local process to complete this choice';
+  if (entry.invalid) return 'Previous choice needs review: ' + (entry.tool?._blockers.join(' ') || 'no longer in the catalogue');
+  if (!entry.tool) return 'Add a local process or review the scope and resources.';
+  return entry.tool._warnings.join(' ') || 'Still to check: ' + uncheckedItems().join('; ') + '.';
+}
+function preserveLocalChoice(id) {
+  if (state.selections[id]?.kind === 'local') state.localDrafts[id] = { ...state.selections[id] };
+}
+function renderOverview(entries) {
+  return `<section aria-labelledby="overview-heading"><h2 class="results-band-heading serif" id="overview-heading">Your system at a glance</h2><p class="field-hint">Review each part. Keep a suggestion, compare alternatives, or name a process already in use.</p><div class="bundle-overview">${entries.map(e => `<article class="overview-row"><h3>${e.component.label}</h3><div><p class="chosen-name" id="chosen-${e.component.id}">${escapeHTML(selectionName(e))}</p><p>${e.selection?.kind === 'local' ? 'Locally specified; no automated fit assessment.' : e.tool ? `${e.tool._primary ? 'Supports your primary decision.' : 'Potential supporting component.'} ${e.component.output}` : e.component.output}</p><p class="watch" id="status-${e.component.id}">${escapeHTML(entryStatus(e))}</p>${e.selection?.kind === 'local' ? `<p class="print-only" id="local-print-${e.component.id}">Local assessment: ${escapeHTML(e.selection.note)}</p>` : ''}${e.tool ? `<p class="print-only">Source: <a href="${e.tool.link}">${e.tool.name}</a></p>` : ''}</div><button class="btn" data-open-component="${e.component.id}" aria-label="Review ${e.component.label}">Review &amp; edit</button></article>`).join('')}</div></section>`;
+}
+function renderComparison(entry, ranked) {
+  const candidates = ranked.filter(t => t._component === entry.component.id && t._eligible);
+  return `<details class="optional-section" id="compare-${entry.component.id}"><summary>Compare alternatives (${candidates.length})</summary>${candidates.length ? `<table class="compare-table"><caption>Options for ${entry.component.label}. Cost labels describe access; staff time and implementation can add costs.</caption><thead><tr><th scope="col">Option &amp; purpose</th><th scope="col">Requirements &amp; workload</th><th scope="col">Output &amp; limitations</th><th scope="col">Choice</th></tr></thead><tbody>${candidates.map(t => `<tr class="${entry.tool?.id === t.id ? 'current' : ''}"><td data-label="Option &amp; purpose"><strong>${t.name}</strong><p>${t.what}</p><a href="${t.link}" target="_blank" rel="noopener">Primary source</a></td><td data-label="Requirements &amp; workload"><p>${escapeHTML(t.cost)}</p><p>Capacity: ${labelsFor(OPT_CAPACITY,t.capacity).join(' / ')}</p><p>Evidence: ${labelsFor(OPT_DATA,t.data).join(' / ')}</p><p>First result: ${labelsFor(OPT_TIME,t.time).join(' / ')}</p><p>Staff days and implementation cost: confirm locally.</p></td><td data-label="Output &amp; limitations"><p>${entry.component.output}</p><p>${escapeHTML(t._warnings.join(' ') || 'Confirm local applicability, costs and institutional ownership.')}</p></td><td data-label="Choice"><button class="btn" data-use-tool="${t.id}" data-component="${entry.component.id}" ${entry.selection?.kind !== 'local' && entry.tool?.id === t.id ? 'disabled' : ''} aria-label="Use ${escapeHTML(t.name)}">${entry.selection?.kind !== 'local' && entry.tool?.id === t.id ? 'Current choice' : 'Use this option'}</button></td></tr>`).join('')}</tbody></table>` : '<p>No catalogue option passes the answered safeguards. A local process can still fill this role.</p>'}</details>`;
+}
+function renderComponent(entry, ranked) {
+  const id = entry.component.id;
+  const local = entry.selection?.kind === 'local';
+  return `<details class="component-detail" id="component-${id}"><summary>${entry.component.label}</summary><p class="field-hint">${entry.component.output}</p>
+    ${entry.invalid ? `<p class="readiness-note">Your previous choice is retained for review and is not an eligible recommendation under the current answers. ${escapeHTML(entry.tool?._blockers.join(' '))}</p>` : ''}
+    ${local ? `<div class="local-editor"><p>Your local process is part of this plan. Confirm its mandate, capacity and evidence with the people who run it.</p><div class="field-grid">${fieldHTML('local-name-'+id,'Name of local process',entry.selection.name,`data-local="name" data-component="${id}"`,false,true)}${fieldHTML('local-note-'+id,'Why it fits, and what needs checking',entry.selection.note,`data-local="note" data-component="${id}"`,true,true)}</div></div>` : entry.tool ? toolCardHTML(entry.tool, 'bundle') : '<p class="readiness-note">No eligible catalogue match. Keep this role visible and identify an existing process with your team.</p>'}
+    <div class="action-row">${!local ? `<button class="btn" data-use-local="${id}">Use an existing local process</button>` : ''}${entry.selection ? `<button class="btn" data-auto="${id}">Return to suggested option</button>` : ''}</div>
+    ${renderComparison(entry, ranked)}</details>`;
+}
+function worksheetValue(component, field) { return state.worksheet[component.id]?.[field] ?? (field === 'task' ? component.first : ''); }
+function printWorksheetFields(component) {
+  return `<dl class="print-fields" id="print-${component.id}">${WORK_FIELDS.map(([key,label]) => `<div><dt>${label}</dt><dd>${escapeHTML(worksheetValue(component,key) || 'To agree')}</dd></div>`).join('')}</dl>`;
+}
+function renderWorksheet(entries) {
+  return `<section class="worksheet" id="implementation-worksheet" aria-labelledby="worksheet-heading"><h2 class="results-band-heading serif" id="worksheet-heading">Implementation worksheet</h2><p>Start with one useful evidence-to-decision flow. Record responsibilities, existing evidence and unanswered questions. Suggested first tasks are editable.</p>
+    <div class="export-actions"><button class="btn" id="export-worksheet">Download worksheet (CSV)</button><button class="btn" id="print-plan">Print / save plan as PDF</button></div>
+    ${entries.map(e => `<details id="work-${e.component.id}"><summary>${e.component.label}</summary><p id="work-choice-${e.component.id}">${escapeHTML(selectionName(e))}</p><div class="field-grid">${WORK_FIELDS.map(([key,label]) => fieldHTML('work-'+e.component.id+'-'+key,label,worksheetValue(e.component,key),`data-work="${key}" data-component="${e.component.id}"`,['task','evidence','people','question'].includes(key))).join('')}</div>${printWorksheetFields(e.component)}</details>`).join('')}</section>`;
+}
+function renderStage4(c) {
+  const ranked = rankedTools(), entries = resolveBundle(ranked);
+  const missing = [1,2,3].filter(n => !stageComplete(n));
+  const answerRows = [['Primary decision',labelFor(OPT_PURPOSE,state.answers.purpose_primary),1],['Scope',labelsFor(OPT_SCOPE,state.answers.scope).join(', '),2],['Evidence scale',labelFor(OPT_SCALE,state.answers.evidence_scale),3],['Decision / reporting scale',labelFor(OPT_SCALE,state.answers.decision_scale),3],['Capacity',labelFor(OPT_CAPACITY,state.answers.capacity),3]];
+  c.innerHTML = `<div class="stage-page" data-stage="4"><div class="constellation-header"><p class="stage-kicker">Step 4 · Your plan</p><h1 class="stage-heading serif">Your climate M&amp;E <em>plan</em></h1><p class="lede">${escapeHTML(projectName())}</p>
+    <p class="bundle-intro">A starting plan to discuss with decision users, data producers and affected people. You can replace any suggested component with a local process.</p>
+    ${missing.length ? `<div class="incomplete-notice"><strong>Preview — required answers are missing.</strong> Complete Steps ${missing.join(', ')} before treating these as recommendations. <button class="btn" data-goto="${missing[0]}">Answer missing questions</button></div>` : ''}
+    <div class="readiness-note"><strong>Still to check:</strong> ${escapeHTML(uncheckedItems().join('; '))}. Matching reflects your selections and catalogue descriptions; it does not establish effectiveness.<div><button class="btn" data-goto="3">Review data, timing and resources</button></div></div>
+    <div class="share-row"><button class="share-btn" id="btn-copy-summary">Copy plan</button><button class="share-btn" id="btn-print-summary">Print / save as PDF</button><button class="share-btn" id="btn-save-offline">Save for offline use</button></div>
+    <details class="optional-section" id="plan-context"><summary>Your answers and project context</summary><div class="answers-summary">${answerRows.map(([label,value,step]) => `<div class="answers-summary-item"><span class="answers-summary-label">${label}</span><span class="answers-summary-value">${escapeHTML(value || 'Not answered')} <button class="answers-summary-edit" data-goto="${step}" aria-label="Edit ${label.toLowerCase()}">Edit</button></span></div>`).join('')}</div><dl>${Object.entries(state.context).filter(([,v]) => v).map(([key,value]) => `<div><dt><strong>${({ name:'Project',decision:'Decision',location:'Location',focus:'Sector / hazard',institutions:'Institutions and processes',evidence:'Existing evidence',resources:'Available resources' })[key]}</strong></dt><dd>${escapeHTML(value)}</dd></div>`).join('')}</dl><button class="btn" data-goto="1">Edit project context</button></details>
+    ${renderOverview(entries)}<p class="field-hint">Catalogue descriptions: ${CATALOGUE_SNAPSHOT}. Review current source material before adoption.</p>
+    ${renderWorksheet(entries)}
+    <h2 class="results-band-heading serif">Review your components</h2>${entries.map(e => renderComponent(e,ranked)).join('')}
+    ${renderNinetyDayPlan()}
+    <details class="optional-section" id="excluded-options"><summary>Why some catalogue options are excluded (${ranked.filter(t => !t._eligible).length})</summary><p>The specific blockers below reflect your answers. They do not judge a tool’s quality.</p>${ranked.filter(t => !t._eligible).map(t => `<details class="optional-section"><summary>${t.name}</summary>${toolCardHTML(t,'blocked')}</details>`).join('')}</details>
+    </div></div>${navFooter({canBack:true,canNext:false,stage:4})}`;
+  c.querySelectorAll('[data-goto]').forEach(b => b.addEventListener('click',()=>goStage(Number(b.dataset.goto))));
+  c.querySelectorAll('[data-open-component]').forEach(b => b.addEventListener('click', () => { const d=document.getElementById('component-'+b.dataset.openComponent); d.open=true; d.querySelector('summary').focus(); d.scrollIntoView({block:'start'}); }));
+  c.querySelectorAll('[data-use-tool]').forEach(b => b.addEventListener('click', () => {
+    preserveLocalChoice(b.dataset.component); state.selections[b.dataset.component]={kind:'tool',toolId:b.dataset.useTool}; render();
+    const d=document.getElementById('component-'+b.dataset.component); d.open=true; d.querySelector('summary').focus();
+    announce('Updated '+componentMeta(b.dataset.component).label+'. Worksheet notes are retained; review them for this choice.');
+  }));
+  c.querySelectorAll('[data-use-local]').forEach(b => b.addEventListener('click', () => {
+    const id=b.dataset.useLocal; state.selections[id]={...(state.localDrafts[id] || {kind:'local',name:'',note:''})}; render();
+    document.getElementById('component-'+id).open=true; document.getElementById('local-name-'+id).focus(); announce('Name the local process you want to use.');
+  }));
+  c.querySelectorAll('[data-auto]').forEach(b => b.addEventListener('click', () => {
+    const id=b.dataset.auto; preserveLocalChoice(id); delete state.selections[id]; render(); const d=document.getElementById('component-'+id);d.open=true;d.querySelector('summary').focus();announce('Restored the suggested option. Worksheet notes are retained.');
+  }));
+  c.querySelectorAll('[data-local]').forEach(el => el.addEventListener('input', () => {
+    const id=el.dataset.component; state.selections[id][el.dataset.local]=el.value; preserveLocalChoice(id); persistState();
+    const printed=document.getElementById('local-print-'+id); if(printed)printed.textContent='Local assessment: '+state.selections[id].note;
+    const entry=resolveBundle().find(e=>e.component.id===id);
+    document.getElementById('chosen-'+id).textContent=selectionName(entry); document.getElementById('work-choice-'+id).textContent=selectionName(entry); document.getElementById('status-'+id).textContent=entryStatus(entry);
+  }));
+  c.querySelectorAll('[data-work]').forEach(el => el.addEventListener('input', () => {
+    const id=el.dataset.component; state.worksheet[id] ||= {}; state.worksheet[id][el.dataset.work]=el.value;persistState();
+    const dl=document.getElementById('print-'+id);dl.outerHTML=printWorksheetFields(componentMeta(id));
+  }));
+  document.getElementById('export-worksheet').addEventListener('click',exportWorksheet);
+  document.getElementById('btn-copy-summary').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(buildPlainSummary());announce('Plan copied.');}catch(e){downloadText(fileStem()+'.txt',buildPlainSummary(),'text/plain');announce('Clipboard unavailable. Downloaded the plan as text.');}});
+  for(const id of ['print-plan','btn-print-summary'])document.getElementById(id).addEventListener('click',printPlan);
+  document.getElementById('btn-save-offline').addEventListener('click',saveOffline);
+  attachNav();
+}
+function buildPlainSummary() {
+  const lines=['CLIMATE M&E NAVIGATOR — PLAN (v1.0)',projectName(),'Generated '+new Date().toISOString().slice(0,10),''];
+  if(state.exampleId)lines.push('ILLUSTRATIVE TEACHING EXAMPLE — not findings from a real project.','');
+  if(!allRequiredComplete())lines.push('PREVIEW: required questions are unanswered. Complete them before using these recommendations.','');
+  for(const [key,label]of Object.entries({decision:'Decision',location:'Location',focus:'Sector / hazard',institutions:'Institutions and processes',evidence:'Existing evidence',resources:'Available resources'}))if(state.context[key])lines.push(label+': '+state.context[key]);
+  const opts={role:OPT_ROLE,purpose_primary:OPT_PURPOSE,evidence_scale:OPT_SCALE,decision_scale:OPT_SCALE,capacity:OPT_CAPACITY,data:OPT_DATA,time:OPT_TIME,approach:OPT_APPROACH,phase:OPT_PHASE,toc:OPT_TOC,water:OPT_WATER};
+  for(const[key,options]of Object.entries(opts))lines.push(key.replaceAll('_',' ')+': '+(labelFor(options,state.answers[key])||'Not answered'));
+  lines.push('Scope: '+(labelsFor(OPT_SCOPE,state.answers.scope).join(', ')||'Not answered'),'Secondary decisions: '+(labelsFor(OPT_PURPOSE,state.answers.purpose_secondary).join(', ')||'None selected'),'','STILL TO CHECK: '+uncheckedItems().join('; '),'');
+  for(const e of resolveBundle()){
+    lines.push(e.component.label,selectionName(e),entryStatus(e));
+    if(e.selection?.kind==='local'&&e.selection.note)lines.push('Local assessment: '+e.selection.note);
+    if(e.tool){lines.push('Source: '+e.tool.link);if(e.invalid)lines.push('NOT ELIGIBLE UNDER CURRENT ANSWERS');}
+    for(const[key,label]of WORK_FIELDS)lines.push(label+': '+(worksheetValue(e.component,key)||'To agree'));
+    lines.push('');
+  }
+  lines.push('90-DAY START','Days 0–30: confirm decision users, institutional owners, existing evidence and missing voices.','Days 31–60: pilot one evidence-to-decision flow; document definitions, consent, quality and workload.','Days 61–90: review what was used, agree a review rhythm and assign improvements.','','Catalogue snapshot: '+CATALOGUE_SNAPSHOT+'. Matching is decision support, not validation of effectiveness. Verify applicability, costs, sources and institutional ownership.');
+  return lines.join('\n');
+}
+function csvCell(value) {
+  let text=String(value??''); if(/^[\s]*[=+@-]/.test(text)||/^[\t\r\n]/.test(text))text="'"+text;
+  return '"'+text.replaceAll('"','""')+'"';
+}
+function exportWorksheet() {
+  const rows=[['Project','Decision','Location','Sector / hazard','Component','Chosen process / tool','Status / checks','Source','Local assessment',...WORK_FIELDS.map(([,label])=>label)]];
+  for(const e of resolveBundle())rows.push([projectName(),state.context.decision,state.context.location,state.context.focus,e.component.label,selectionName(e),(state.exampleId?'Illustrative example. ':'')+(!allRequiredComplete()?'PREVIEW: required questions unanswered. ':'')+entryStatus(e)+' Still to check: '+uncheckedItems().join('; '),e.tool?.link||'',e.selection?.note||'',...WORK_FIELDS.map(([key])=>worksheetValue(e.component,key))]);
+  downloadText(fileStem()+'-worksheet.csv','\ufeff'+rows.map(row=>row.map(csvCell).join(',')).join('\r\n'),'text/csv;charset=utf-8');announce('Worksheet downloaded.');
+}
+let printOpenStates=[];
+function preparePrint() { if(printOpenStates.length)return;printOpenStates=[...document.querySelectorAll('#implementation-worksheet details, #plan-context')].map(d=>[d,d.open]);for(const[d]of printOpenStates)d.open=true; }
+function restorePrint() { for(const[d,open]of printOpenStates)d.open=open;printOpenStates=[]; }
+function printPlan(){window.print();}
+function saveOffline() {
+  persistState();
+  const doc=document.documentElement.cloneNode(true);
+  // Capture only the current project. Reopened files recover their own later edits.
+  doc.querySelector('body').setAttribute('data-saved-project',JSON.stringify({id:projectId(),state}).replace(/</g,'\\u003c'));
+  doc.querySelector('#stage-container').innerHTML='';doc.querySelector('#project-bar').innerHTML='';doc.querySelector('#stage-nav').innerHTML='';
+  doc.querySelector('#live-status').textContent='';
+  downloadText(fileStem()+'-navigator.html','<!DOCTYPE html>\n'+doc.outerHTML,'text/html;charset=utf-8');announce('Offline navigator downloaded with the current project.');
+}
+function initializeProjects() {
+  try {
+    const saved=JSON.parse(localStorage.getItem(PROJECT_KEY)||'null');
+    if(saved&&Array.isArray(saved.projects)){
+      const ids=new Set();
+      workspace.projects=saved.projects.filter(p=>p&&typeof p.id==='string'&&/^[a-zA-Z0-9-]{1,100}$/.test(p.id)&&p.state?.answers&&!ids.has(p.id)&&ids.add(p.id)).map(p=>({id:p.id,state:normalizeState(p.state),updatedAt:textValue(p.updatedAt,40)}));
+      workspace.activeId=saved.activeId;
+    }
+  }catch(e){}
+  let embedded=null;
+  try {embedded=JSON.parse(document.body.getAttribute('data-saved-project')||'null');}catch(e){}
+  if(embedded?.state?.answers){
+    const id=typeof embedded.id==='string'&&/^[a-zA-Z0-9-]{1,100}$/.test(embedded.id)?embedded.id:projectId();
+    if(!workspace.projects.some(p=>p.id===id))workspace.projects.push({id,state:normalizeState(embedded.state),updatedAt:new Date().toISOString()});
+    workspace.activeId=id;document.body.removeAttribute('data-saved-project');
+  }
+  if(!workspace.projects.length){
+    let legacy=null;try{legacy=JSON.parse(document.body.getAttribute('data-saved-state')||localStorage.getItem('nav_state_v9')||localStorage.getItem('nav_state_v8')||'null');}catch(e){}
+    document.body.removeAttribute('data-saved-state');workspace.activeId=projectId();workspace.projects.push({id:workspace.activeId,state:normalizeState(legacy),updatedAt:new Date().toISOString()});
+  }
+  const active=workspace.projects.find(p=>p.id===workspace.activeId)||workspace.projects[0];workspace.activeId=active.id;Object.assign(state,normalizeState(active.state));
+}
+
+
 const GLOSSARY = [
   { term: "Biennial Transparency Report", acronym: "BTR", def: "The main reporting document countries submit to the UNFCCC under the Paris Agreement, every two years. Covers GHG emissions, progress on NDC targets, climate impacts and adaptation, and finance received or provided. First BTRs were due by end of 2024." },
   { term: "Nationally Determined Contribution", acronym: "NDC", def: "A country's pledge under the Paris Agreement covering what it will do to reduce emissions and (often) how it will adapt. Updated every five years, with each update expected to be more ambitious than the last." },
@@ -4137,16 +4097,16 @@ function openHelpDialog() {
 
       <div class="help-dialog-section">
         <h4>How to use this</h4>
-        <p>Five stages, usually five to ten minutes. <strong>Stage 0</strong> starts with national and local plans, budgets, data, laws, and evaluations. <strong>Stage 1</strong> identifies the perspective and decision. <strong>Stage 2</strong> sets thematic scope. <strong>Stage 3</strong> separates evidence and decision scales and tests feasibility. <strong>Stage 4</strong> assembles one starting option for each functional system component.</p>
+        <p>Start with a decision, choose the scope, then describe scales and resources. Your plan brings together six complementary components and an editable implementation worksheet. The context checklist is an optional reference you can revisit at any time.</p>
         <p>You can <strong>jump between stages</strong> using the bar at the top — your answers are kept. Required questions establish basic eligibility; optional ones refine fit and surface warnings.</p>
-        <p>At Stage 4 you can <strong>copy the bundle</strong>, <strong>save it as PDF</strong>, or <strong>save the whole tool with your answers for offline use</strong> — useful for workshop scenarios and low-connectivity settings.</p>
-        <p>Your answers are saved locally in this browser, so a refresh or accidentally closing the tab won't lose them. To start over with fresh answers, go to Stage 0 and use the "Clear answers &amp; start over" button. Nothing is sent anywhere unless you explicitly use the "Send feedback" button.</p>
+        <p>In <strong>Your plan</strong>, compare alternatives within a component, select a tool, or name a local process. Record owners, tasks, evidence, people, dates and questions in the worksheet. Download it as CSV, copy the plan, print it or save the Navigator for offline use. Changing a component preserves your worksheet notes; review them for the new choice.</p>
+        <p>Projects are saved on this browser. Use <strong>New project</strong> or <strong>Duplicate</strong> to explore another scenario. <strong>Export project</strong> downloads a JSON file you can import on another browser. The offline download contains the current project. Your answers are not uploaded by the Navigator; external source links and feedback use the destinations you choose.</p>
       </div>
 
       <div class="help-dialog-section">
         <h4>What eligibility and fit mean</h4>
         <p>Scope, the relevant scale, current capacity, and data readiness act as feasibility safeguards. A tool that fails one of these appears under <strong>Not suitable now</strong> with the blocker stated. Eligible tools are then compared by decision fit and optional preferences.</p>
-        <p>The percentage is the tool's score relative to the maximum possible for the questions answered. It communicates relative fit, not evidence quality, effectiveness, or certainty.</p>
+        <p>The percentage inside <strong>Why this fit</strong> is the score relative to the maximum possible for answered questions. Unanswered data or timing questions remain open. A water-specific source is excluded if water is not relevant, and flagged for review if relevance is unknown. <strong>Not sure yet</strong> for approach is unscored.</p>
         <p>Open <strong>Why this fit</strong> on any card to see which answers affected it. Component assignment and metadata are maintained in the public source and documented in the methodology file.</p>
         <p>Crucially: this is decision support, not a recommendation. Validate current source material, costs, country applicability, safeguards, ownership, and institutional burden with affected stakeholders before adoption.</p>
       </div>
@@ -4154,12 +4114,17 @@ function openHelpDialog() {
       <div class="help-dialog-section">
         <h4>Glossary of climate M&amp;E terms</h4>
         <p style="margin-bottom: 14px;">Brief plain-language definitions. Not exhaustive — just the terms you are most likely to bump into in tool descriptions and option labels.</p>
-        <div class="glossary-list">${glossaryHTML}</div>
+        <label class="field" for="glossary-search">Find a term<input id="glossary-search" type="search" placeholder="Try theory of change or NAP"></label><p id="glossary-count" role="status"></p><div class="glossary-list">${glossaryHTML}</div>
       </div>
     </div>
   `;
   document.body.appendChild(dialog);
 
+  dialog.querySelector('#glossary-search').addEventListener('input', e => {
+    const query = e.target.value.toLowerCase().trim(); let count = 0;
+    dialog.querySelectorAll('.glossary-item').forEach(item => { item.hidden = !item.textContent.toLowerCase().includes(query); if (!item.hidden) count++; });
+    dialog.querySelector('#glossary-count').textContent = count + ' terms found';
+  });
   activateAccessibleDialog(dialog, document.getElementById("help-close"), invoker);
 }
 
@@ -4219,7 +4184,7 @@ function openFeedbackDialog() {
   lines.push("Anything else:");
   lines.push("");
 
-  const subject = "Feedback on Climate M&E Navigator (v0.9)";
+  const subject = "Feedback on Climate M&E Navigator (v1.0)";
   const body = lines.join("\n");
   const mailtoUrl = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(FEEDBACK_EMAIL)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -4298,54 +4263,14 @@ function openFeedbackDialog() {
 // ============================================================
 // INIT
 // ============================================================
-// Hydration order:
-// 1. data-saved-state on body — set by the offline-save feature, wins.
-// 2. localStorage nav_state_v9 — set on every render, restores after refresh.
-// 3. Fresh defaults.
-function hydrateState(parsed) {
-  if (!parsed || !parsed.answers) return;
-  const incoming = parsed.answers;
-  const legacyScale = incoming.scale || null;
-  state.answers = {
-    ...state.answers,
-    ...incoming,
-    evidence_scale: incoming.evidence_scale || legacyScale,
-    decision_scale: incoming.decision_scale || legacyScale
-  };
-  if (parsed.groundingRead) state.groundingRead = parsed.groundingRead;
-  if (parsed.groundingExpanded) state.groundingExpanded = parsed.groundingExpanded;
-  if (typeof parsed.refineOpen === "boolean") state.refineOpen = parsed.refineOpen;
-  if (typeof parsed.showWeak === "boolean") state.showWeak = parsed.showWeak;
-  if (typeof parsed.showCompatible === "boolean") state.showCompatible = parsed.showCompatible;
-}
-
-const savedState = document.body.getAttribute("data-saved-state");
-if (savedState) {
-  try {
-    const parsed = JSON.parse(savedState);
-    if (parsed && parsed.answers) {
-      hydrateState(parsed);
-      document.body.removeAttribute("data-saved-state");
-    }
-  } catch (e) { /* fall through */ }
-} else {
-  try {
-    const localSaved = localStorage.getItem("nav_state_v9") || localStorage.getItem("nav_state_v8");
-    if (localSaved) {
-      const parsed = JSON.parse(localSaved);
-      if (parsed && parsed.answers) {
-        // Don't restore the persisted stage — otherwise a reload reopens on
-        // the terminal Stage 4 results screen, which has no "Continue" button,
-        // and the page appears permanently stuck. Keep the answers, drop the stage.
-        hydrateState(parsed);
-      }
-    }
-  } catch (e) { /* fall through */ }
-}
+initializeProjects();
 render();
 wireFeedbackButton();
 wireHelpButton();
+window.addEventListener('beforeprint', preparePrint);
+window.addEventListener('afterprint', restorePrint);
 
+// ============================================================
 // ============================================================
 // COURSE MODE — M&E 101 tab
 // ============================================================
@@ -4367,6 +4292,18 @@ wireHelpButton();
   try { mode = localStorage.getItem(MODE_KEY) || "navigator"; } catch (e) {}
 
   const courseView = document.getElementById("course-view");
+  document.getElementById('course-example-cards').innerHTML = exampleCards();
+  wireExamples(document.getElementById('course-example-cards'));
+  document.getElementById('course-examples').addEventListener('click', e => {
+    if (e.target.closest('[data-example]')) { mode = 'navigator'; applyMode(); focusHeading(); }
+  });
+  document.getElementById('course-return').addEventListener('click', () => {
+    mode = 'navigator'; applyMode();
+    const id = document.getElementById('course-return').dataset.returnId;
+    const target = id && document.getElementById(id);
+    if (target) { target.open = true; target.querySelector('summary').focus(); target.scrollIntoView({ block: 'center' }); }
+    else focusHeading();
+  });
   const stageNav = document.getElementById("stage-nav");
   const stageContainer = document.getElementById("stage-container");
   const modeTabs = document.querySelectorAll(".mode-tab");
@@ -4381,6 +4318,8 @@ wireHelpButton();
     courseView.hidden = !isCourse;
     stageNav.hidden = isCourse;
     stageContainer.hidden = isCourse;
+    document.getElementById("project-bar").hidden = isCourse;
+    document.querySelector(".skip-link").href = isCourse ? "#course-view" : "#stage-container";
     modeTabs.forEach(t => {
       const selected = t.dataset.mode === mode;
       t.classList.toggle("active", selected);
