@@ -1629,6 +1629,10 @@ legend { padding: 0; }
 .overview-row .chosen-name { font-weight: 600; font-size: 17px; overflow-wrap: anywhere; }
 .overview-row p { margin-top: 7px; font-size: 15px; }
 .overview-row .watch { color: #72501e; }
+.decision-brief { border-left: 4px solid var(--accent); padding: 16px 20px; margin: 20px 0; background: var(--paper-warm); }
+.decision-brief h2 { font: 500 22px 'Fraunces', Georgia, serif; margin-bottom: 8px; }
+.decision-brief p, #plan-context dd { white-space: pre-wrap; overflow-wrap: anywhere; }
+.decision-brief .btn { margin-top: 12px; }
 .component-detail { border: 1px solid var(--rule); padding: 20px; margin: 16px 0; background: var(--paper); }
 .component-detail > summary { cursor: pointer; font: 500 22px 'Fraunces', Georgia, serif; padding: 6px 0; }
 .component-detail .tool-card { margin-top: 18px; }
@@ -1694,7 +1698,7 @@ legend { padding: 0; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
 @media print {
-  .project-bar, .action-row, .export-actions, .overview-row > button, .component-detail, .share-row, .stage-footer, .readiness-note button { display: none !important; }
+  .project-bar, .action-row, .export-actions, .overview-row > button, .component-detail, .share-row, .stage-footer, .readiness-note button, .decision-brief button, .project-notice { display: none !important; }
   .overview-row { break-inside: avoid; grid-template-columns: 180px 1fr; }
   .worksheet, .worksheet details { background: white; padding: 8px; }
   .worksheet .field-grid { display: none; }
@@ -3118,7 +3122,7 @@ function emptyAnswers() {
 function freshState() {
   return { stage: 0, started: false, groundingRead: {}, groundingExpanded: {}, refineOpen: false,
     answers: emptyAnswers(), context: { name: '', decision: '', location: '', focus: '', institutions: '', evidence: '', resources: '' },
-    selections: {}, localDrafts: {}, worksheet: {}, exampleId: null, showWeak: false, showCompatible: false };
+    selections: {}, localDrafts: {}, worksheet: {}, evidenceUse: {}, exampleId: null, showWeak: false, showCompatible: false };
 }
 const state = freshState();
 const PROJECT_KEY = 'nav_projects_v10';
@@ -3131,6 +3135,12 @@ const OPT_WATER = [
 const WORK_FIELDS = [
   ['owner', 'Responsible institution or team'], ['task', 'First task'], ['evidence', 'Existing evidence or process'],
   ['people', 'People to involve'], ['deadline', 'Deadline or review date'], ['question', 'Unresolved question']
+];
+const EVIDENCE_USE_FIELDS = [
+  ['question', 'What do you need to learn?', 'Name the outcome or assumption to examine, and whose experience matters.'],
+  ['review', 'Who will review the evidence, and when?', 'Name the people or forum with authority to act and a review date.'],
+  ['action', 'What decision will follow?', 'Describe the choice the review will inform, including how uncertainty or disagreement will be handled.'],
+  ['feedback', 'How will findings return to contributors?', 'Agree how people who provide evidence can see, discuss and challenge the findings.']
 ];
 const EXAMPLES = [
   { id: 'heat', name: 'District heat adaptation', intro: 'Decide how to improve a district heat response before the next hot season.',
@@ -3169,11 +3179,12 @@ function normalizeState(parsed) {
   }
   next.answers.purpose_secondary = next.answers.purpose_secondary.filter(v => v !== next.answers.purpose_primary);
   Object.keys(next.context).forEach(key => { next.context[key] = textValue(parsed.context?.[key], key === 'name' ? 100 : 4000); });
+  for (const [key] of EVIDENCE_USE_FIELDS) next.evidenceUse[key] = textValue(parsed.evidenceUse?.[key]);
   for (const component of COMPONENTS) {
     const draft = parsed.localDrafts?.[component.id];
-    if (draft?.kind === 'local') next.localDrafts[component.id] = { kind:'local', name:textValue(draft.name,200), note:textValue(draft.note) };
+    if (draft?.kind === 'local') next.localDrafts[component.id] = { kind:'local', name:textValue(draft.name), note:textValue(draft.note) };
     const sel = parsed.selections?.[component.id];
-    if (sel?.kind === 'local') next.selections[component.id] = { kind: 'local', name: textValue(sel.name, 200), note: textValue(sel.note) };
+    if (sel?.kind === 'local') next.selections[component.id] = { kind: 'local', name: textValue(sel.name), note: textValue(sel.note) };
     if (sel?.kind === 'tool' && TOOLS.some(t => t.id === sel.toolId && componentFor(t) === component.id)) {
       next.selections[component.id] = { kind: 'tool', toolId: sel.toolId };
     }
@@ -3186,7 +3197,7 @@ function normalizeState(parsed) {
     for (const doc of GROUNDING_DOCS) if (parsed[key]?.[doc.id] === true) next[key][doc.id] = true;
   }
   next.stage = Number.isInteger(parsed.stage) && parsed.stage >= 0 && parsed.stage <= 4 ? parsed.stage : 0;
-  next.started = parsed.started === true || !!incoming.purpose_primary || !!incoming.capacity || next.answers.scope.length > 0;
+  next.started = typeof parsed.started === 'boolean' ? parsed.started : !!incoming.purpose_primary || !!incoming.capacity || next.answers.scope.length > 0;
   for (const key of ['refineOpen', 'showWeak', 'showCompatible']) next[key] = parsed[key] === true;
   next.exampleId = EXAMPLES.some(e => e.id === parsed.exampleId) ? parsed.exampleId : null;
   return next;
@@ -3326,6 +3337,8 @@ function assessTool(tool) {
     if (overlap.length > 0) {
       score += 3;
       breakdown.push({ kind: "pos", text: "thematic scope matches (+3)" });
+      const uncovered = a.scope.filter(s => !tool.scope.includes(s));
+      if (uncovered.length) warnings.push('Partial thematic coverage: the catalogue does not tag this option for ' + uncovered.map(s => OPT_SCOPE.find(o => o.id === s).label).join(', ') + '. Pair it with evidence or methods for those themes.');
     } else {
       blockers.push("Different thematic scope from the one selected.");
       breakdown.push({ kind: "neg", text: "thematic scope does not match" });
@@ -3454,6 +3467,7 @@ function buildSystemBundle(ranked = rankedTools()) {
 
 function confidenceFor(tool) {
   if (!tool._eligible) return "Not suitable now";
+  if (!tool._primary) return "Supporting option";
   if (tool._primary && tool._pct >= 75 && tool._warnings.length === 0) return "Matches your stated needs";
   if (tool._pct >= 55) return "Potential fit — review checks";
   return "Supporting option";
@@ -3703,6 +3717,7 @@ function renderProjectBar() {
       if (parsed.format !== 'climate-me-navigator-project' || parsed.version !== 1 || !parsed.state?.answers) throw Error('Choose a project JSON exported by this Navigator.');
       createProject(normalizeState(parsed.state)); announce('Project imported. Your other projects are unchanged.');
     } catch (error) { announce(error instanceof SyntaxError ? 'That file is not valid JSON. Choose an exported Navigator project.' : error.message); }
+    finally { e.target.value = ''; }
   });
 }
 function createProject(next) {
@@ -3751,6 +3766,9 @@ function goStage(stage) {
   document.getElementById('stage-nav-' + stage)?.scrollIntoView({ block:'nearest', inline:'nearest', behavior:'instant' });
   focusHeading();
 }
+function goWelcome() {
+  state.stage = 0; state.started = false; render(); focusHeading();
+}
 function renderNav() {
   const nav = document.getElementById('stage-nav');
   if (!state.started && state.stage === 0) { nav.innerHTML = ''; return; }
@@ -3797,7 +3815,7 @@ function navFooter({ canBack, canNext, stage, nextLabel }) {
     ${stage < 4 ? `<button type="button" class="btn primary" id="btn-next" ${!canNext ? 'disabled aria-describedby="next-hint"' : ''}>${nextLabel || (stage === 3 ? 'Build my plan →' : 'Continue →')}</button>` : '<button type="button" class="btn" id="btn-review-inputs">Edit answers</button>'}</div>`;
 }
 function attachNav() {
-  document.getElementById('btn-back')?.addEventListener('click', () => goStage(state.stage > 1 ? state.stage - 1 : 0));
+  document.getElementById('btn-back')?.addEventListener('click', () => state.stage > 1 ? goStage(state.stage - 1) : goWelcome());
   document.getElementById('btn-next')?.addEventListener('click', () => { if (state.stage === 0 || stageComplete(state.stage)) goStage(state.stage + 1); });
   document.getElementById('btn-review-inputs')?.addEventListener('click', () => goStage(1));
 }
@@ -3822,7 +3840,7 @@ function wireLessons(c) {
 function renderStage1(c) {
   c.innerHTML = `<div class="stage-page" data-stage="1"><div class="stage-intro"><p class="stage-kicker">Step 1 · Decision</p><h1 class="stage-heading serif">What decision must the system <em>support</em>?</h1><p>Choose the main use of your evidence. Add a few notes to make the resulting plan useful to your team.</p>
     ${inlineHelp('decision', 'What counts as a decision?', 'For example: Which heat-response measures should the district revise before next summer? Name the choice and who will make it. A reporting deadline may be the primary use, with learning as a secondary use.', 'm1')}</div>
-    <div class="stage-body"><fieldset class="step-block"><legend class="step-heading serif">What is the primary decision? <span class="optional-label">Required</span></legend><p class="step-prompt">Choose one main use. You can add other uses below.</p><div class="options" id="purpose-primary-opts"></div></fieldset>
+    <div class="stage-body"><fieldset class="step-block"><legend class="step-heading serif">What is the main use of the evidence? <span class="optional-label">Required</span></legend><p class="step-prompt">Choose one main use. You can add other uses below.</p><div class="options" id="purpose-primary-opts"></div></fieldset>
     <details class="optional-section" id="context-notes" open><summary>Project context <span class="optional-label">Optional notes</span></summary><p class="field-hint">These notes travel with your worksheet. They do not automatically change tool rankings.</p><div class="field-grid">${contextField('name', 'Project name')}${contextField('location', 'Location or area')}${contextField('decision', 'The actual decision, in one sentence', true, true)}${contextField('focus', 'Sector, hazard or issue', false, true)}${contextField('institutions', 'Institutions and processes already involved', true)}${contextField('evidence', 'Evidence already available, including local knowledge', true)}</div></details>
     <details class="optional-section" id="decision-refinements"><summary>Who will use this, and what else must it support? <span class="optional-label">Optional</span></summary><fieldset><legend class="step-heading serif">User perspective</legend><p class="step-prompt">Choose the first user of this plan. You can still involve several groups.</p><div class="options grid-2" id="role-opts"></div></fieldset><fieldset><legend class="step-heading serif">Secondary decisions</legend><p class="step-prompt">Select any additional uses of the same evidence.</p><div class="options grid-2" id="purpose-secondary-opts"></div></fieldset></details></div></div>${navFooter({ canBack: true, canNext: stageComplete(1), stage: 1 })}`;
   wireSingleSelect('purpose-primary-opts', OPT_PURPOSE, 'purpose_primary'); wireSingleSelect('role-opts', OPT_ROLE, 'role');
@@ -3907,6 +3925,12 @@ function worksheetValue(component, field) { return state.worksheet[component.id]
 function printWorksheetFields(component) {
   return `<dl class="print-fields" id="print-${component.id}">${WORK_FIELDS.map(([key,label]) => `<div><dt>${label}</dt><dd>${escapeHTML(worksheetValue(component,key) || 'To agree')}</dd></div>`).join('')}</dl>`;
 }
+function printEvidenceUse() {
+  return `<dl class="print-fields" id="print-evidence-use">${EVIDENCE_USE_FIELDS.map(([key,label]) => `<div><dt>${label}</dt><dd>${escapeHTML(state.evidenceUse[key] || 'To agree')}</dd></div>`).join('')}</dl>`;
+}
+function renderEvidenceUse() {
+  return `<section class="worksheet" id="evidence-use" aria-labelledby="evidence-use-heading"><h2 class="results-band-heading serif" id="evidence-use-heading">Connect evidence to action</h2><p>Before choosing methods, agree what you need to learn, who can act on the findings, and how contributors will hear back. These notes stay with your plan.</p><details id="evidence-use-editor"><summary>Record the evidence-to-action cycle</summary><div class="field-grid">${EVIDENCE_USE_FIELDS.map(([key,label,hint]) => `<div>${fieldHTML('use-'+key,label,state.evidenceUse[key] || '',`data-use="${key}" aria-describedby="use-hint-${key}"`,true)}<p class="field-hint" id="use-hint-${key}">${hint}</p></div>`).join('')}</div>${printEvidenceUse()}</details></section>`;
+}
 function renderWorksheet(entries) {
   return `<section class="worksheet" id="implementation-worksheet" aria-labelledby="worksheet-heading"><h2 class="results-band-heading serif" id="worksheet-heading">Implementation worksheet</h2><p>Start with one useful evidence-to-decision flow. Record responsibilities, existing evidence and unanswered questions. Suggested first tasks are editable.</p>
     <div class="export-actions"><button class="btn" id="export-worksheet">Download worksheet (CSV)</button><button class="btn" id="print-plan">Print / save plan as PDF</button></div>
@@ -3915,20 +3939,46 @@ function renderWorksheet(entries) {
 function renderStage4(c) {
   const ranked = rankedTools(), entries = resolveBundle(ranked);
   const missing = [1,2,3].filter(n => !stageComplete(n));
-  const answerRows = [['Primary decision',labelFor(OPT_PURPOSE,state.answers.purpose_primary),1],['Scope',labelsFor(OPT_SCOPE,state.answers.scope).join(', '),2],['Evidence scale',labelFor(OPT_SCALE,state.answers.evidence_scale),3],['Decision / reporting scale',labelFor(OPT_SCALE,state.answers.decision_scale),3],['Capacity',labelFor(OPT_CAPACITY,state.answers.capacity),3]];
+  const answerRows = [['Main evidence use',labelFor(OPT_PURPOSE,state.answers.purpose_primary),1],['Scope',labelsFor(OPT_SCOPE,state.answers.scope).join(', '),2],['Evidence scale',labelFor(OPT_SCALE,state.answers.evidence_scale),3],['Decision / reporting scale',labelFor(OPT_SCALE,state.answers.decision_scale),3],['Capacity',labelFor(OPT_CAPACITY,state.answers.capacity),3]];
+  const optionalRows = [
+    ['User perspective', labelFor(OPT_ROLE,state.answers.role), 1, 'decision-refinements'],
+    ['Secondary uses', labelsFor(OPT_PURPOSE,state.answers.purpose_secondary).join(', '), 1, 'decision-refinements'],
+    ['Water relevance', labelFor(OPT_WATER,state.answers.water), 2, 'water-context'],
+    ['Data availability', labelFor(OPT_DATA,state.answers.data), 3, 'refine-block'],
+    ['Time to first result', labelFor(OPT_TIME,state.answers.time), 3, 'refine-block'],
+    ['Next phase', labelFor(OPT_PHASE,state.answers.phase), 3, 'refine-block'],
+    ['Approach', labelFor(OPT_APPROACH,state.answers.approach), 3, 'refine-block'],
+    ['Theory of change', labelFor(OPT_TOC,state.answers.toc), 3, 'refine-block']
+  ];
+  answerRows.push(...optionalRows.filter(([,value]) => value));
   c.innerHTML = `<div class="stage-page" data-stage="4"><div class="constellation-header"><p class="stage-kicker">Step 4 · Your plan</p><h1 class="stage-heading serif">Your climate M&amp;E <em>plan</em></h1><p class="lede">${escapeHTML(projectName())}</p>
-    <p class="bundle-intro">A starting plan to discuss with decision users, data producers and affected people. You can replace any suggested component with a local process.</p>
+    <p class="bundle-intro">A starting plan to discuss with decision users, data producers and affected people. The six parts are functions to consider; one existing process may serve several of them.</p>
+    <section class="decision-brief" aria-labelledby="decision-brief-heading"><h2 id="decision-brief-heading">The decision this plan supports</h2><p>${escapeHTML(state.context.decision.trim() || 'No specific decision recorded yet. Name the choice this evidence needs to inform.')}</p><button class="btn" data-goto="1" data-focus="context-decision">${state.context.decision.trim() ? 'Edit the decision' : 'Describe the decision'}</button></section>
     ${missing.length ? `<div class="incomplete-notice"><strong>Preview — required answers are missing.</strong> Complete Steps ${missing.join(', ')} before treating these as recommendations. <button class="btn" data-goto="${missing[0]}">Answer missing questions</button></div>` : ''}
-    <div class="readiness-note"><strong>Still to check:</strong> ${escapeHTML(uncheckedItems().join('; '))}. Matching reflects your selections and catalogue descriptions; it does not establish effectiveness.<div><button class="btn" data-goto="3">Review data, timing and resources</button></div></div>
+    <div class="readiness-note"><strong>Still to check:</strong> ${escapeHTML(uncheckedItems().join('; '))}. Matching reflects your selections and catalogue descriptions; it does not establish effectiveness.<div><button class="btn" data-goto="3" data-focus="refine-block">Review data, timing and resources</button></div></div>
     <div class="share-row"><button class="share-btn" id="btn-copy-summary">Copy plan</button><button class="share-btn" id="btn-print-summary">Print / save as PDF</button><button class="share-btn" id="btn-save-offline">Save for offline use</button></div>
-    <details class="optional-section" id="plan-context"><summary>Your answers and project context</summary><div class="answers-summary">${answerRows.map(([label,value,step]) => `<div class="answers-summary-item"><span class="answers-summary-label">${label}</span><span class="answers-summary-value">${escapeHTML(value || 'Not answered')} <button class="answers-summary-edit" data-goto="${step}" aria-label="Edit ${label.toLowerCase()}">Edit</button></span></div>`).join('')}</div><dl>${Object.entries(state.context).filter(([,v]) => v).map(([key,value]) => `<div><dt><strong>${({ name:'Project',decision:'Decision',location:'Location',focus:'Sector / hazard',institutions:'Institutions and processes',evidence:'Existing evidence',resources:'Available resources' })[key]}</strong></dt><dd>${escapeHTML(value)}</dd></div>`).join('')}</dl><button class="btn" data-goto="1">Edit project context</button></details>
-    ${renderOverview(entries)}<p class="field-hint">Catalogue descriptions: ${CATALOGUE_SNAPSHOT}. Review current source material before adoption.</p>
+    <details class="optional-section" id="plan-context"><summary>Your answers and project context</summary><div class="answers-summary">${answerRows.map(([label,value,step,focus]) => `<div class="answers-summary-item"><span class="answers-summary-label">${label}</span><span class="answers-summary-value">${escapeHTML(value || 'Not answered')} <button class="answers-summary-edit" data-goto="${step}" ${focus ? `data-focus="${focus}"` : ''} aria-label="Edit ${label.toLowerCase()}">Edit</button></span></div>`).join('')}</div><dl>${Object.entries(state.context).filter(([,v]) => v).map(([key,value]) => `<div><dt><strong>${({ name:'Project',decision:'Decision',location:'Location',focus:'Sector / hazard',institutions:'Institutions and processes',evidence:'Existing evidence',resources:'Available resources' })[key]}</strong></dt><dd>${escapeHTML(value)}</dd></div>`).join('')}</dl><button class="btn" data-goto="1">Edit project context</button></details>
+    ${renderEvidenceUse()}${renderOverview(entries)}<p class="field-hint">Catalogue descriptions: ${CATALOGUE_SNAPSHOT}. Review current source material before adoption.</p>
     ${renderWorksheet(entries)}
     <h2 class="results-band-heading serif">Review your components</h2>${entries.map(e => renderComponent(e,ranked)).join('')}
     ${renderNinetyDayPlan()}
     <details class="optional-section" id="excluded-options"><summary>Why some catalogue options are excluded (${ranked.filter(t => !t._eligible).length})</summary><p>The specific blockers below reflect your answers. They do not judge a tool’s quality.</p>${ranked.filter(t => !t._eligible).map(t => `<details class="optional-section"><summary>${t.name}</summary>${toolCardHTML(t,'blocked')}</details>`).join('')}</details>
     </div></div>${navFooter({canBack:true,canNext:false,stage:4})}`;
-  c.querySelectorAll('[data-goto]').forEach(b => b.addEventListener('click',()=>goStage(Number(b.dataset.goto))));
+  c.querySelectorAll('[data-goto]').forEach(b => b.addEventListener('click', () => {
+    if (b.dataset.focus === 'refine-block') state.refineOpen = true;
+    goStage(Number(b.dataset.goto));
+    const target = b.dataset.focus && document.getElementById(b.dataset.focus);
+    if (target) {
+      const details = target.closest('details');
+      if (details) details.open = true;
+      (target.matches('details') ? target.querySelector('summary') : target).focus({preventScroll:true});
+      target.scrollIntoView({block:'center'});
+    }
+  }));
+  c.querySelectorAll('[data-use]').forEach(el => el.addEventListener('input', () => {
+    state.evidenceUse[el.dataset.use] = el.value; persistState();
+    document.getElementById('print-evidence-use').outerHTML = printEvidenceUse();
+  }));
   c.querySelectorAll('[data-open-component]').forEach(b => b.addEventListener('click', () => { const d=document.getElementById('component-'+b.dataset.openComponent); d.open=true; d.querySelector('summary').focus(); d.scrollIntoView({block:'start'}); }));
   c.querySelectorAll('[data-use-tool]').forEach(b => b.addEventListener('click', () => {
     preserveLocalChoice(b.dataset.component); state.selections[b.dataset.component]={kind:'tool',toolId:b.dataset.useTool}; render();
@@ -3966,6 +4016,9 @@ function buildPlainSummary() {
   const opts={role:OPT_ROLE,purpose_primary:OPT_PURPOSE,evidence_scale:OPT_SCALE,decision_scale:OPT_SCALE,capacity:OPT_CAPACITY,data:OPT_DATA,time:OPT_TIME,approach:OPT_APPROACH,phase:OPT_PHASE,toc:OPT_TOC,water:OPT_WATER};
   for(const[key,options]of Object.entries(opts))lines.push(key.replaceAll('_',' ')+': '+(labelFor(options,state.answers[key])||'Not answered'));
   lines.push('Scope: '+(labelsFor(OPT_SCOPE,state.answers.scope).join(', ')||'Not answered'),'Secondary decisions: '+(labelsFor(OPT_PURPOSE,state.answers.purpose_secondary).join(', ')||'None selected'),'','STILL TO CHECK: '+uncheckedItems().join('; '),'');
+  lines.push('EVIDENCE TO ACTION');
+  for(const [key,label] of EVIDENCE_USE_FIELDS) lines.push(label+': '+(state.evidenceUse[key]||'To agree'));
+  lines.push('');
   for(const e of resolveBundle()){
     lines.push(e.component.label,selectionName(e),entryStatus(e));
     if(e.selection?.kind==='local'&&e.selection.note)lines.push('Local assessment: '+e.selection.note);
@@ -3981,12 +4034,12 @@ function csvCell(value) {
   return '"'+text.replaceAll('"','""')+'"';
 }
 function exportWorksheet() {
-  const rows=[['Project','Decision','Location','Sector / hazard','Component','Chosen process / tool','Status / checks','Source','Local assessment',...WORK_FIELDS.map(([,label])=>label)]];
-  for(const e of resolveBundle())rows.push([projectName(),state.context.decision,state.context.location,state.context.focus,e.component.label,selectionName(e),(state.exampleId?'Illustrative example. ':'')+(!allRequiredComplete()?'PREVIEW: required questions unanswered. ':'')+entryStatus(e)+' Still to check: '+uncheckedItems().join('; '),e.tool?.link||'',e.selection?.note||'',...WORK_FIELDS.map(([key])=>worksheetValue(e.component,key))]);
+  const rows=[['Project','Decision','Location','Sector / hazard','Component','Chosen process / tool','Status / checks','Source','Local assessment',...WORK_FIELDS.map(([,label])=>label),...EVIDENCE_USE_FIELDS.map(([,label])=>label)]];
+  for(const e of resolveBundle())rows.push([projectName(),state.context.decision,state.context.location,state.context.focus,e.component.label,selectionName(e),(state.exampleId?'Illustrative example. ':'')+(!allRequiredComplete()?'PREVIEW: required questions unanswered. ':'')+entryStatus(e)+' Still to check: '+uncheckedItems().join('; '),e.tool?.link||'',e.selection?.note||'',...WORK_FIELDS.map(([key])=>worksheetValue(e.component,key)),...EVIDENCE_USE_FIELDS.map(([key])=>state.evidenceUse[key]||'To agree')]);
   downloadText(fileStem()+'-worksheet.csv','\ufeff'+rows.map(row=>row.map(csvCell).join(',')).join('\r\n'),'text/csv;charset=utf-8');announce('Worksheet downloaded.');
 }
 let printOpenStates=[];
-function preparePrint() { if(printOpenStates.length)return;printOpenStates=[...document.querySelectorAll('#implementation-worksheet details, #plan-context')].map(d=>[d,d.open]);for(const[d]of printOpenStates)d.open=true; }
+function preparePrint() { if(printOpenStates.length)return;printOpenStates=[...document.querySelectorAll('#implementation-worksheet details, #evidence-use-editor, #plan-context')].map(d=>[d,d.open]);for(const[d]of printOpenStates)d.open=true; }
 function restorePrint() { for(const[d,open]of printOpenStates)d.open=open;printOpenStates=[]; }
 function printPlan(){window.print();}
 function saveOffline() {
@@ -4320,6 +4373,7 @@ window.addEventListener('afterprint', restorePrint);
     stageContainer.hidden = isCourse;
     document.getElementById("project-bar").hidden = isCourse;
     document.querySelector(".skip-link").href = isCourse ? "#course-view" : "#stage-container";
+    document.querySelector(".skip-link").textContent = isCourse ? "Skip to M&E basics" : "Skip to navigator";
     modeTabs.forEach(t => {
       const selected = t.dataset.mode === mode;
       t.classList.toggle("active", selected);

@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased — decision flow and persistence review, 2026-09-29
+
+- Preserve local-process names up to the input's 4,000-character limit on reload, import, project switching and duplication.
+- Return from Step 1 to the welcome screen without losing answers; open and focus optional questions when following review/edit links.
+- Reset the import picker after each attempt so the same file can be selected again.
+- Keep tools without primary-use fit labelled as supporting options and disclose partial thematic coverage.
+- Keep the specific decision visible and add four optional evidence-to-action notes, retained in all plan exports.
+- Include answered optional criteria in the plan context and print output; update the skip-link label in learning mode.
+- Add repeatable DOM integration checks and a mixed-theme stakeholder scenario. Catalogue entries, eligibility rules and score weights are unchanged.
+
 ## v1.0 — Usability and editable plans
 
 - Put the primary decision first and introduce a short landing page with worked examples.

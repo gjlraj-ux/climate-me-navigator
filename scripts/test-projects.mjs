@@ -160,4 +160,25 @@ test('fit percentages appear only inside detailed reasoning', () => {
   assert.match(card, /Criteria match:/);
 });
 
+test('a high-scoring tool without primary-decision fit stays a supporting option', () => {
+  run("Object.assign(state,freshState());state.answers={...emptyAnswers(),...EXAMPLES[1].answers};");
+  const tools = run('rankedTools().filter(t=>t._eligible && !t._primary && t._pct>=55)');
+  assert.ok(tools.length > 0);
+  for (const tool of tools) {
+    context.supportingTool = tool;
+    assert.equal(run('confidenceFor(supportingTool)'), 'Supporting option');
+  }
+});
+
+test('partial thematic coverage is disclosed without changing the scope weight', () => {
+  run("Object.assign(state,freshState());state.answers={...emptyAnswers(),scope:['adaptation']};");
+  const before = run("rankedTools().find(t=>t.id==='pmerl')");
+  run("state.answers.scope=['adaptation','mitigation'];");
+  const after = run("rankedTools().find(t=>t.id==='pmerl')");
+  assert.equal(after._score,before._score);
+  assert.equal(after._eligible,true);
+  assert.ok(after._warnings.some(w=>w.includes('Partial thematic coverage') && w.includes('Mitigation')));
+  assert.notEqual(run("confidenceFor(rankedTools().find(t=>t.id==='pmerl'))"),'Matches your stated needs');
+});
+
 console.log(`Project checks passed: ${checks}.`);

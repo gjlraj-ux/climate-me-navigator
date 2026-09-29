@@ -79,6 +79,9 @@ if (api) {
     for (const id of scenario.warned_tools || []) {
       check(ranked.find(tool => tool.id === id)?._warnings.length > 0, `${scenario.id}: expected a visible warning for ${id}`);
     }
+    for (const id of scenario.partial_scope_tools || []) {
+      check(ranked.find(tool => tool.id === id)?._warnings.some(w => w.startsWith('Partial thematic coverage:')), `${scenario.id}: expected a partial scope warning for ${id}`);
+    }
     for (const tool of ranked.filter(item => !item._eligible)) {
       check(tool._blockers.length > 0, `${scenario.id}/${tool.id}: ineligible tool has no visible blocker`);
     }

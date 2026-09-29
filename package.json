@@ -4,10 +4,13 @@
   "private": true,
   "description": "Decision support for climate monitoring, evaluation, and learning system design",
   "scripts": {
-    "test": "node scripts/validate.mjs && node scripts/test-projects.mjs",
+    "test": "node scripts/validate.mjs && node scripts/test-projects.mjs && node scripts/test-ui.mjs",
     "validate": "node scripts/validate.mjs"
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
   }
 }
