@@ -58,7 +58,7 @@ await test('Back returns to welcome and preserves answers through reload', () =>
   assert.match(ui.get('#stage-container h1').textContent, /Design a climate/);
   const saved = ui.snapshot(); ui.close();
   const reopened = boot(saved);
-  reopened.click('#start-design');
+  reopened.click('#resume-design');
   assert.equal(reopened.get('#answer-purpose_primary-national_policy').checked,true);
   assert.equal(reopened.get('#context-name').value,'Saved decision'); reopened.close();
 });
@@ -86,6 +86,7 @@ await test('long local names and drafts survive reload, switching and duplicatio
   ui.click('[data-auto="anchor_reporting"]');
   const saved = ui.snapshot(); ui.close();
   const reopened = boot(saved);
+  reopened.click('#resume-design');
   reopened.click('[data-use-local="anchor_reporting"]');
   assert.equal(reopened.get('#local-name-anchor_reporting').value,name);
   assert.equal(reopened.get('#local-note-anchor_reporting').value,'Confirm public access');
@@ -123,6 +124,7 @@ await test('evidence-use notes survive JSON, text, CSV, offline export and reloa
   ui.click('#btn-save-offline'); const offline = await ui.downloads.at(-1).text();
   const saved = ui.snapshot(); ui.close();
   for (const opened of [boot(saved),boot({},offline)]) {
+    opened.click('#resume-design');
     for (const [key,value] of Object.entries(notes)) assert.equal(opened.get('#use-'+key).value,value);
     opened.close();
   }
@@ -247,6 +249,75 @@ await test('readable downloads are separate from JSON backups and retain notes s
   assert.equal(ui.document.getElementById('download-dialog'),null);
   assert.match(ui.get('#project-export').textContent,/backup \(\.json\)/);
   ui.close();
+});
+
+await test('returning midway opens welcome and preserves the exact resume point despite an old course tab', () => {
+  const ui=boot();
+  ui.click('#start-design'); ui.click('#answer-purpose_primary-national_policy');
+  ui.input('#context-decision','Which district priorities should inform the next plan?');
+  ui.click('#btn-next'); ui.click('#answer-scope-adaptation'); ui.click('#tab-course');
+  const saved=ui.snapshot();
+  const prior=JSON.parse(saved.nav_projects_v10).projects[0].state;
+  // Earlier releases remembered the open tab independently of project answers.
+  saved.nav_mode_v1='course'; saved.course_done_v1=JSON.stringify({m1:true}); ui.close();
+  const reopened=boot(saved);
+  assert.equal(reopened.get('#tab-navigator').getAttribute('aria-selected'),'true');
+  assert.equal(reopened.get('#course-view').hidden,true);
+  assert.equal(reopened.get('#stage-nav').textContent,'');
+  assert.equal(reopened.document.querySelector('#answer-scope-adaptation'),null);
+  assert.match(reopened.get('.resume-card').textContent,/Working draft on this browser/);
+  assert.match(reopened.get('.resume-card').textContent,/Step 2 of 4 · Scope/);
+  assert.deepEqual(JSON.parse(reopened.snapshot().nav_projects_v10).projects[0].state,prior);
+  assert.equal(JSON.parse(reopened.snapshot().course_done_v1).m1,true);
+  reopened.click('#resume-design');
+  assert.equal(reopened.get('#answer-scope-adaptation').checked,true);
+  reopened.click('#project-home');
+  assert.match(reopened.get('.resume-card').textContent,/Step 2 of 4 · Scope/);
+  const homeSnapshot=reopened.snapshot(); reopened.close();
+  const again=boot(homeSnapshot); again.click('#resume-design');
+  assert.equal(again.get('#answer-scope-adaptation').checked,true);
+  assert.equal(again.get('#stage-nav-2').getAttribute('aria-current'),'step'); again.close();
+});
+
+await test('Start fresh preserves saved work and honours cancellation before replacing a partial draft', () => {
+  const ui=boot(); completeJourney(ui);
+  const savedId=ui.get('#project-select').value;
+  const retained=JSON.parse(ui.snapshot().nav_projects_v10).projects.find(p=>p.id===savedId).state;
+  ui.click('#project-home'); ui.click('#welcome-new');
+  assert.equal(ui.get('#answer-purpose_primary-community_monitoring').checked,false);
+  assert.equal(ui.get('#context-decision').value,'');
+  assert.equal(ui.get('#stage-nav-1').getAttribute('aria-current'),'step');
+  ui.click('#answer-purpose_primary-national_policy'); ui.input('#context-decision','Only a trial');
+  const draftId=ui.get('#project-select').value; ui.click('#project-home');
+  ui.window.confirm=()=>false; ui.click('#welcome-new');
+  assert.ok(ui.document.getElementById('resume-design'));
+  assert.equal(ui.get('#project-select').value,draftId);
+  ui.click('#resume-design'); assert.equal(ui.get('#context-decision').value,'Only a trial');
+  ui.click('#project-home'); ui.window.confirm=()=>true; ui.click('#welcome-new');
+  assert.equal(ui.get('#context-decision').value,'');
+  assert.equal(ui.get('#answer-purpose_primary-national_policy').checked,false);
+  const stored=JSON.parse(ui.snapshot().nav_projects_v10);
+  assert.equal(stored.projects.filter(p=>p.draft).length,1);
+  assert.deepEqual(stored.projects.find(p=>p.id===savedId).state,retained);
+  const select=ui.get('#project-select'); select.value=savedId;
+  select.dispatchEvent(new ui.window.Event('change',{bubbles:true}));
+  assert.ok(ui.document.getElementById('evidence-use')); ui.close();
+});
+
+await test('casual browsing, examples and the context checklist have unambiguous return paths', () => {
+  const ui=boot(); ui.click('#start-design'); ui.click('#stage-nav-3');
+  const saved=ui.snapshot(); ui.close();
+  const reopened=boot(saved);
+  assert.ok(reopened.document.getElementById('start-design'));
+  assert.equal(reopened.document.getElementById('resume-design'),null);
+  reopened.click('#start-design');
+  assert.equal(reopened.get('#stage-nav-1').getAttribute('aria-current'),'step');
+  reopened.click('#project-home'); reopened.click('#explore-examples');
+  reopened.click('#welcome-examples [data-example="heat"]');
+  reopened.click('#stage-nav-0'); reopened.click('#project-home');
+  assert.match(reopened.get('.resume-card').textContent,/Context checklist · Illustrative example/);
+  reopened.click('#resume-design');
+  assert.equal(reopened.get('#stage-nav-0').getAttribute('aria-current'),'step'); reopened.close();
 });
 
 console.log(`DOM integration checks passed: ${checks}.`);

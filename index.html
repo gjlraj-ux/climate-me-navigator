@@ -1588,6 +1588,10 @@ button, summary, a { touch-action: manipulation; }
 .welcome .lede { max-width: 720px; font-size: 18px; margin: 20px 0; }
 .welcome-actions, .action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 18px 0; }
 .welcome-meta, .field-hint { font-size: 14px; color: var(--ink-muted); margin: 8px 0 16px; }
+.resume-card { margin: 24px 0; padding: 24px; border: 1px solid var(--rule); border-left: 4px solid var(--accent); background: var(--paper-warm); }
+.resume-card h2 { font: 500 24px 'Fraunces', Georgia, serif; margin: 8px 0; overflow-wrap: anywhere; }
+.resume-card p { max-width: 720px; }
+.resume-card .welcome-actions { margin-bottom: 0; }
 .welcome-preview { margin-top: 36px; padding: 24px; background: var(--paper-warm); border: 1px solid var(--rule); }
 .welcome-preview h2 { font: 500 24px 'Fraunces', Georgia, serif; margin-bottom: 12px; }
 .preview-parts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 24px; margin: 16px 0; }
@@ -3671,6 +3675,8 @@ function toolCardHTML(t, cls) {
 // Project storage and rendering helpers.
 let workspace = { activeId: '', projects: [] };
 let renderedStage = -1;
+// Entry is a view, not project data: never silently resume an earlier visit.
+let welcomeVisible = true;
 let saveFailed = false;
 let projectBarSignature = '';
 function projectId() { return 'p-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
@@ -3709,15 +3715,16 @@ function renderProjectBar() {
   projectBarSignature = signature;
   const current = workspace.projects.find(p => p.id === workspace.activeId);
   const options = projects => projects.map(p => `<option value="${escapeHTML(p.id)}" ${p.id === workspace.activeId ? 'selected' : ''}>${escapeHTML(projectLabel(p))}</option>`).join('');
-  bar.innerHTML = `<label for="project-select">Project</label><select id="project-select">${options(workspace.projects.filter(p => p.draft))}${workspace.projects.some(p => !p.draft) ? `<optgroup label="Saved projects">${options(workspace.projects.filter(p => !p.draft))}</optgroup>` : ''}</select>
+  bar.innerHTML = `<button class="btn" id="project-home">Home</button><label for="project-select">Project</label><select id="project-select">${options(workspace.projects.filter(p => p.draft))}${workspace.projects.some(p => !p.draft) ? `<optgroup label="Saved projects">${options(workspace.projects.filter(p => !p.draft))}</optgroup>` : ''}</select>
     <button class="btn" id="project-save">${current?.draft ? 'Save &amp; name' : 'Rename'}</button><button class="btn" id="project-new">New draft</button><button class="btn" id="project-download">Download plan</button>
     <span class="save-status" id="save-status" role="status"></span>
     <details class="project-tools" id="project-options"><summary>Project options · duplicate, delete or back up</summary><div class="action-row"><button class="btn" id="project-duplicate">Duplicate as draft</button><button class="btn" id="project-delete">Delete selected project</button><button class="btn" id="project-export">Project backup (.json)</button><button class="btn" id="project-import">Import backup (.json)</button></div><p>Backups reopen your editable project in the Navigator. For a document to read or share, choose Download plan.</p></details><input type="file" id="project-file" accept=".json,application/json" hidden>`;
   document.getElementById('project-select').addEventListener('change', e => {
     const id = e.target.value; persistState();
     const project = workspace.projects.find(p => p.id === id);
-    if (project) { workspace.activeId = id; Object.assign(state, normalizeState(project.state)); renderedStage = -1; render(); focusHeading(); announce('Opened ' + projectName()); }
+    if (project) { workspace.activeId = id; Object.assign(state, normalizeState(project.state)); welcomeVisible = !state.started && state.stage === 0; renderedStage = -1; render(); focusHeading(); announce('Opened ' + projectName()); }
   });
+  document.getElementById('project-home').addEventListener('click', goWelcome);
   document.getElementById('project-new').addEventListener('click', () => createProject(freshState()));
   document.getElementById('project-save').addEventListener('click', openProjectNameDialog);
   document.getElementById('project-download').addEventListener('click', openDownloadDialog);
@@ -3742,13 +3749,15 @@ function createProject(next, saved = false) {
   persistState();
   const draft = workspace.projects.find(p => p.draft);
   if (!saved && draft) {
-    if (hasProjectContent(draft.state) && !window.confirm('Replace the working draft? Its current answers will be lost. Cancel and choose Save & name first if you want to keep them. Saved projects will remain unchanged.')) return;
+    if (hasProjectContent(draft.state) && !window.confirm('Replace the working draft? Its current answers will be lost. Cancel and choose Save & name first if you want to keep them. Saved projects will remain unchanged.')) return false;
     workspace.projects = workspace.projects.filter(p => p.id !== draft.id);
   }
   workspace.activeId = projectId();
   Object.assign(state, normalizeState(next));
+  welcomeVisible = !state.started && state.stage === 0;
   workspace.projects.push({ id: workspace.activeId, state: clone(state), updatedAt: new Date().toISOString(), draft: !saved });
   renderedStage = -1; render(); focusHeading(); announce(saved ? 'Opened ' + projectName() : 'Working draft opened. Choose Save & name to keep this project.');
+  return true;
 }
 function saveNamedProject(name) {
   name = textValue(name, 100).trim();
@@ -3778,6 +3787,7 @@ function deleteCurrentProject() {
   workspace.projects = workspace.projects.filter(p => p.id !== workspace.activeId);
   const next = workspace.projects[0];
   workspace.activeId = next?.id || ''; Object.assign(state,next ? normalizeState(next.state) : freshState());
+  welcomeVisible = true;
   if (!next) persistState();
   renderedStage = -1; render(); focusHeading(); announce('Project deleted from this browser.');
 }
@@ -3815,12 +3825,12 @@ function buildReadablePlan() {
 }
 function render() {
   const activeId = document.activeElement?.id;
-  const sameStage = renderedStage === state.stage;
+  const sameStage = !welcomeVisible && renderedStage === state.stage;
   const openDetails = sameStage ? [...document.querySelectorAll('#stage-container details[id]')].map(d => [d.id, d.open]) : [];
   renderProjectBar(); renderNav(); renderStage();
   for (const [id, open] of openDetails) { const d = document.getElementById(id); if (d) d.open = open; }
   if (sameStage && activeId) document.getElementById(activeId)?.focus({ preventScroll: true });
-  renderedStage = state.stage;
+  renderedStage = welcomeVisible ? -1 : state.stage;
   persistState();
 }
 function focusHeading() {
@@ -3829,16 +3839,16 @@ function focusHeading() {
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 function goStage(stage) {
-  state.stage = stage; state.started = true; render();
+  welcomeVisible = false; state.stage = stage; state.started = true; render();
   document.getElementById('stage-nav-' + stage)?.scrollIntoView({ block:'nearest', inline:'nearest', behavior:'instant' });
   focusHeading();
 }
 function goWelcome() {
-  state.stage = 0; state.started = false; render(); focusHeading();
+  welcomeVisible = true; render(); focusHeading();
 }
 function renderNav() {
   const nav = document.getElementById('stage-nav');
-  if (!state.started && state.stage === 0) { nav.innerHTML = ''; return; }
+  if (welcomeVisible || (!state.started && state.stage === 0)) { nav.innerHTML = ''; return; }
   const stages = [{ n: 1, title: 'Decision' }, { n: 2, title: 'Scope' }, { n: 3, title: 'Scales & resources' }, { n: 4, title: 'Your plan' }, { n: 0, title: 'Context checklist' }];
   nav.innerHTML = `<div class="stage-nav-inner">${stages.map(s => {
     const active = state.stage === s.n;
@@ -3849,7 +3859,7 @@ function renderNav() {
 }
 function renderStage() {
   const c = document.getElementById('stage-container');
-  if (state.stage === 0 && !state.started) { renderWelcome(c); return; }
+  if (welcomeVisible || (state.stage === 0 && !state.started)) { renderWelcome(c); return; }
   [renderStage0, renderStage1, renderStage2, renderStage3, renderStage4][state.stage](c);
   const example = EXAMPLES.find(e => e.id === state.exampleId);
   if (example) c.insertAdjacentHTML('afterbegin', `<aside class="example-banner"><strong>Illustrative example: ${example.name}.</strong> These are teaching assumptions, not findings from a real project. Edit any answer to explore your own setting.</aside>`);
@@ -3859,15 +3869,24 @@ function exampleCards() {
 }
 function wireExamples(container) { container.querySelectorAll('[data-example]').forEach(b => b.addEventListener('click', () => loadExample(b.dataset.example))); }
 function renderWelcome(c) {
+  const resumable = hasProjectContent(state);
+  const draft = workspace.projects.find(p => p.id === workspace.activeId)?.draft;
+  const resumeStage = state.stage === 0 && !state.started ? 1 : state.stage;
+  const stepLabel = ['Context checklist', 'Step 1 of 4 · Decision', 'Step 2 of 4 · Scope', 'Step 3 of 4 · Scales & resources', 'Step 4 of 4 · Your plan'][resumeStage];
   c.innerHTML = `<section class="welcome"><p class="stage-kicker">From a decision to a practical plan</p><h1>Design a climate M&amp;E system for your setting.</h1>
     <p class="lede">Describe the decision you need to make. Explore a starting set of methods, connect them to local institutions, and leave with an editable implementation worksheet.</p>
-    <div class="welcome-actions"><button class="btn primary" id="start-design">Start designing your system →</button><button class="btn" id="explore-examples">Explore worked examples</button></div>
+    ${resumable ? `<section class="resume-card" aria-labelledby="resume-title"><p class="stage-kicker">${draft ? 'Working draft on this browser' : 'Saved project on this browser'}</p><h2 id="resume-title">${escapeHTML(projectName())}</h2><p>Your earlier answers are available. Choose whether to continue them or begin a new draft.</p><p class="welcome-meta">Resume at: ${stepLabel}${state.exampleId ? ' · Illustrative example' : ''}</p><div class="welcome-actions"><button class="btn primary" id="resume-design">${draft ? 'Resume draft' : 'Resume project'} →</button><button class="btn" id="welcome-new">Start fresh</button></div></section>` : ''}
+    <div class="welcome-actions">${!resumable ? '<button class="btn primary" id="start-design">Start designing your system →</button>' : ''}<button class="btn" id="explore-examples">Explore worked examples</button></div>
     <p class="welcome-meta">Three sets of questions, then your plan. Context notes and deeper questions are optional. You can return to any step.</p>
     <p class="welcome-meta">Try the Navigator in a working draft. Choose Save &amp; name to keep a project in your list. Download plan creates a readable document; Project backup keeps an editable copy.</p>
     <section class="welcome-preview"><h2>What you will build</h2><p>Six complementary parts, with room for the systems and processes you already use.</p><div class="preview-parts">${COMPONENTS.map(x => `<span>${x.label}</span>`).join('')}</div><p>An editable worksheet records who will do what, with which evidence, and by when.</p></section>
     <details class="optional-section" id="welcome-examples"><summary>Three climate examples to explore</summary><p>Illustrative journeys with prefilled answers and explanations. Each opens as a working draft; save it only if you want to keep it.</p>${exampleCards()}</details>
     <div class="action-row"><button class="btn" id="welcome-grounding">Open the context checklist</button><button class="btn" id="welcome-learn">Learn M&amp;E basics</button></div></section>`;
-  document.getElementById('start-design').addEventListener('click', () => goStage(1));
+  document.getElementById('start-design')?.addEventListener('click', () => goStage(1));
+  document.getElementById('resume-design')?.addEventListener('click', () => goStage(resumeStage));
+  document.getElementById('welcome-new')?.addEventListener('click', () => {
+    if (createProject(freshState())) goStage(1);
+  });
   document.getElementById('welcome-grounding').addEventListener('click', () => goStage(0));
   document.getElementById('welcome-learn').addEventListener('click', () => document.getElementById('tab-course').click());
   document.getElementById('explore-examples').addEventListener('click', () => {
@@ -4397,7 +4416,6 @@ window.addEventListener('afterprint', restorePrint);
 // ============================================================
 (function () {
   const COURSE_KEY = "course_done_v1";
-  const MODE_KEY = "nav_mode_v1";
   const MODULES = ["m1", "m2", "m3", "m4", "m5", "m6"];
 
   function loadDone() {
@@ -4410,7 +4428,6 @@ window.addEventListener('afterprint', restorePrint);
 
   let done = loadDone();
   let mode = "navigator";
-  try { mode = localStorage.getItem(MODE_KEY) || "navigator"; } catch (e) {}
 
   const courseView = document.getElementById("course-view");
   document.getElementById('course-example-cards').innerHTML = exampleCards();
@@ -4449,7 +4466,6 @@ window.addEventListener('afterprint', restorePrint);
       t.tabIndex = selected ? 0 : -1;
     });
     updateTabState();
-    try { localStorage.setItem(MODE_KEY, mode); } catch (e) {}
   }
 
   function updateTabState() {

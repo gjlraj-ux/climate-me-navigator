@@ -46,6 +46,8 @@ The jsdom development dependency runs DOM integration checks for navigation, foc
 
 ## Projects and exports
 
+Each visit opens the Navigator welcome screen. When the selected project has earlier answers, a **Resume draft/project** card identifies the project and the step to reopen; **Start fresh** begins at the first question. **Home** returns to this choice without changing the saved step or answers. Earlier choices of the M&E basics tab no longer determine where a new visit opens; completed reading sections remain recorded.
+
 Start in one **working draft**, retained on this browser for recovery. Choose **Save & name** to keep it in the saved-project list; later edits to that saved project are saved automatically. **New draft**, illustrative examples and **Duplicate as draft** reuse the draft slot, with confirmation before replacing work. Saved projects remain separate. **Rename** changes the current saved project's name without making another copy. Under **Project options**, **Delete selected project** removes only the selected project after confirmation. Existing projects, including older untitled entries, are preserved until explicitly deleted.
 
 **Download plan** offers **PDF / print** (choose Save as PDF in your browser's print dialog), a readable standalone **HTML document**, **plain text**, or a **CSV worksheet**. **Project backup (.json)** is separately labelled under Project options: it preserves the editable state for **Import backup (.json)**. Importing a backup deliberately creates a separate saved project.

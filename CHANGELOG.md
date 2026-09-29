@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — returning visits, 2026-09-29
+
+- Open on the welcome screen instead of silently restoring a partial project or the previously selected M&E basics tab.
+- Show an explicit resume card with the project name and saved step, alongside Start fresh; add Home without overwriting the resume point.
+- Preserve saved projects, draft-replacement confirmation and reading progress. Add regression coverage for partial visits, old tab preferences, fresh starts and example/checklist navigation.
+
 ## Unreleased — drafts and readable downloads, 2026-09-29
 
 - Keep trials and examples in one recoverable working draft; require Save & name to retain new projects in the saved list.
