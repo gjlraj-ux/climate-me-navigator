@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — drafts and readable downloads, 2026-09-29
+
+- Keep trials and examples in one recoverable working draft; require Save & name to retain new projects in the saved list.
+- Add direct rename and confirmed deletion while retaining existing saved and untitled projects.
+- Provide a Download plan chooser for PDF/print, readable HTML, plain text and CSV; label JSON separately as an editable project backup.
+- Add regression checks for draft reuse, deliberate saves, legacy-project preservation, deletion cancellation and readable document exports.
+
 ## Unreleased — decision flow and persistence review, 2026-09-29
 
 - Preserve local-process names up to the input's 4,000-character limit on reload, import, project switching and duplication.

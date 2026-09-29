@@ -97,6 +97,8 @@ The plan keeps the user's specific decision visible and provides four optional e
 
 Named projects are stored locally, with independent duplication and JSON export/import. Imported state is validated against known choices and bounded text fields; it is not executed. Existing v0.8 and v0.9 answers are migrated when no v1.0 projects exist. An embedded offline snapshot opens as its own project and subsequently saved edits take precedence for that snapshot.
 
+New trials use one recoverable working draft. Saving and naming a draft promotes it to the saved-project list; opening another trial does not create another untitled saved project. Replacing a nonempty draft or deleting a project requires confirmation. Older saved entries are retained, including unnamed entries. Readable plan documents and editable JSON backups have distinct controls and labels. Importing a backup and reopening an offline snapshot are explicit retention actions.
+
 ## Evidence and maintenance
 
 Each item records a public source URL and an editorial metadata set. The snapshot date records the catalogue state shipped with this release; it does not mean that every claim or link was independently verified during that month, or that the tool was evaluated for effectiveness.

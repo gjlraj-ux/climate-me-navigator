@@ -1575,6 +1575,12 @@ button, summary, a { touch-action: manipulation; }
 .project-bar label { font-size: 13px; font-weight: 600; }
 .project-bar select { max-width: 290px; min-width: 130px; flex: 1; }
 .project-bar button { padding: 8px 12px; }
+.project-tools { width: 100%; }
+.project-tools > summary { cursor: pointer; font-size: 14px; padding: 8px 0; }
+.project-tools .action-row { margin: 8px 0; }
+.project-tools p { font-size: 14px; color: var(--ink-muted); }
+.download-choices { display: grid; gap: 12px; margin: 20px 0; }
+.download-choices .btn { text-align: left; }
 .save-status { color: var(--ink-muted); font-size: 12px; margin-left: auto; }
 .save-status.error { color: #933510; font-weight: 600; }
 .welcome { max-width: var(--max-w); margin: auto; padding: 52px 40px; }
@@ -3669,12 +3675,19 @@ let saveFailed = false;
 let projectBarSignature = '';
 function projectId() { return 'p-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
 function clone(value) { return JSON.parse(JSON.stringify(value)); }
-function projectName() { return state.context.name.trim() || 'Untitled project'; }
+function projectName() { return state.context.name.trim() || (workspace.projects.find(p => p.id === workspace.activeId)?.draft ? 'Working draft' : 'Untitled project'); }
+function projectLabel(project) { return project.draft ? 'Working draft' + (project.state?.context?.name?.trim() ? ' · ' + project.state.context.name.trim() : '') : project.state?.context?.name?.trim() || 'Untitled project'; }
+function hasProjectContent(value) {
+  return Object.values(value.context || {}).some(v => typeof v === 'string' && v.trim()) ||
+    Object.values(value.answers || {}).some(v => Array.isArray(v) ? v.length : v) ||
+    Object.keys(value.selections || {}).length > 0 || Object.values(value.evidenceUse || {}).some(Boolean) ||
+    Object.values(value.worksheet || {}).some(row => Object.values(row).some(Boolean)) || Object.values(value.groundingRead || {}).some(Boolean);
+}
 function announce(message) { document.getElementById('live-status').textContent = message; }
 function persistState() {
   let project = workspace.projects.find(p => p.id === workspace.activeId);
   if (!project) {
-    project = { id: projectId(), state: null, updatedAt: '' };
+    project = { id: projectId(), state: null, updatedAt: '', draft: true };
     workspace.projects.push(project); workspace.activeId = project.id;
   }
   project.state = clone(state); project.updatedAt = new Date().toISOString();
@@ -3682,28 +3695,33 @@ function persistState() {
   catch (e) { saveFailed = true; }
   const status = document.getElementById('save-status');
   if (status) {
-    const message = saveFailed ? 'Saving unavailable — export your project to keep it' : 'Saved on this browser';
+    const message = saveFailed ? 'Saving unavailable — download a project backup to keep your work' : project.draft ? 'Working draft · kept here for recovery. Choose Save & name to keep it as a project.' : 'Project saved on this browser';
     if (status.textContent !== message) status.textContent = message;
     status.classList.toggle('error', saveFailed);
   }
   const currentOption = document.querySelector('#project-select option:checked');
-  if (currentOption) currentOption.textContent = projectName();
+  if (currentOption && currentOption.value === project.id) currentOption.textContent = projectLabel(project);
 }
 function renderProjectBar() {
   const bar = document.getElementById('project-bar');
-  const signature = workspace.activeId + ':' + workspace.projects.map(p => p.id).join(',');
+  const signature = workspace.activeId + ':' + workspace.projects.map(p => p.id + (p.draft ? ':draft' : ':saved')).join(',');
   if (projectBarSignature === signature && bar.childElementCount) return;
   projectBarSignature = signature;
-  bar.innerHTML = `<label for="project-select">Project</label><select id="project-select">${workspace.projects.map(p => `<option value="${escapeHTML(p.id)}" ${p.id === workspace.activeId ? 'selected' : ''}>${escapeHTML(p.state?.context?.name?.trim() || 'Untitled project')}</option>`).join('')}</select>
-    <button class="btn" id="project-new">New project</button><button class="btn" id="project-duplicate">Duplicate</button><button class="btn" id="project-export">Export project</button>
-    <button class="btn" id="project-import">Import project</button><input type="file" id="project-file" accept=".json,application/json" hidden>
-    <span class="save-status" id="save-status" role="status"></span>`;
+  const current = workspace.projects.find(p => p.id === workspace.activeId);
+  const options = projects => projects.map(p => `<option value="${escapeHTML(p.id)}" ${p.id === workspace.activeId ? 'selected' : ''}>${escapeHTML(projectLabel(p))}</option>`).join('');
+  bar.innerHTML = `<label for="project-select">Project</label><select id="project-select">${options(workspace.projects.filter(p => p.draft))}${workspace.projects.some(p => !p.draft) ? `<optgroup label="Saved projects">${options(workspace.projects.filter(p => !p.draft))}</optgroup>` : ''}</select>
+    <button class="btn" id="project-save">${current?.draft ? 'Save &amp; name' : 'Rename'}</button><button class="btn" id="project-new">New draft</button><button class="btn" id="project-download">Download plan</button>
+    <span class="save-status" id="save-status" role="status"></span>
+    <details class="project-tools" id="project-options"><summary>Project options · duplicate, delete or back up</summary><div class="action-row"><button class="btn" id="project-duplicate">Duplicate as draft</button><button class="btn" id="project-delete">Delete selected project</button><button class="btn" id="project-export">Project backup (.json)</button><button class="btn" id="project-import">Import backup (.json)</button></div><p>Backups reopen your editable project in the Navigator. For a document to read or share, choose Download plan.</p></details><input type="file" id="project-file" accept=".json,application/json" hidden>`;
   document.getElementById('project-select').addEventListener('change', e => {
     const id = e.target.value; persistState();
     const project = workspace.projects.find(p => p.id === id);
     if (project) { workspace.activeId = id; Object.assign(state, normalizeState(project.state)); renderedStage = -1; render(); focusHeading(); announce('Opened ' + projectName()); }
   });
   document.getElementById('project-new').addEventListener('click', () => createProject(freshState()));
+  document.getElementById('project-save').addEventListener('click', openProjectNameDialog);
+  document.getElementById('project-download').addEventListener('click', openDownloadDialog);
+  document.getElementById('project-delete').addEventListener('click', deleteCurrentProject);
   document.getElementById('project-duplicate').addEventListener('click', () => {
     const copy = clone(state); copy.context.name = (projectName() + ' — copy').slice(0, 100); createProject(copy);
   });
@@ -3715,18 +3733,53 @@ function renderProjectBar() {
       if (file.size > 1000000) throw Error('This file is too large. Choose a Navigator project JSON file under 1 MB.');
       const parsed = JSON.parse(await file.text());
       if (parsed.format !== 'climate-me-navigator-project' || parsed.version !== 1 || !parsed.state?.answers) throw Error('Choose a project JSON exported by this Navigator.');
-      createProject(normalizeState(parsed.state)); announce('Project imported. Your other projects are unchanged.');
+      createProject(normalizeState(parsed.state), true); announce('Backup imported as a saved project. Your other projects are unchanged.');
     } catch (error) { announce(error instanceof SyntaxError ? 'That file is not valid JSON. Choose an exported Navigator project.' : error.message); }
     finally { e.target.value = ''; }
   });
 }
-function createProject(next) {
+function createProject(next, saved = false) {
   persistState();
+  const draft = workspace.projects.find(p => p.draft);
+  if (!saved && draft) {
+    if (hasProjectContent(draft.state) && !window.confirm('Replace the working draft? Its current answers will be lost. Cancel and choose Save & name first if you want to keep them. Saved projects will remain unchanged.')) return;
+    workspace.projects = workspace.projects.filter(p => p.id !== draft.id);
+  }
   workspace.activeId = projectId();
   Object.assign(state, normalizeState(next));
-  if (!state.context.name.trim()) state.context.name = 'Untitled project ' + (workspace.projects.length + 1);
-  workspace.projects.push({ id: workspace.activeId, state: clone(state), updatedAt: new Date().toISOString() });
-  renderedStage = -1; render(); focusHeading(); announce('Opened ' + projectName());
+  workspace.projects.push({ id: workspace.activeId, state: clone(state), updatedAt: new Date().toISOString(), draft: !saved });
+  renderedStage = -1; render(); focusHeading(); announce(saved ? 'Opened ' + projectName() : 'Working draft opened. Choose Save & name to keep this project.');
+}
+function saveNamedProject(name) {
+  name = textValue(name, 100).trim();
+  if (!name) return false;
+  state.context.name = name;
+  persistState();
+  workspace.projects.find(p => p.id === workspace.activeId).draft = false;
+  render(); announce('Saved project: ' + name); return true;
+}
+function openProjectNameDialog() {
+  const invoker = document.activeElement, dialog = document.createElement('div');
+  dialog.className = 'feedback-dialog-backdrop'; dialog.id = 'project-name-dialog';
+  dialog.innerHTML = `<div class="feedback-dialog-panel" role="dialog" aria-modal="true" aria-labelledby="project-name-title"><button class="feedback-dialog-close" id="project-name-close" aria-label="Close project name">×</button><h3 class="feedback-dialog-title serif" id="project-name-title">Name this project</h3><p>Choose a name you will recognise in the saved-project list.</p><form id="project-name-form">${fieldHTML('project-name-input','Project name',state.context.name,'required')}<div class="action-row"><button class="btn primary" type="submit">Save project</button></div></form></div>`;
+  document.body.appendChild(dialog);
+  const close = activateAccessibleDialog(dialog,document.getElementById('project-name-close'),invoker);
+  document.getElementById('project-name-input').maxLength = 100;
+  document.getElementById('project-name-input').focus();
+  document.getElementById('project-name-form').addEventListener('submit', e => {
+    e.preventDefault(); const input = document.getElementById('project-name-input');
+    if (!input.value.trim()) { input.setCustomValidity('Enter a project name.'); input.reportValidity(); return; }
+    const name = input.value; close(); saveNamedProject(name); document.getElementById('project-save').focus();
+  });
+  document.getElementById('project-name-input').addEventListener('input', e => e.target.setCustomValidity(''));
+}
+function deleteCurrentProject() {
+  if (!window.confirm('Delete "' + projectName() + '" from this browser? This cannot be undone. Download a project backup first if you want to keep it.')) return;
+  workspace.projects = workspace.projects.filter(p => p.id !== workspace.activeId);
+  const next = workspace.projects[0];
+  workspace.activeId = next?.id || ''; Object.assign(state,next ? normalizeState(next.state) : freshState());
+  if (!next) persistState();
+  renderedStage = -1; render(); focusHeading(); announce('Project deleted from this browser.');
 }
 function loadExample(id) {
   const example = EXAMPLES.find(e => e.id === id); if (!example) return;
@@ -3744,7 +3797,21 @@ function fileStem() { return projectName().replace(/[^a-z0-9_-]+/gi, '-').replac
 function exportProject() {
   persistState();
   downloadText(fileStem() + '.json', JSON.stringify({ format: 'climate-me-navigator-project', version: 1, exportedAt: new Date().toISOString(), state }, null, 2), 'application/json');
-  announce('Project exported. Import this file to continue on another browser.');
+  announce('Editable backup downloaded (.json). Use Import backup to reopen it, or Download plan for a readable document.');
+}
+function openDownloadDialog() {
+  const invoker = document.activeElement, dialog = document.createElement('div');
+  dialog.className = 'feedback-dialog-backdrop'; dialog.id = 'download-dialog';
+  dialog.innerHTML = `<div class="feedback-dialog-panel" role="dialog" aria-modal="true" aria-labelledby="download-title"><button class="feedback-dialog-close" id="download-close" aria-label="Close downloads">×</button><h3 class="feedback-dialog-title serif" id="download-title">Download your plan</h3><p>Choose a document to read or share. All options include your current notes and choices.</p><div class="download-choices"><button class="btn primary" id="download-pdf">PDF / print — choose Save as PDF in the print dialog</button><button class="btn" id="download-html">Readable document (.html) — opens in any browser</button><button class="btn" id="download-txt">Plain text (.txt)</button><button class="btn" id="download-csv">Implementation worksheet (.csv)</button></div><p>To continue editing on another browser, use Project options → Project backup (.json).</p></div>`;
+  document.body.appendChild(dialog);
+  const close = activateAccessibleDialog(dialog,document.getElementById('download-close'),invoker);
+  document.getElementById('download-pdf').addEventListener('click',()=>{close();goStage(4);printPlan();});
+  document.getElementById('download-html').addEventListener('click',()=>{downloadText(fileStem()+'-plan.html',buildReadablePlan(),'text/html;charset=utf-8');close();announce('Readable plan downloaded. Open it in your browser to read or print.');});
+  document.getElementById('download-txt').addEventListener('click',()=>{downloadText(fileStem()+'-plan.txt',buildPlainSummary(),'text/plain;charset=utf-8');close();announce('Plan downloaded as plain text.');});
+  document.getElementById('download-csv').addEventListener('click',()=>{exportWorksheet();close();});
+}
+function buildReadablePlan() {
+  return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escapeHTML(projectName())+' — Climate M&amp;E plan</title><style>body{max-width:850px;margin:40px auto;padding:0 24px;color:#25241f;background:#fff;font:16px/1.65 Georgia,serif}h1{line-height:1.2}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere}@media print{body{margin:0;max-width:none} @page{margin:18mm}}</style></head><body><h1>'+escapeHTML(projectName())+'</h1><pre>'+escapeHTML(buildPlainSummary())+'</pre></body></html>';
 }
 function render() {
   const activeId = document.activeElement?.id;
@@ -3796,9 +3863,9 @@ function renderWelcome(c) {
     <p class="lede">Describe the decision you need to make. Explore a starting set of methods, connect them to local institutions, and leave with an editable implementation worksheet.</p>
     <div class="welcome-actions"><button class="btn primary" id="start-design">Start designing your system →</button><button class="btn" id="explore-examples">Explore worked examples</button></div>
     <p class="welcome-meta">Three sets of questions, then your plan. Context notes and deeper questions are optional. You can return to any step.</p>
-    <p class="welcome-meta">Your project is saved on this browser. Export a project file to keep a copy or continue elsewhere.</p>
+    <p class="welcome-meta">Try the Navigator in a working draft. Choose Save &amp; name to keep a project in your list. Download plan creates a readable document; Project backup keeps an editable copy.</p>
     <section class="welcome-preview"><h2>What you will build</h2><p>Six complementary parts, with room for the systems and processes you already use.</p><div class="preview-parts">${COMPONENTS.map(x => `<span>${x.label}</span>`).join('')}</div><p>An editable worksheet records who will do what, with which evidence, and by when.</p></section>
-    <details class="optional-section" id="welcome-examples"><summary>Three climate examples to explore</summary><p>Illustrative journeys with prefilled answers and explanations. Each opens as a separate project.</p>${exampleCards()}</details>
+    <details class="optional-section" id="welcome-examples"><summary>Three climate examples to explore</summary><p>Illustrative journeys with prefilled answers and explanations. Each opens as a working draft; save it only if you want to keep it.</p>${exampleCards()}</details>
     <div class="action-row"><button class="btn" id="welcome-grounding">Open the context checklist</button><button class="btn" id="welcome-learn">Learn M&amp;E basics</button></div></section>`;
   document.getElementById('start-design').addEventListener('click', () => goStage(1));
   document.getElementById('welcome-grounding').addEventListener('click', () => goStage(0));
@@ -3820,7 +3887,7 @@ function attachNav() {
   document.getElementById('btn-review-inputs')?.addEventListener('click', () => goStage(1));
 }
 function fieldHTML(id, label, value, attrs = '', multiline = false, wide = false) {
-  return `<label class="field ${wide ? 'wide' : ''}" for="${id}"><span>${label}</span>${multiline ? `<textarea id="${id}" rows="3" maxlength="4000" ${attrs}>${escapeHTML(value)}</textarea>` : `<input id="${id}" type="text" value="${escapeHTML(value)}" maxlength="${id === 'context-name' ? 100 : 4000}" ${attrs}>`}</label>`;
+  return `<label class="field ${wide ? 'wide' : ''}" for="${id}"><span>${label}</span>${multiline ? `<textarea id="${id}" rows="3" maxlength="4000" ${attrs}>${escapeHTML(value)}</textarea>` : `<input id="${id}" type="text" value="${escapeHTML(value)}" maxlength="${['context-name','project-name-input'].includes(id) ? 100 : 4000}" ${attrs}>`}</label>`;
 }
 function contextField(key, label, multiline = false, wide = false) { return fieldHTML('context-' + key, label, state.context[key], `data-context="${key}"`, multiline, wide); }
 function wireContext(c) {
@@ -3956,7 +4023,7 @@ function renderStage4(c) {
     <section class="decision-brief" aria-labelledby="decision-brief-heading"><h2 id="decision-brief-heading">The decision this plan supports</h2><p>${escapeHTML(state.context.decision.trim() || 'No specific decision recorded yet. Name the choice this evidence needs to inform.')}</p><button class="btn" data-goto="1" data-focus="context-decision">${state.context.decision.trim() ? 'Edit the decision' : 'Describe the decision'}</button></section>
     ${missing.length ? `<div class="incomplete-notice"><strong>Preview — required answers are missing.</strong> Complete Steps ${missing.join(', ')} before treating these as recommendations. <button class="btn" data-goto="${missing[0]}">Answer missing questions</button></div>` : ''}
     <div class="readiness-note"><strong>Still to check:</strong> ${escapeHTML(uncheckedItems().join('; '))}. Matching reflects your selections and catalogue descriptions; it does not establish effectiveness.<div><button class="btn" data-goto="3" data-focus="refine-block">Review data, timing and resources</button></div></div>
-    <div class="share-row"><button class="share-btn" id="btn-copy-summary">Copy plan</button><button class="share-btn" id="btn-print-summary">Print / save as PDF</button><button class="share-btn" id="btn-save-offline">Save for offline use</button></div>
+    <div class="share-row"><button class="share-btn" id="btn-download-plan">Download plan</button><button class="share-btn" id="btn-copy-summary">Copy plan</button><button class="share-btn" id="btn-print-summary">Print / save as PDF</button><button class="share-btn" id="btn-save-offline">Save for offline use</button></div>
     <details class="optional-section" id="plan-context"><summary>Your answers and project context</summary><div class="answers-summary">${answerRows.map(([label,value,step,focus]) => `<div class="answers-summary-item"><span class="answers-summary-label">${label}</span><span class="answers-summary-value">${escapeHTML(value || 'Not answered')} <button class="answers-summary-edit" data-goto="${step}" ${focus ? `data-focus="${focus}"` : ''} aria-label="Edit ${label.toLowerCase()}">Edit</button></span></div>`).join('')}</div><dl>${Object.entries(state.context).filter(([,v]) => v).map(([key,value]) => `<div><dt><strong>${({ name:'Project',decision:'Decision',location:'Location',focus:'Sector / hazard',institutions:'Institutions and processes',evidence:'Existing evidence',resources:'Available resources' })[key]}</strong></dt><dd>${escapeHTML(value)}</dd></div>`).join('')}</dl><button class="btn" data-goto="1">Edit project context</button></details>
     ${renderEvidenceUse()}${renderOverview(entries)}<p class="field-hint">Catalogue descriptions: ${CATALOGUE_SNAPSHOT}. Review current source material before adoption.</p>
     ${renderWorksheet(entries)}
@@ -4002,6 +4069,7 @@ function renderStage4(c) {
     const id=el.dataset.component; state.worksheet[id] ||= {}; state.worksheet[id][el.dataset.work]=el.value;persistState();
     const dl=document.getElementById('print-'+id);dl.outerHTML=printWorksheetFields(componentMeta(id));
   }));
+  document.getElementById('btn-download-plan').addEventListener('click',openDownloadDialog);
   document.getElementById('export-worksheet').addEventListener('click',exportWorksheet);
   document.getElementById('btn-copy-summary').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(buildPlainSummary());announce('Plan copied.');}catch(e){downloadText(fileStem()+'.txt',buildPlainSummary(),'text/plain');announce('Clipboard unavailable. Downloaded the plan as text.');}});
   for(const id of ['print-plan','btn-print-summary'])document.getElementById(id).addEventListener('click',printPlan);
@@ -4056,7 +4124,7 @@ function initializeProjects() {
     const saved=JSON.parse(localStorage.getItem(PROJECT_KEY)||'null');
     if(saved&&Array.isArray(saved.projects)){
       const ids=new Set();
-      workspace.projects=saved.projects.filter(p=>p&&typeof p.id==='string'&&/^[a-zA-Z0-9-]{1,100}$/.test(p.id)&&p.state?.answers&&!ids.has(p.id)&&ids.add(p.id)).map(p=>({id:p.id,state:normalizeState(p.state),updatedAt:textValue(p.updatedAt,40)}));
+      workspace.projects=saved.projects.filter(p=>p&&typeof p.id==='string'&&/^[a-zA-Z0-9-]{1,100}$/.test(p.id)&&p.state?.answers&&!ids.has(p.id)&&ids.add(p.id)).map(p=>({id:p.id,state:normalizeState(p.state),updatedAt:textValue(p.updatedAt,40),draft:p.draft === true}));
       workspace.activeId=saved.activeId;
     }
   }catch(e){}
@@ -4069,7 +4137,7 @@ function initializeProjects() {
   }
   if(!workspace.projects.length){
     let legacy=null;try{legacy=JSON.parse(document.body.getAttribute('data-saved-state')||localStorage.getItem('nav_state_v9')||localStorage.getItem('nav_state_v8')||'null');}catch(e){}
-    document.body.removeAttribute('data-saved-state');workspace.activeId=projectId();workspace.projects.push({id:workspace.activeId,state:normalizeState(legacy),updatedAt:new Date().toISOString()});
+    document.body.removeAttribute('data-saved-state');workspace.activeId=projectId();workspace.projects.push({id:workspace.activeId,state:normalizeState(legacy),updatedAt:new Date().toISOString(),draft:!legacy?.answers});
   }
   const active=workspace.projects.find(p=>p.id===workspace.activeId)||workspace.projects[0];workspace.activeId=active.id;Object.assign(state,normalizeState(active.state));
 }
@@ -4153,7 +4221,7 @@ function openHelpDialog() {
         <p>Start with a decision, choose the scope, then describe scales and resources. Your plan brings together six complementary components and an editable implementation worksheet. The context checklist is an optional reference you can revisit at any time.</p>
         <p>You can <strong>jump between stages</strong> using the bar at the top — your answers are kept. Required questions establish basic eligibility; optional ones refine fit and surface warnings.</p>
         <p>In <strong>Your plan</strong>, compare alternatives within a component, select a tool, or name a local process. Record owners, tasks, evidence, people, dates and questions in the worksheet. Download it as CSV, copy the plan, print it or save the Navigator for offline use. Changing a component preserves your worksheet notes; review them for the new choice.</p>
-        <p>Projects are saved on this browser. Use <strong>New project</strong> or <strong>Duplicate</strong> to explore another scenario. <strong>Export project</strong> downloads a JSON file you can import on another browser. The offline download contains the current project. Your answers are not uploaded by the Navigator; external source links and feedback use the destinations you choose.</p>
+        <p>Start in a <strong>working draft</strong>, kept on this browser for recovery. Choose <strong>Save &amp; name</strong> to keep it in the saved-project list. New drafts and examples reuse that draft slot after confirmation. Saved projects can be renamed or deleted using the project controls. <strong>Download plan</strong> offers PDF/print, a readable browser document, plain text and CSV. <strong>Project backup (.json)</strong>, under Project options, is for reopening an editable project. Your answers are not uploaded by the Navigator; external source links and feedback use the destinations you choose.</p>
       </div>
 
       <div class="help-dialog-section">
