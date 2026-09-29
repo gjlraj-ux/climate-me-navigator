@@ -4,6 +4,8 @@ The Climate M&E Navigator is a decision-support prototype for designing monitori
 
 The site is a single, dependency-free HTML file that can be hosted on GitHub Pages or saved for offline use.
 
+The visual system uses Manrope headings and Source Sans 3 body text, with system-font fallbacks. Shared colour and type tokens sit at the beginning of the stylesheet; the contemporary workspace section defines screen layouts, followed by responsive and print adjustments.
+
 ## What changed in v1.0
 
 - shorter entry with a primary decision first, optional context checklist, and three illustrative climate examples;

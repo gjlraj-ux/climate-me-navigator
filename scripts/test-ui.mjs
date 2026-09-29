@@ -55,7 +55,7 @@ await test('Back returns to welcome and preserves answers through reload', () =>
   const ui = boot();
   ui.click('#start-design'); ui.click('#answer-purpose_primary-national_policy');
   ui.input('#context-name','Saved decision'); ui.click('#btn-back');
-  assert.match(ui.get('#stage-container h1').textContent, /Design a climate/);
+  assert.match(ui.get('#stage-container h1').textContent, /Make evidence/);
   const saved = ui.snapshot(); ui.close();
   const reopened = boot(saved);
   reopened.click('#resume-design');
@@ -265,7 +265,7 @@ await test('returning midway opens welcome and preserves the exact resume point 
   assert.equal(reopened.get('#course-view').hidden,true);
   assert.equal(reopened.get('#stage-nav').textContent,'');
   assert.equal(reopened.document.querySelector('#answer-scope-adaptation'),null);
-  assert.match(reopened.get('.resume-card').textContent,/Working draft on this browser/);
+  assert.match(reopened.get('.resume-card').textContent,/Your working draft/);
   assert.match(reopened.get('.resume-card').textContent,/Step 2 of 4 · Scope/);
   assert.deepEqual(JSON.parse(reopened.snapshot().nav_projects_v10).projects[0].state,prior);
   assert.equal(JSON.parse(reopened.snapshot().course_done_v1).m1,true);

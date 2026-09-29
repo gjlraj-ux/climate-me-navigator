@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — visual redesign, 2026-09-29
+
+- Replace the cream, serif and monospaced visual system with deep teal, mint and white, using Manrope headings and Source Sans 3 text with system fallbacks.
+- Recompose the welcome screen around a bold introduction and an explicit resume card or four-step route; add a compact compass identity and numbered system-component cards.
+- Restyle question cards, selection states, step navigation, plan summaries, worksheets, dialogs and the learning course; give course examples a collapsible home below its introduction.
+- Add responsive layouts and preserve keyboard focus, reduced-motion preferences, printing and all project/navigation behaviour.
+
 ## Unreleased — returning visits, 2026-09-29
 
 - Open on the welcome screen instead of silently restoring a partial project or the previously selected M&E basics tab.
