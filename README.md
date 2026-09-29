@@ -46,13 +46,15 @@ The jsdom development dependency runs DOM integration checks for navigation, foc
 
 ## Projects and exports
 
-Use the project selector to switch between locally saved projects. **New project** keeps the current one; **Duplicate** makes an independent scenario. Change the project name in Step 1. **Export project** creates a JSON file that **Import project** opens as a separate project on this or another browser.
+Start in one **working draft**, retained on this browser for recovery. Choose **Save & name** to keep it in the saved-project list; later edits to that saved project are saved automatically. **New draft**, illustrative examples and **Duplicate as draft** reuse the draft slot, with confirmation before replacing work. Saved projects remain separate. **Rename** changes the current saved project's name without making another copy. Under **Project options**, **Delete selected project** removes only the selected project after confirmation. Existing projects, including older untitled entries, are preserved until explicitly deleted.
+
+**Download plan** offers **PDF / print** (choose Save as PDF in your browser's print dialog), a readable standalone **HTML document**, **plain text**, or a **CSV worksheet**. **Project backup (.json)** is separately labelled under Project options: it preserves the editable state for **Import backup (.json)**. Importing a backup deliberately creates a separate saved project.
 
 The implementation worksheet exports as CSV, while **Copy plan** and **Print / save as PDF** include the choices and implementation notes. **Save for offline use** downloads the entire Navigator with only the current project embedded. Later edits in that offline copy can be saved in its browser when storage is available. Browser storage may be cleared or unavailable; the interface reports saving failures, and explicit exports provide a portable copy.
 
 In **Your plan**, **Connect evidence to action** records the learning question, review forum and timing, decision to follow, and feedback to contributors. These optional notes are included in every plan export. In CSV they appear as four additional columns repeated for each component row.
 
-Illustrative examples are teaching scenarios, not empirical case studies. Their assumptions can be inspected and changed, and opening an example creates a separate project.
+Illustrative examples are teaching scenarios, not empirical case studies. Their assumptions can be inspected and changed in the working draft. Choose Save & name only if you want to retain the example as a saved project.
 
 ## How recommendations work
 

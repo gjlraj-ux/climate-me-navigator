@@ -5,7 +5,7 @@ import { JSDOM, VirtualConsole } from 'jsdom';
 // DOM integration only: no remote resources, layout engine or native browser.
 const source = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 function boot(saved = {}, html = source) {
-  const errors = [], downloads = [];
+  const errors = [], downloads = [], confirmations = [];
   const virtualConsole = new VirtualConsole();
   virtualConsole.on('jsdomError', error => errors.push(error));
   const dom = new JSDOM(html, {
@@ -13,6 +13,7 @@ function boot(saved = {}, html = source) {
     beforeParse(window) {
       for (const [key,value] of Object.entries(saved)) window.localStorage.setItem(key,value);
       window.scrollTo = () => {};
+      window.confirm = message => { confirmations.push(message); return true; };
       window.HTMLElement.prototype.scrollIntoView = () => {};
       window.HTMLAnchorElement.prototype.click = function () {};
       window.Blob = Blob;
@@ -29,7 +30,7 @@ function boot(saved = {}, html = source) {
   };
   const snapshot = () => Object.fromEntries(Object.keys(window.localStorage).map(key => [key,window.localStorage.getItem(key)]));
   const close = () => { dom.window.close(); assert.deepEqual(errors, [], 'uncaught application errors'); };
-  return { window, document, get, click, input, snapshot, downloads, close };
+  return { window, document, get, click, input, snapshot, downloads, confirmations, close };
 }
 let checks = 0;
 async function test(name, fn) {
@@ -43,6 +44,11 @@ function completeJourney(ui) {
   ui.click('#btn-next'); ui.click('#answer-scope-adaptation'); ui.click('#btn-next');
   ui.click('#answer-evidence_scale-community'); ui.click('#answer-decision_scale-subnational');
   ui.click('#answer-capacity-low'); ui.click('#btn-next');
+  saveProject(ui, 'Coastal review');
+}
+function saveProject(ui, name) {
+  ui.click('#project-save'); ui.input('#project-name-input',name);
+  ui.get('#project-name-form').dispatchEvent(new ui.window.Event('submit',{bubbles:true,cancelable:true}));
 }
 
 await test('Back returns to welcome and preserves answers through reload', () => {
@@ -171,6 +177,75 @@ await test('every step has unique IDs and valid label and description targets', 
   }
   ui.click('#tab-course'); assert.equal(ui.get('.skip-link').textContent,'Skip to M&E basics');
   ui.click('#tab-navigator'); assert.equal(ui.get('.skip-link').textContent,'Skip to navigator');
+  ui.close();
+});
+
+await test('trial runs share one draft slot and only explicit saves enter the saved list', () => {
+  const ui = boot();
+  for (let i=0;i<3;i++) ui.click('#project-new');
+  assert.equal(ui.get('#project-select').options.length,1);
+  assert.equal(ui.document.querySelectorAll('#project-select optgroup option').length,0);
+  ui.click('#start-design'); ui.click('#answer-purpose_primary-national_policy');
+  ui.window.confirm = () => false; ui.click('#project-new');
+  assert.equal(ui.get('#answer-purpose_primary-national_policy').checked,true);
+  ui.window.confirm = () => true; ui.click('#project-new');
+  assert.equal(ui.get('#project-select').options.length,1);
+  saveProject(ui,'My retained plan');
+  assert.equal(ui.document.querySelectorAll('#project-select optgroup option').length,1);
+  ui.click('#project-new'); ui.click('#project-new');
+  assert.equal(ui.get('#project-select').options.length,2);
+  assert.equal(ui.document.querySelectorAll('#project-select optgroup option').length,1);
+  const saved=ui.snapshot(); ui.close();
+  const reopened=boot(saved);
+  assert.equal(reopened.get('#project-select').options.length,2);
+  assert.equal(reopened.document.querySelectorAll('#project-select optgroup option').length,1);
+  reopened.close();
+});
+
+await test('legacy untitled projects remain intact and deletion requires confirmation', () => {
+  const saved={nav_projects_v10:JSON.stringify({activeId:'old-1',projects:[
+    {id:'old-1',state:{answers:{scope:['adaptation']},context:{name:'Untitled project',decision:'Preserve my work'}}},
+    {id:'old-2',state:{answers:{scope:['mitigation']},context:{name:'Another existing plan'}}}
+  ]})};
+  const ui=boot(saved);
+  assert.equal(ui.document.querySelectorAll('#project-select optgroup option').length,2);
+  saveProject(ui,'Renamed older project');
+  assert.equal(ui.get('#project-select').options.length,2);
+  let message;
+  ui.window.confirm=text=>{message=text;return false;}; ui.click('#project-delete');
+  assert.match(message,/Renamed older project/);
+  assert.equal(ui.get('#project-select').options.length,2);
+  ui.window.confirm=()=>true; ui.click('#project-delete');
+  assert.equal(ui.get('#project-select').value,'old-2');
+  assert.equal(ui.get('#project-select').options.length,1);
+  ui.click('#project-delete');
+  assert.equal(ui.get('#project-select').options.length,1);
+  assert.match(ui.get('#project-select').textContent,/Working draft/);
+  assert.equal(ui.document.querySelectorAll('#project-select optgroup option').length,0);
+  const stored=JSON.parse(ui.snapshot().nav_projects_v10);
+  assert.ok(stored.projects.every(p=>p.id!=='old-1'&&p.id!=='old-2'));
+  ui.close();
+});
+
+await test('readable downloads are separate from JSON backups and retain notes safely', async () => {
+  const ui=boot();completeJourney(ui);
+  ui.input('#use-feedback','Return findings <script>alert(1)</script> & invite corrections.');
+  ui.click('#project-download');ui.click('#download-html');
+  assert.equal(ui.downloads.at(-1).type,'text/html;charset=utf-8');
+  const html=await ui.downloads.at(-1).text();
+  const rendered=new JSDOM(html);
+  assert.equal(rendered.window.document.querySelectorAll('script').length,0);
+  assert.match(rendered.window.document.body.textContent,/Return findings <script>alert\(1\)<\/script> & invite corrections/);
+  assert.match(rendered.window.document.body.textContent,/Which preparedness/);
+  rendered.window.close();
+  ui.click('#project-download');ui.click('#download-txt');
+  assert.equal(ui.downloads.at(-1).type,'text/plain;charset=utf-8');
+  assert.match(await ui.downloads.at(-1).text(),/CLIMATE M&E NAVIGATOR/);
+  ui.click('#stage-nav-1');let printed=false;
+  ui.window.print=()=>{printed=true;assert.ok(ui.document.getElementById('evidence-use'));};
+  ui.click('#project-download');ui.click('#download-pdf');assert.equal(printed,true);
+  assert.equal(ui.document.getElementById('download-dialog'),null);
+  assert.match(ui.get('#project-export').textContent,/backup \(\.json\)/);
   ui.close();
 });
 
