@@ -214,5 +214,31 @@
     "warned_tools": [
       "aqueduct"
     ]
+  },
+  {
+    "id": "community-mixed-theme-coverage",
+    "stakeholder": "Community adaptation team also assessing mitigation",
+    "answers": {
+      "purpose_primary": "community_monitoring",
+      "scope": [
+        "adaptation",
+        "mitigation"
+      ],
+      "evidence_scale": "community",
+      "decision_scale": "subnational",
+      "capacity": "low"
+    },
+    "expected_components": [
+      "system_design",
+      "collection_delivery",
+      "evaluation_learning"
+    ],
+    "minimum_bundle_size": 3,
+    "warned_tools": [
+      "pmerl"
+    ],
+    "partial_scope_tools": [
+      "pmerl"
+    ]
   }
 ]

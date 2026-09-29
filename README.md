@@ -36,16 +36,21 @@ Open `index.html` in a browser or visit the GitHub Pages deployment. No account,
 Requirements: Node.js 18 or newer.
 
 ```bash
+npm ci
 npm test
 ```
 
 The checks cover the tool catalogue, taxonomy coverage, HTTPS source links, accessible interaction markers, stakeholder scenarios, state migration, local choices, stale choices, project persistence, uncertainty labels and exports. They do not substitute for visual, mobile or assistive-technology review. See [validation/USABILITY_REVIEW.md](validation/USABILITY_REVIEW.md) for this release's checks and remaining review.
+
+The jsdom development dependency runs DOM integration checks for navigation, focus targets, project isolation, long local names, imports, print preparation and exports. The published HTML remains independent of npm and has no runtime dependency on jsdom. See [the September 2026 review](validation/REVIEW_2026-09-29.md) for the latest findings and remaining conceptual questions.
 
 ## Projects and exports
 
 Use the project selector to switch between locally saved projects. **New project** keeps the current one; **Duplicate** makes an independent scenario. Change the project name in Step 1. **Export project** creates a JSON file that **Import project** opens as a separate project on this or another browser.
 
 The implementation worksheet exports as CSV, while **Copy plan** and **Print / save as PDF** include the choices and implementation notes. **Save for offline use** downloads the entire Navigator with only the current project embedded. Later edits in that offline copy can be saved in its browser when storage is available. Browser storage may be cleared or unavailable; the interface reports saving failures, and explicit exports provide a portable copy.
+
+In **Your plan**, **Connect evidence to action** records the learning question, review forum and timing, decision to follow, and feedback to contributors. These optional notes are included in every plan export. In CSV they appear as four additional columns repeated for each component row.
 
 Illustrative examples are teaching scenarios, not empirical case studies. Their assumptions can be inspected and changed, and opening an example creates a separate project.
 

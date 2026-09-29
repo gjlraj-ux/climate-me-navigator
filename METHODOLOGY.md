@@ -23,6 +23,8 @@ Project name, the actual decision, location, sector/hazard, existing institution
 
 Selecting multiple thematic scopes does not increase a score repeatedly. A tool receives the scope weight once if it overlaps at least one selected scope. This avoids rewarding broadly tagged tools merely because a user selects more topics.
 
+When a tool overlaps only some selected themes, a visible partial-coverage warning names the themes absent from its catalogue tags. Eligibility and score weights are unchanged; the warning prevents partial coverage from receiving the warning-free fit label. Absence of a tag is not evidence that the method could never serve that theme.
+
 ## Functional components
 
 Every catalogue item is assigned one primary role:
@@ -73,7 +75,7 @@ The percentage inside **Why this fit** is `points earned / maximum points availa
 Labels are deliberately conservative:
 
 - **Matches your stated needs:** eligible, primary-decision match, at least 75%, and no warnings. This refers only to the stated criteria, not to unchecked conditions.
-- **Potential fit — review checks:** eligible and at least 55%.
+- **Potential fit — review checks:** eligible, primary-decision match, and at least 55%, unless the stronger label applies.
 - **Supporting option:** eligible below 55% or not a primary-decision match.
 - **Not suitable now:** at least one feasibility blocker.
 
@@ -90,6 +92,8 @@ Users can compare eligible alternatives within one component and explicitly sele
 When answers change, an explicitly chosen tool that becomes ineligible is retained with its blockers and labelled as a previous choice needing review. It is not silently replaced or presented as an eligible recommendation. The user can choose an eligible alternative, name a local process, or return to the default suggestion. Automatically suggested components update with the current answers.
 
 The worksheet records an owner, first task, existing evidence, people to involve, deadline and unresolved question for each component. First tasks are generic prompts for that component, not tool-specific implementation instructions. Editing or replacing a component retains worksheet notes and asks the user to review them. Local choices, missing answers, invalidated choices, sources and open checks are carried into the plan exports.
+
+The plan keeps the user's specific decision visible and provides four optional evidence-use notes: the learning question; who reviews the evidence and when; the decision that follows; and how findings return to contributors. These are unscored planning notes, not an automated theory of change or a claim that the suggested bundle answers the evaluation question. They are retained in project, offline, text, CSV and print exports. The six components represent functions to consider, not a requirement to adopt six separate tools.
 
 Named projects are stored locally, with independent duplication and JSON export/import. Imported state is validated against known choices and bounded text fields; it is not executed. Existing v0.8 and v0.9 answers are migrated when no v1.0 projects exist. An embedded offline snapshot opens as its own project and subsequently saved edits take precedence for that snapshot.
 
